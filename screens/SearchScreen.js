@@ -1,43 +1,52 @@
+// Import pour react / react-native
 import { StyleSheet, View, FlatList, Dimensions, TouchableOpacity } from "react-native";
+import { useState } from "react";
+
+// Import des icones FontAweSome
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
 
-import { useState } from "react";
-
+// Import des composants
 import Header from "../components/Header";
 import PlaceCard from "../components/PlaceCard";
 import MovieCard from "../components/MovieCard";
 
+// Récupération de la largeur de l'écran du téléphone
 const { width } = Dimensions.get("window");
 
+// Création de la page Search
 export default function SearchScreen() {
+  // Etat de l'index des cards lieux
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const cardsData = [
     {
       id: "1",
       image: "https://via.placeholder.com/300x200.png?text=Image+1",
-      title: "Card 1",
+      title: "Lieu 1",
       description: "Description de la première carte.",
     },
     {
       id: "2",
       image: "https://via.placeholder.com/300x200.png?text=Image+2",
-      title: "Card 2",
+      title: "Lieu 2",
       description: "Description de la deuxième carte.",
     },
     {
       id: "3",
       image: "https://via.placeholder.com/300x200.png?text=Image+3",
-      title: "Card 3",
+      title: "Lieu 3",
       description: "Description de la troisième carte.",
     },
   ];
+
+  // Fonction pour passer à la card lieux suivante
   const goToNext = () => {
     const nextIndex = (currentIndex + 1) % cardsData.length;
     setCurrentIndex(nextIndex);
   };
 
+  // Fonction pour passer à la card lieux précédente
   const goToPrevious = () => {
     const prevIndex = (currentIndex - 1 + cardsData.length) % cardsData.length;
     setCurrentIndex(prevIndex);
@@ -48,13 +57,15 @@ export default function SearchScreen() {
       <View style={styles.container}>
         <Header />
         <View style={styles.searchScreenContainer}>
+          {/* Card du film séléctionné */}
           <MovieCard />
-
+          {/* Carrousel des cards lieux de tournage */}
           <View style={styles.carouselWrapper}>
+            {/* Bouton previous */}
             <TouchableOpacity onPress={goToPrevious} style={styles.navigationButtonLeft}>
               <FontAwesomeIcon icon={faChevronLeft} size={20} color="black" />
             </TouchableOpacity>
-
+            {/* Carrousel */}
             <FlatList
               data={cardsData}
               horizontal
@@ -70,12 +81,12 @@ export default function SearchScreen() {
               snapToInterval={width}
               contentContainerStyle={{ justifyContent: "center" }}
             />
-
+            {/* Bouton next */}
             <TouchableOpacity onPress={goToNext} style={styles.navigationButtonRight}>
               <FontAwesomeIcon icon={faChevronRight} size={20} color="black" />
             </TouchableOpacity>
           </View>
-
+          {/* Pagination du carrousel */}
           <View style={styles.pagination}>
             {cardsData.map((_, index) => (
               <View key={index} style={[styles.pageLine, currentIndex === index && styles.activePageLine]} />
@@ -87,6 +98,7 @@ export default function SearchScreen() {
   );
 }
 
+// Définition du style des différents éléments
 const styles = StyleSheet.create({
   container: {
     flex: 1,

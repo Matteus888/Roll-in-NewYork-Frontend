@@ -1,16 +1,23 @@
+// Import pour react / react-native
 import { StyleSheet, TouchableOpacity, Dimensions, View, Text, Image } from "react-native";
+
+// Import des icones FontAweSome
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faHeart, faCamera, faStar } from "@fortawesome/free-solid-svg-icons";
 
+// Récupération de la largeur de l'écran du téléphone
 const { width } = Dimensions.get("window");
 
+// Création de la card représentant les lieux de tournage référencés
 export default function PlaceCard({ image, title, description }) {
   return (
     <View style={styles.card}>
       <View style={styles.imageContainer}>
         <Image source={{ uri: image }} style={styles.image} />
       </View>
+      {/* View pour un séparateur en forme de barre vertical */}
       <View style={styles.verticalBar}></View>
+
       <View style={styles.textContainer}>
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{title}</Text>
@@ -34,6 +41,7 @@ export default function PlaceCard({ image, title, description }) {
   );
 }
 
+// Définition du style des différents éléments
 const styles = StyleSheet.create({
   card: {
     width: width - 80,

@@ -1,14 +1,19 @@
+// Import pour react / react-native
 import { StyleSheet, TouchableOpacity, Dimensions, View, Text, Image } from "react-native";
 
+// Récupération de la largeur de l'écran du téléphone
 const { width } = Dimensions.get("window");
 
+// Création du composant représentant une fiche film
 export default function MovieCard() {
   return (
     <View style={styles.card}>
       <View style={styles.imageContainer}>
         <Image source={{ uri: "https://via.placeholder.com/100x150.png" }} style={styles.image} />
       </View>
+      {/* View pour un séparateur en forme de barre vertical */}
       <View style={styles.verticalBar}></View>
+
       <View style={styles.textContainer}>
         <Text style={styles.title}>Film</Text>
         <Text style={styles.date}>Année de sortie: </Text>
@@ -21,6 +26,7 @@ export default function MovieCard() {
   );
 }
 
+// Définition du style des différents éléments
 const styles = StyleSheet.create({
   card: {
     width: width - 30,

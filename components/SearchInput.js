@@ -1,7 +1,11 @@
+// Import pour react / react-native
 import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+
+// Import des icones FontAweSome
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
+// Création du composant SearchInput
 export default function SearchInput() {
   const handleSearch = () => {};
 
@@ -17,6 +21,7 @@ export default function SearchInput() {
   );
 }
 
+// Définition du style des différents éléments
 const styles = StyleSheet.create({
   container: {
     width: "80%",

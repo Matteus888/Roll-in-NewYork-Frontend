@@ -1,8 +1,13 @@
+// Import pour react / react-native
 import { View, Image, StyleSheet, Dimensions, Text, ImageBackground } from "react-native";
+
+// Import de composant
 import SearchInput from "./SearchInput";
 
+// Récupération de la largeur de l'écran du téléphone
 const { width } = Dimensions.get("window");
 
+// Création du composant Header
 export default function Header() {
   return (
     <ImageBackground style={styles.background} source={require("../assets/img/header-ny.jpg")}>
@@ -17,6 +22,7 @@ export default function Header() {
   );
 }
 
+// Définition du style des différents éléments
 const styles = StyleSheet.create({
   background: {
     width: width,
