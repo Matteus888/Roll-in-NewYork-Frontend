@@ -42,6 +42,7 @@ const styles = StyleSheet.create({
     color: "#282C37",
     fontFamily: "Montserrat",
     paddingLeft: 10,
+    paddingRight: 10,
   },
   iconeSearch: {
     marginRight: 10,
