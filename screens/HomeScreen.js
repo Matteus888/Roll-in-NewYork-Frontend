@@ -36,7 +36,7 @@ export default function HomeScreen() {
 
     // mise en place du fetch pour récupérer les lieux et les afficher sur la carte
     useEffect(() => {
-        fetch('http://192.168.31.65:3000/places')
+        fetch('https://roll-in-new-york-backend-mk511sfxd-0xk0s-projects.vercel.app/places')
         .then((response) => response.json())
         .then((data) => {
             setPlaces(data.places)
