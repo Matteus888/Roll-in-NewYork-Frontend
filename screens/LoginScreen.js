@@ -1,6 +1,7 @@
 import { Dimensions, StyleSheet, View, TouchableOpacity, Text, Image } from "react-native"
-import AppleIcon from '../assets/icons/apple.svg'
-import GoogleIcon from '../assets/icons/google.svg'
+import GoogleIcon from '../assets/icons/google.png'
+import AppleIcon from '../assets/icons/apple.png'
+import InstagramIcon from '../assets/icons/instagram.png'
 
 export default function LoginScreen () {
     return (
@@ -20,13 +21,15 @@ export default function LoginScreen () {
             </View>
             <View style={styles.methodConnexionContainer}>
                 <TouchableOpacity onPress={() => handleSubmit()} style={styles.methodConnexionButton} activeOpacity={0.8}>
-                    <GoogleIcon width={24} height={24} />
+                    <Image style={styles.icon} source={GoogleIcon}/>
                     <Text style={styles.methodConnexionTextButton}>Sign with Google</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleSubmit()} style={styles.methodConnexionButton} activeOpacity={0.8}>
+                    <Image style={styles.icon} source={AppleIcon}/>
                     <Text style={styles.methodConnexionTextButton}>Sign with Apple</Text>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => handleSubmit()} style={styles.methodConnexionButton} activeOpacity={0.8}>
+                    <Image style={styles.icon} source={InstagramIcon}/>
                     <Text style={styles.methodConnexionTextButton}>Sign with Instagram</Text>
                 </TouchableOpacity>
             </View>
@@ -41,7 +44,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: Dimensions.get('window').height,
         width: Dimensions.get('window').width,
-        backgroundColor: 'red'
+        backgroundColor: '#EFEFEF'
     },
     signContainer: {
         display: 'flex',
@@ -49,7 +52,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         height: '20%',
         width: '100%',
-        backgroundColor: 'yellow',
+        marginBottom: '5%',
     },
     button: {
         display: 'flex',
@@ -70,7 +73,6 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-around',
         alignItems: 'center',
-        backgroundColor: 'green',
         width: '50%'
     },
     separateBar: {
@@ -85,23 +87,31 @@ const styles = StyleSheet.create({
     },
     methodConnexionContainer: {
         display: 'flex',
-        justifyContent: 'space-between',
+        justifyContent: 'space-around',
         alignItems: 'center',
-        height: '40%',
+        height: '30%',
         width: '100%',
-        backgroundColor: 'orange'
     },
     methodConnexionButton: {
         display: 'flex',
         flexDirection: 'row',
-        justifyContent: 'center',
+        justifyContent: 'space-between',
         alignItems: 'center',
-        height: '15%',
+        height: '20%',
         width: '55%',
         backgroundColor: 'white',
         borderWidth: 2,
-        
         borderColor: 'black',
         borderRadius: 50,
+    },
+    icon: {
+        width: 30,
+        height: 30,
+        marginLeft: 15,
+        marginRight: 10,
+    },
+    methodConnexionTextButton: {
+        alignItems: 'center',
+        marginRight: 45,
     }
 })
