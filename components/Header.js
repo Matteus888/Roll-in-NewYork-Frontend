@@ -5,9 +5,9 @@ const { width } = Dimensions.get("window");
 
 export default function Header() {
   return (
-    <ImageBackground style={styles.background} source={require("../assets/header-ny.jpg")}>
+    <ImageBackground style={styles.background} source={require("../assets/img/header-ny.jpg")}>
       <View style={styles.titleContainer}>
-        <Image source={require("../assets/logo-ny.png")} style={styles.logo}></Image>
+        <Image source={require("../assets/icons/logo-ny.png")} style={styles.logo}></Image>
         <Text style={styles.title}>Roll-In NewYork</Text>
       </View>
       <View style={styles.input}>
@@ -30,17 +30,20 @@ const styles = StyleSheet.create({
     width: width,
     justifyContent: "center",
     alignItems: "flex-end",
-    paddingTop: 24,
-    paddingRight: 46,
+    paddingTop: 30,
+    paddingRight: 40,
   },
   logo: {
     height: 40,
     resizeMode: "contain",
   },
   title: {
-    fontFamily: "JosefinSans-Regular",
-    fontSize: 28,
+    fontFamily: "JosefinSans-SemiBold",
+    fontSize: 36,
     color: "#282C37",
   },
-  input: {},
+  input: {
+    alignItems: "center",
+    marginTop: 50,
+  },
 });
