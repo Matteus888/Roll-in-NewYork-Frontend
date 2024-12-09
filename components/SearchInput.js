@@ -1,5 +1,6 @@
 // Import pour react / react-native
 import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+import { useFonts } from "expo-font";
 
 // Import des icones FontAweSome
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -7,7 +8,15 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 // Création du composant SearchInput
 export default function SearchInput() {
+  // Chargement des fonts personnalisés
+  const [fontsLoaded] = useFonts({
+    "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
+  });
   const handleSearch = () => {};
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   return (
     <View style={styles.container}>
@@ -44,8 +53,8 @@ const styles = StyleSheet.create({
     height: 40,
     backgroundColor: "white",
     fontSize: 16,
+    fontFamily: "Montserrat-Regular",
     color: "#282C37",
-    fontFamily: "Montserrat",
     paddingLeft: 10,
     paddingRight: 10,
   },

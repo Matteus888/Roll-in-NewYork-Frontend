@@ -1,7 +1,7 @@
 // Import pour react / react-native
 import { View, Image, StyleSheet, Dimensions, Text, ImageBackground } from "react-native";
+import { useFonts } from "expo-font";
 
-// Import de composant
 import SearchInput from "./SearchInput";
 
 // Récupération de la largeur de l'écran du téléphone
@@ -9,10 +9,19 @@ const { width } = Dimensions.get("window");
 
 // Création du composant Header
 export default function Header() {
+  // Chargement des fonts personnalisés
+  const [fontsLoaded] = useFonts({
+    "JosefinSans-SemiBold": require("../assets/fonts/JosefinSans-SemiBold.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return null; // Affiche un écran blanc ou un indicateur de chargement
+  }
+
   return (
     <ImageBackground style={styles.background} source={require("../assets/img/header-ny.jpg")}>
       <View style={styles.titleContainer}>
-        <Image source={require("../assets/icons/logo-ny.png")} style={styles.logo}></Image>
+        <Image source={require("../assets/icons/logo-ny.png")} style={styles.logo} />
         <Text style={styles.title}>Roll-In NewYork</Text>
       </View>
       <View style={styles.input}>

@@ -1,5 +1,6 @@
 // Import pour react / react-native
 import { StyleSheet, TouchableOpacity, Dimensions, View, Text, Image } from "react-native";
+import { useFonts } from "expo-font";
 
 // Import des icones FontAweSome
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
@@ -10,6 +11,16 @@ const { width } = Dimensions.get("window");
 
 // Création de la card représentant les lieux de tournage référencés
 export default function PlaceCard({ image, title, description }) {
+  // Chargement des fonts personnalisés
+  const [fontsLoaded] = useFonts({
+    "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
+    "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
   return (
     <View style={styles.card}>
       <View style={styles.imageContainer}>
@@ -102,16 +113,13 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontFamily: "JosefinSans-Bold",
     color: "black",
-  },
-  date: {
-    fontSize: 10,
-    opacity: 0.5,
   },
   description: {
     maxWidth: "100%",
     fontSize: 12,
+    fontFamily: "Montserrat-Regular",
     color: "black",
     textAlign: "left",
     marginTop: 2,
