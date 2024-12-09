@@ -1,6 +1,6 @@
 // Import pour react / react-native
-import { useState } from "react"
-import { Dimensions, StyleSheet, View, TouchableOpacity, Text, Image } from "react-native"
+import { useState } from "react";
+import { Dimensions, StyleSheet, View, TouchableOpacity, Text, Image } from "react-native";
 
 // Import des composants SignIn et SignUp
 import SignIn from '../components/SignIn'
@@ -8,14 +8,14 @@ import SignUp from '../components/SignUp'
 import Header from '../components/Header'
 
 // Import des icons dans les assets
-import GoogleIcon from '../assets/icons/google.png'
-import AppleIcon from '../assets/icons/apple.png'
-import InstagramIcon from '../assets/icons/instagram.png'
+import GoogleIcon from "../assets/icons/google.png";
+import AppleIcon from "../assets/icons/apple.png";
+import InstagramIcon from "../assets/icons/instagram.png";
 
 // Création de la page Login
-export default function LoginScreen () {
-    const [isSignIn, setIsSignIn] = useState(false);
-    const [isSignUp, setIsSignUp] = useState(false);
+export default function LoginScreen() {
+  const [isSignIn, setIsSignIn] = useState(false);
+  const [isSignUp, setIsSignUp] = useState(false);
 
     return (
         <>
@@ -55,10 +55,10 @@ export default function LoginScreen () {
                 </View>
             </View>
 
-            <SignIn isOpen={isSignIn} onClose={() => setIsSignIn(false)} />
-            <SignUp isOpen={isSignUp} onClose={() => setIsSignUp(false)} />
-        </>
-    )
+      <SignIn isOpen={isSignIn} onClose={() => setIsSignIn(false)} />
+      <SignUp isOpen={isSignUp} onClose={() => setIsSignUp(false)} />
+    </>
+  );
 }
 
 // Définition du style des différents éléments
