@@ -1,23 +1,78 @@
-import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, TextInput } from "react-native";
+import { useState } from "react";
+import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, TextInput, Image } from "react-native";
+import { useDispatch } from "react-redux";
+import tower from '../assets/icons/logo-ny.png';
+import { updateUser } from "../reducers/users";
+import { Toast } from "toastify-react-native";
 
 export default function SignIn({ isOpen, onClose }) {
+    const dispatch = useDispatch();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState(false, '');
+    const [errorMessage, setErrorMessage] = useState('');
 
     if (!isOpen) {
         return null;
     }
 
+    const handleSubmit = async () => {
+        const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        if (email === '' || password === '') {
+            setError(true);
+            setErrorMessage("Veuillez remplir tous les champs");
+            return;
+        } else if (!regex.test(email) ) {
+            setError(true);
+            setErrorMessage("L'addresse email n'est pas valide");
+            return;
+        } else {
+            setError(false);
+            setErrorMessage('');
+        }
+
+        try {
+            let response = await fetch('https://roll-in-new-york-backend-mk511sfxd-0xk0s-projects.vercel.app/users/signin/classic', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+    
+            // Assurez-vous que la réponse est un JSON
+            if (response.ok) {
+                let data = await response.json();  // Utilisez directement .json() ici
+                if (data.result === true) {
+                    Toast.success("Connexion réussie", "top", { duration: 2000 });
+                    dispatch(updateUser(data.username));
+                    onClose();
+                } else {
+                    Toast.error("Échec de la connexion", "top", { duration: 2000 });
+                }
+            } else {
+                throw new Error("Erreur HTTP : " + response.status);
+            }
+        } catch (err) {
+            console.error("❌ Database SignIn Error:", err);
+            Toast.error("Une erreur est survenue", { duration: 2000 });
+        }
+    };
+    
+    
+
     return (
         <TouchableWithoutFeedback onPress={onClose}>
             <View style={styles.modal}>
-                <TouchableWithoutFeedback onPress={() => {}}>
+                <TouchableWithoutFeedback>
                     <View style={styles.modalContent}>
                         <View style={styles.container}>
-                            <View>
-                                <Text>test</Text>
+                            <View style={styles.titleContainer}>
+                                <Image source={tower} style={styles.logo} />
+                                <Text style={styles.title}>Connexion</Text>
                             </View>
+                            {error && <Text style={styles.error}>{errorMessage}</Text>}
                             <View style={styles.inputContainer}>
-                                <TextInput style={styles.inputText} placeholder="Email"></TextInput>
-                                <TextInput style={styles.inputText} placeholder="Mot de passe"></TextInput>
+                                <TextInput style={styles.inputText} placeholder="Email" onChangeText={(value) => setEmail(value)} value={email} />
+                                <TextInput style={styles.inputText} placeholder="Password" secureTextEntry={true} onChangeText={(value) => setPassword(value)} value={password}/>
                             </View>
                         </View>
                         <TouchableOpacity onPress={() => handleSubmit()} style={styles.button} activeOpacity={0.8}>
@@ -37,54 +92,63 @@ const styles = StyleSheet.create({
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundColor: 'rgba(0, 0, 0, 0.5)', // Corriger 'rgba' en ajoutant les guillemets
-        display: 'flex',
+        backgroundColor: 'rgba(0, 0, 0, 0.5)',
         justifyContent: 'center',
         alignItems: 'center',
-        zIndex: 1000,
     },
     modalContent: {
-        display: 'flex',
-        justifyContent: 'space-around',
-        alignItems: 'center',
         width: '90%',
-        height: '70%',
         backgroundColor: 'white',
-        borderWidth: 4,
+        borderWidth: 2,
         borderColor: '#001F3F',
         borderRadius: 10,
         padding: 20,
+        alignItems: 'center',
     },
     container: {
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
         width: '100%',
-        backgroundColor: 'green'
     },
-    inputContainer: {
-        width: '90%'
-    },
-    inputText: {
-        height: '30%',
-        borderWidth: 2,
-        borderColor: '#001F3F',
-        borderRadius: 5,
-        marginTop: 5,
-        backgroundColor: 'red'
-    },
-    button: {
-        display: 'flex',
+    titleContainer: {
         flexDirection: 'row',
         justifyContent: 'center',
         alignItems: 'center',
-        height: '10%',
-        width: '70%',
+        marginBottom: 20,
+    },
+    logo: {
+        height: 70,
+        resizeMode: "contain",
+        marginRight: 10,
+    },
+    title: {
+        fontSize: 25,
+        fontWeight: 'bold',
+    },
+    inputContainer: {
+        width: '100%',
+    },
+    inputText: {
+        height: 50,
+        borderWidth: 2,
+        borderColor: '#001F3F',
+        borderRadius: 5,
+        marginBottom: 10,
+        paddingHorizontal: 10,
+    },
+    button: {
+        marginTop: 20,
+        height: 50,
+        width: '80%',
         backgroundColor: '#001F3F',
-        borderRadius: 50,
+        borderRadius: 25,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     textButton: {
         color: '#DEB973',
-        fontWeight: 'bold'
+        fontWeight: 'bold',
+    },
+    error: {
+        marginTop: 10,
+        color: 'red',
     },
 });

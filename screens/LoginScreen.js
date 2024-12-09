@@ -5,6 +5,7 @@ import { Dimensions, StyleSheet, View, TouchableOpacity, Text, Image } from "rea
 // Import des composants SignIn et SignUp
 import SignIn from '../components/SignIn'
 import SignUp from '../components/SignUp'
+import Header from '../components/Header'
 
 // Import des icons dans les assets
 import GoogleIcon from '../assets/icons/google.png'
@@ -19,33 +20,38 @@ export default function LoginScreen () {
     return (
         <>
             <View style={styles.container}>
-                <View style={styles.signContainer}>
-                    <TouchableOpacity onPress={() => setIsSignIn(true)} style={styles.button} activeOpacity={0.8}>
-                        <Text style={styles.textButton}>SIGN-IN</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => setIsSignUp(true)} style={styles.button} activeOpacity={0.8}>
-                        <Text style={styles.textButton}>SIGN-UP</Text>
-                    </TouchableOpacity>
-                </View>
-                {/* View qui contient le séparateur : --- OU ---- */}
-                <View style={styles.separateContainer}>
-                    <View style={styles.separateBar}></View>
-                    <Text style={styles.separateText}>OU</Text>
-                    <View style={styles.separateBar}></View>
-                </View>
-                <View style={styles.methodConnexionContainer}>
-                    <TouchableOpacity onPress={() => handleSubmit()} style={styles.methodConnexionButton} activeOpacity={0.8}>
-                        <Image style={styles.icon} source={GoogleIcon}/>
-                        <Text style={styles.methodConnexionTextButton}>Sign with Google</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleSubmit()} style={styles.methodConnexionButton} activeOpacity={0.8}>
-                        <Image style={styles.icon} source={AppleIcon}/>
-                        <Text style={styles.methodConnexionTextButton}>Sign with Apple</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={() => handleSubmit()} style={styles.methodConnexionButton} activeOpacity={0.8}>
-                        <Image style={styles.icon} source={InstagramIcon}/>
-                        <Text style={styles.methodConnexionTextButton}>Sign with Instagram</Text>
-                    </TouchableOpacity>
+                <Header />
+                <View style={styles.loginContainer}>
+                    <View style={styles.signContainer}>
+                        <TouchableOpacity onPress={() => setIsSignIn(true)} style={styles.button} activeOpacity={0.8}>
+                            <Text style={styles.textButton}>SIGN-IN</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={() => setIsSignUp(true)} style={styles.button} activeOpacity={0.8}>
+                            <Text style={styles.textButton}>SIGN-UP</Text>
+                        </TouchableOpacity>
+                    </View>
+                    {/* View qui contient le séparateur : --- OU ---- */}
+                    <View style={styles.separateContainer}>
+                        <View style={styles.separateBar}></View>
+                        <Text style={styles.separateText}>OU</Text>
+                        <View style={styles.separateBar}></View>
+                    </View>
+                    <View style={styles.methodConnexionContainer}>
+                        {[
+                            { icon: GoogleIcon, text: "Sign with Google" },
+                            { icon: AppleIcon, text: "Sign with Apple" },
+                            { icon: InstagramIcon, text: "Sign with Instagram" }
+                        ].map(({ icon, text }, index) => (
+                            <TouchableOpacity 
+                            key={index} 
+                            onPress={() => handleSubmit()} 
+                            style={styles.methodConnexionButton} 
+                            activeOpacity={0.8}>
+                                <Image style={styles.icon} source={icon}/>
+                                <Text style={styles.methodConnexionTextButton}>{text}</Text>
+                            </TouchableOpacity>
+                        ))}
+                    </View>
                 </View>
             </View>
 
@@ -58,12 +64,17 @@ export default function LoginScreen () {
 // Définition du style des différents éléments
 const styles = StyleSheet.create({
     container: {
+        height: Dimensions.get('window').height,
+        width: Dimensions.get('window').width,
+        backgroundColor: '#EFEFEF'
+    },
+    loginContainer: {
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center',
         height: Dimensions.get('window').height,
         width: Dimensions.get('window').width,
-        backgroundColor: '#EFEFEF'
+        marginTop: '15%',
     },
     signContainer: {
         display: 'flex',
