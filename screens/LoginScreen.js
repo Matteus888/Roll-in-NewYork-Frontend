@@ -7,10 +7,10 @@ import SignIn from "../components/SignIn";
 import SignUp from "../components/SignUp";
 import Header from "../components/Header";
 
-// Import des icons dans les assets
-import GoogleIcon from "../assets/icons/google.png";
-import AppleIcon from "../assets/icons/apple.png";
-import InstagramIcon from "../assets/icons/instagram.png";
+// Import des icons depuis cloudinary
+const GoogleIcon = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/rg2ynswpargugmvkxxlr.png";
+const AppleIcon = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/xir2gohgenartsleibcl.png";
+const InstagramIcon = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/ydznsdlqiyfpxdktbyqo.png";
 
 // Création de la page Login
 export default function LoginScreen() {
@@ -48,7 +48,7 @@ export default function LoginScreen() {
                 style={styles.methodConnexionButton}
                 activeOpacity={0.8}
               >
-                <Image style={styles.icon} source={icon} />
+                <Image style={styles.icon} source={{uri: icon}} />
                 <Text style={styles.methodConnexionTextButton}>{text}</Text>
               </TouchableOpacity>
             ))}

@@ -21,9 +21,9 @@ export default function Header({ title, showInput }) {
   }
 
   return (
-    <ImageBackground style={styles.background} source={require("../assets/img/header-ny.jpg")}>
+    <ImageBackground style={styles.background} source={{uri: 'https://res.cloudinary.com/dtkac5fah/image/upload/v1733818358/appIcons/vq0xpnmecpqy9a8myr93.jpg'}}>
       <View style={styles.titleContainer}>
-        <Image source={require("../assets/icons/logo-ny.png")} style={styles.logo} />
+        <Image style={styles.logo} height={50} width={40} source={{uri: 'https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/eh4j1tvmizqd9dwftj25.png'}} />
         <Text style={styles.title}>{title}</Text>
       </View>
       {showInput && (
@@ -53,7 +53,6 @@ const styles = StyleSheet.create({
     paddingRight: 40,
   },
   logo: {
-    height: 40,
     resizeMode: "contain",
   },
   title: {
