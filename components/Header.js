@@ -8,7 +8,7 @@ import SearchInput from "./SearchInput";
 const { width } = Dimensions.get("window");
 
 // Création du composant Header
-export default function Header() {
+export default function Header({ title, showInput }) {
   // Chargement des fonts personnalisés
   const [fontsLoaded] = useFonts({
     "JosefinSans-SemiBold": require("../assets/fonts/JosefinSans-SemiBold.ttf"),
@@ -22,11 +22,13 @@ export default function Header() {
     <ImageBackground style={styles.background} source={require("../assets/img/header-ny.jpg")}>
       <View style={styles.titleContainer}>
         <Image source={require("../assets/icons/logo-ny.png")} style={styles.logo} />
-        <Text style={styles.title}>Roll-In NewYork</Text>
+        <Text style={styles.title}>{title}</Text>
       </View>
-      <View style={styles.input}>
-        <SearchInput />
-      </View>
+      {showInput && (
+        <View style={styles.input}>
+          <SearchInput />
+        </View>
+      )}
     </ImageBackground>
   );
 }

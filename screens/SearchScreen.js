@@ -55,7 +55,7 @@ export default function SearchScreen() {
   return (
     <>
       <View style={styles.container}>
-        <Header />
+        <Header title="Roll-In NewYork" showInput={true} />
         <View style={styles.searchScreenContainer}>
           {/* Card du film séléctionné */}
           <MovieCard />

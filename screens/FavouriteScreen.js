@@ -8,7 +8,7 @@ import Header from "../components/Header";
 export default function FavouriteScreen() {
   return (
     <View style={styles.container}>
-      <Header />
+      <Header title="Mes Favoris" showInput={false} />
       <View style={styles.favouritesScreenContainer}></View>
     </View>
   );
