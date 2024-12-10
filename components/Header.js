@@ -42,7 +42,6 @@ const styles = StyleSheet.create({
     height: 200,
     position: "absolute",
     resizeMode: "cover",
-    overflow: "hidden",
   },
   titleContainer: {
     flexDirection: "row",

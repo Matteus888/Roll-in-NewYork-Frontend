@@ -45,7 +45,7 @@ export default function SignUp({ isOpen, onClose }) {
             });
             
             if (response.ok) {
-                let data = await response.json(); 
+                let data = await response.json();
                 if (data.result === true) {
                     Toast.success("Le compte a été créé", "top", { duration: 2000 });
                     dispatch(login({username: data.username, email: data.email, token: data.token}));
