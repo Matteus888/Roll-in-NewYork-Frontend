@@ -34,7 +34,7 @@ export default function HomeScreen() {
             }
         })();
         // Mise en place du fetch pour récupérer les lieux et les afficher sur la carte
-        fetch("https://roll-in-new-york-backend-mk511sfxd-0xk0s-projects.vercel.app/places")
+        fetch("https://roll-in-new-york-backend.vercel.app/places")
             .then((response) => response.json())
             .then((data) => {
                 setPlaces(data.places);
@@ -62,130 +62,119 @@ export default function HomeScreen() {
         );
     });
 
-    const apiTMDB = 'a98f87059c37903cc153947a91b8dd1c'
-    const handleMarkerPressed = () => {
-        setModalVisible(true)   
-        const movieCardsToDisplay = placeMovies.map((data, i)=> {
-        fetch(`https://api.themoviedb.org/3/movie/${data}?api_key=${apiTMDB}`)
-        .then(response => response.json())
-        .then(dataFromFetch => {
-        console.log(dataFromFetch.original_title)
-        setMovieData(dataFromFetch)
-            })
-        return (
-            <MovieCard key={`movieCardId: ${i}`} movieData={movieData} ></MovieCard>
-        )
-    })
-    setMovieCards(movieCardsToDisplay)
-    console.log(movieData)
-    }
+  const apiTMDB = "a98f87059c37903cc153947a91b8dd1c";
+  const handleMarkerPressed = () => {
+    setModalVisible(true);
+    const movieCardsToDisplay = placeMovies.map((data, i) => {
+      fetch(`https://api.themoviedb.org/3/movie/${data}?api_key=${apiTMDB}`)
+        .then((response) => response.json())
+        .then((dataFromFetch) => {
+          //   console.log(dataFromFetch.original_title);
+          setMovieData(dataFromFetch);
+        });
+      return <MovieCard key={`movieCardId: ${i}`} movieData={movieData}></MovieCard>;
+    });
+    setMovieCards(movieCardsToDisplay);
+    // console.log(movieData);
+  };
 
-
-
-    return (
-        <View style={styles.container}>
-            <View>
-                <Header title="Roll-In NewYork" showInput={true} />
-            </View>
-            <Modal 
-                visible={modalVisible}
-                animationType="slide"
-                transparent = {true}
-                >
-                    <TouchableOpacity style={styles.modalBackground}  onPress={()=> setModalVisible(false)} >
-                    <View style={styles.modalView} >
-                        <TouchableOpacity style={styles.button} onPress={()=> setModalVisible(false)}>
-                            <Text style={styles.textButton} >Go to maps!</Text>
-                        </TouchableOpacity>
-                        {/* {miniCard} */}
-                        {movieCards}
-                    </View>
-                    </TouchableOpacity>
-                    
-                </Modal>
-            <View style={styles.mapContainer}>
-                <MapView
-                    // force la map à se recharger si changement dans le fetch, évite la disparition des marker
-                    // la key est une string avec un identifiant "map" pour le différencier des key "i" dans le place.map
-                    key={`map-${places.length}`}
-                    // focus au dessus de central park
-                    initialRegion={{
-                        latitude: 40.7857122,
-                        longitude: -73.9745249,
-                        latitudeDelta: 0.1,
-                        longitudeDelta: 0.1,
-                    }}
-                    style={styles.map}
-                    
-                >
-                    <Marker
-                        // marker "en dur" pour localisation de l'utilisateur dans central park si pas à new york
-                        coordinate={{
-                            latitude: 40.772087,
-                            longitude: -73.973159,
-                        }}
-                        image={manWalking || null}
-                    />
-                    {placesMarker}
-                </MapView>
-            </View>
-        </View>
-    );
+  return (
+    <View style={styles.container}>
+      <View>
+        <Header title="Roll-In NewYork" showInput={true} />
+      </View>
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+        <TouchableOpacity style={styles.modalBackground} onPress={() => setModalVisible(false)}>
+          <View style={styles.modalView}>
+            <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
+              <Text style={styles.textButton}>Go to maps!</Text>
+            </TouchableOpacity>
+            {/* {miniCard} */}
+            {movieCards}
+          </View>
+        </TouchableOpacity>
+      </Modal>
+      <View style={styles.mapContainer}>
+        <MapView
+          // force la map à se recharger si changement dans le fetch, évite la disparition des marker
+          // la key est une string avec un identifiant "map" pour le différencier des key "i" dans le place.map
+          key={`map-${places.length}`}
+          // focus au dessus de central park
+          initialRegion={{
+            latitude: 40.7857122,
+            longitude: -73.9745249,
+            latitudeDelta: 0.1,
+            longitudeDelta: 0.1,
+          }}
+          style={styles.map}
+        >
+          <Marker
+            // marker "en dur" pour localisation de l'utilisateur dans central park si pas à new york
+            coordinate={{
+              latitude: 40.772087,
+              longitude: -73.973159,
+            }}
+            image={manWalking || null}
+          />
+          {placesMarker}
+        </MapView>
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#ffffff",
-        justifyContent: "flex-start",
-    },
-    mapContainer: {
-        width: "100%",
-        height: "75%",
-        marginTop: 200,
-    },
-    map: {
-        flex: 1,
-    },
-    modalBackground: {
-        flex: 1,
-        justifyContent: "flex-end",
-        alignItems: "center",
-        marginBottom: 50
-    },
-    modalView:{
-        flexDirection: 'column',
-        justifyContent:'flex-start',
-        alignItems: 'center',
-        backgroundColor: "white",
-        width: "95%",
-        height: "45%",
-        borderTopLeftRadius: 50,
-        borderTopRightRadius: 50,
-        borderColor: "#282C37",
-        borderWidth: 2,
-        padding: 10
-    },
-    button:{
-        backgroundColor: "#001F3F",
-        width: "30%",
-        height: "10%",
-        borderRadius: 20,
-        justifyContent: "center",
-
-    },
-    textButton : {
-        color: "#DEB973",
-        textAlign:'center'
-    },
-    calloutContainer:{
-        minWidth: 200,
-        minHeight: 200,
-        padding: 10,
-        alignItems: "center"
-    },
-    placePicture:{
-        height: 50,
-        width: 100,
-    }
+  container: {
+    flex: 1,
+    backgroundColor: "#ffffff",
+    justifyContent: "flex-start",
+  },
+  mapContainer: {
+    width: "100%",
+    height: "75%",
+    marginTop: 200,
+  },
+  map: {
+    flex: 1,
+  },
+  modalBackground: {
+    flex: 1,
+    justifyContent: "flex-end",
+    alignItems: "center",
+    marginBottom: 50,
+  },
+  modalView: {
+    flexDirection: "column",
+    justifyContent: "flex-start",
+    alignItems: "center",
+    backgroundColor: "white",
+    width: "95%",
+    height: "45%",
+    borderTopLeftRadius: 50,
+    borderTopRightRadius: 50,
+    borderColor: "#282C37",
+    borderWidth: 2,
+    padding: 10,
+  },
+  button: {
+    backgroundColor: "#001F3F",
+    width: "30%",
+    height: "10%",
+    borderRadius: 20,
+    justifyContent: "center",
+  },
+  textButton: {
+    color: "#DEB973",
+    textAlign: "center",
+  },
+  calloutContainer: {
+    minWidth: 200,
+    minHeight: 200,
+    padding: 10,
+    alignItems: "center",
+  },
+  placePicture: {
+    height: 50,
+    width: 100,
+  },
 });

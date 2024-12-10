@@ -126,14 +126,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 2,
     zIndex: 1,
-    padding: 10,
+    padding: 1,
     borderRadius: 20,
   },
   navigationButtonRight: {
     position: "absolute",
     right: 2,
     zIndex: 1,
-    padding: 10,
+    padding: 1,
     borderRadius: 20,
   },
 });

@@ -5,13 +5,23 @@ import { faHeart, faCamera, faStar } from "@fortawesome/free-solid-svg-icons"; /
 import { useFonts } from "expo-font"; // Import pour expo
 
 // Création de la card représentant les lieux de tournage référencés
-export default function PlaceCard({ image, title, description }) {
+export default function PlaceCard({ image, title, description, noteAverage }) {
   const [fontsLoaded] = useFonts({ // Chargement des fonts personnalisés
     "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
   });
 
   if (!fontsLoaded) { // Si les fonts ne sont pas chargées, on retourne null
     return null;
+  }
+
+  // Average evaluation
+  const stars = [];
+  for (let i = 0; i < 5; i++) {
+    let style = {};
+    if (i < noteAverage) {
+      style = { color: "yellow" };
+    }
+    stars.push(<FontAwesomeIcon key={i} icon={faStar} style={style} size={12} />);
   }
 
   return (
@@ -22,20 +32,16 @@ export default function PlaceCard({ image, title, description }) {
       <View style={styles.verticalBar}></View> {/* View pour un séparateur en forme de barre vertical */}
       <View style={styles.textContainer}> {/* View contenant le texte */}
         <View style={styles.titleContainer}> {/* View contenant le titre et les icons */}
-          <Text style={styles.title}>{title}</Text> {/* Ajout du titre */}
+          <Text style={styles.title}>{title.length > 12 ? title.substring(0, 12) + "..." : title}</Text> {/* Ajout du titre */}
           <View style={styles.iconBox}> {/* View contenant les icons */}
             <TouchableOpacity style={styles.iconTouchBox}> {/* Bouton pour les icons */}
               <FontAwesomeIcon icon={faHeart} size={12} color="#D71111" />
               <FontAwesomeIcon icon={faCamera} size={12} color="#2e90da" />
             </TouchableOpacity>
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" /> {/* Icon étoile */}
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" /> {/* Icon étoile */}
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" /> {/* Icon étoile */}
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" /> {/* Icon étoile */}
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" /> {/* Icon étoile */}
+            {stars}
           </View>
         </View>
-        <Text style={styles.description} numberOfLines={5}> {/* Ajout de la description */}
+        <Text style={styles.description} numberOfLines={4}> {/* Ajout de la description */}
           {description}
         </Text>
       </View>
