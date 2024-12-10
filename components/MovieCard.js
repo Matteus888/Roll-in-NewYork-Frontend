@@ -3,11 +3,13 @@ import { StyleSheet, Dimensions, View, Text, Image } from "react-native"; // Imp
 import { useFonts } from "expo-font"; // Import pour expo
 
 export default function MovieCard(movieData) {
-  const [fontsLoaded] = useFonts({ // Chargement des fonts personnalisés
+  const [fontsLoaded] = useFonts({
+    // Chargement des fonts personnalisés
     "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
   });
 
-  if (!fontsLoaded) { // Si les fonts ne sont pas chargées, on retourne null
+  if (!fontsLoaded) {
+    // Si les fonts ne sont pas chargées, on retourne null
     return null;
   }
 
@@ -20,7 +22,7 @@ export default function MovieCard(movieData) {
       <View style={styles.verticalBar}></View>
 
       <View style={styles.textContainer}>
-        <Text style={styles.title}>{props.title.length > 20? props.title.substring(0, 20) + "..." : props.title}</Text>
+        <Text style={styles.title}>{props.title.length > 20 ? props.title.substring(0, 20) + "..." : props.title}</Text>
         <Text style={styles.date}>Date de sortie: {props.date} </Text>
         <Text style={styles.description} numberOfLines={3}>
           {props.overview}
@@ -48,7 +50,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 5,
-    marginBottom: 10
+    marginBottom: 10,
   },
   imageContainer: {
     width: "25%",
