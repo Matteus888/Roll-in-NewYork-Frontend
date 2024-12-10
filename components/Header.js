@@ -1,5 +1,7 @@
 // Import pour react / react-native
 import { View, Image, StyleSheet, Dimensions, Text, ImageBackground } from "react-native";
+
+// Import pour expo
 import { useFonts } from "expo-font";
 
 import SearchInput from "./SearchInput";

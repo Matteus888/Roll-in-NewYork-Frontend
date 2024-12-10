@@ -1,5 +1,7 @@
 // Import pour react / react-native
 import { StyleSheet, TouchableOpacity, Dimensions, View, Text, Image } from "react-native";
+
+// Import pour expo
 import { useFonts } from "expo-font";
 
 // Récupération de la largeur de l'écran du téléphone

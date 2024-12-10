@@ -20,7 +20,7 @@ export default function LoginScreen() {
   return (
     <>
       <View style={styles.container}>
-        <Header title="Ma connexion" showInput={false} />
+        <Header title="My connexion" showInput={false} />
         <View style={styles.loginContainer}>
           <View style={styles.signContainer}>
             <TouchableOpacity onPress={() => setIsSignIn(true)} style={styles.button} activeOpacity={0.8}>
