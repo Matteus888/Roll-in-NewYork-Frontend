@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, TextInput, Image, KeyboardAvoidingView, Platform } from "react-native";
-
-import tower from '../assets/icons/logo-ny.png';
+import { useDispatch } from "react-redux";
+import { login } from "../reducers/users";
+import { Toast } from "toastify-react-native";
+const tower = 'https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/eh4j1tvmizqd9dwftj25.png';
 
 export default function SignUp({ isOpen, onClose }) {
+    const dispatch = useDispatch();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -16,7 +19,7 @@ export default function SignUp({ isOpen, onClose }) {
     }
 
     const handleSubmit = async () => {
-        const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (username === '' || email === '' || password === '') {
             setError(true);
             setErrorMessage("Veuillez remplir tous les champs");
@@ -33,9 +36,9 @@ export default function SignUp({ isOpen, onClose }) {
             setErrorMessage('');
         }
 
-
+        console.log('test')
         try {
-            let response = await fetch('https://roll-in-new-york-backend-mk511sfxd-0xk0s-projects.vercel.app/users/signup/classic', {
+            let response = await fetch('https://roll-in-new-york-backend.vercel.app/users/signup/classic', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: username, email: email, password: confirmPassword })
@@ -45,9 +48,14 @@ export default function SignUp({ isOpen, onClose }) {
                 let data = await response.json(); 
                 if (data.result === true) {
                     Toast.success("Le compte a été créé", "top", { duration: 2000 });
-                    dispatch(updateUser(data.username));
+                    dispatch(login({username: data.username, email: data.email, token: data.token}));
                     onClose();
+                    setUsername('');
+                    setEmail('');
+                    setPassword('');
+                    setConfirmPassword('');
                 } else {
+                    console.log(data)
                     Toast.error("Échec de la connexion", "top", { duration: 2000 });
                 }
             } else {
@@ -55,7 +63,7 @@ export default function SignUp({ isOpen, onClose }) {
                 return;
             }
         } catch (err) {
-            console.error("❌ Database SignIn Error:", err);
+            console.error("❌ Database SignUp Error:", err);
             Toast.error("Une erreur est survenue", { duration: 2000 });
         }
     };
@@ -67,7 +75,7 @@ export default function SignUp({ isOpen, onClose }) {
                         <View style={styles.modalContent}>
                             <View style={styles.container}>
                                 <View style={styles.titleContainer}>
-                                    <Image source={tower} style={styles.logo} />
+                                    <Image source={{uri: tower}} height={70} width={40} style={styles.logo} />
                                     <Text style={styles.title}>Connexion</Text>
                                 </View>
                                 {error && <Text style={styles.error}>{errorMessage}</Text>}
@@ -120,7 +128,6 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     logo: {
-        height: 70,
         resizeMode: "contain",
         marginRight: 10,
     },
