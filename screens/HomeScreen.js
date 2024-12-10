@@ -106,7 +106,6 @@ export default function HomeScreen({navigation}) {
             <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
               <Text style={styles.textButton}>Go to maps!</Text>
             </TouchableOpacity>
-            {/* {miniCard} */}
             {movieCards}
           </View>
         </TouchableOpacity>

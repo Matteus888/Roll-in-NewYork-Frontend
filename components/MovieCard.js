@@ -2,7 +2,7 @@
 import { StyleSheet, Dimensions, View, Text, Image } from "react-native"; // Import pour react / react-native
 import { useFonts } from "expo-font"; // Import pour expo
 
-export default function MovieCard(movieData) {
+export default function MovieCard(props) {
   const [fontsLoaded] = useFonts({ // Chargement des fonts personnalisés
     "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
   });
@@ -16,9 +16,7 @@ export default function MovieCard(movieData) {
       <View style={styles.imageContainer}>
         <Image source={{ uri: `https://image.tmdb.org/t/p/original${props.poster}` }} style={styles.image} />
       </View>
-      {/* View pour un séparateur en forme de barre vertical */}
       <View style={styles.verticalBar}></View>
-
       <View style={styles.textContainer}>
         <Text style={styles.title}>{props.title.length > 20? props.title.substring(0, 20) + "..." : props.title}</Text>
         <Text style={styles.date}>Date de sortie: {props.date} </Text>

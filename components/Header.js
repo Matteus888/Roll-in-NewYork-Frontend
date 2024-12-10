@@ -17,9 +17,9 @@ export default function Header({ title, showInput }) {
   }
 
   return (
-    <ImageBackground style={styles.background} source={{uri: background}}> {/* Image de fond */}
-      <View style={styles.titleContainer}> {/* View contenant le titre */}
-        <Image style={styles.logo} height={50} width={40} source={{uri: tower}} /> {/* Image du logo */}
+    <ImageBackground style={styles.background} source={{uri: background}}> 
+      <View style={styles.titleContainer}>
+        <Image style={styles.logo} height={50} width={40} source={{uri: tower}} /> 
         <Text style={styles.title}>{title}</Text>
       </View>
       {showInput && ( // Si showInput est vrai alors on affiche le composant SearchInput
