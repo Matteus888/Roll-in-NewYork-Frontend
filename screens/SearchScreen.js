@@ -9,7 +9,12 @@ import MovieCard from "../components/MovieCard";  // Import du composant MovieCa
 
 const { width } = Dimensions.get("window"); // Récupération de la largeur de l'écran du téléphone
 
-export default function SearchScreen() {
+export default function SearchScreen(route) {
+
+  // récupération des info du film cliqué en page d'accueil
+  // const {movieInfo} = route.params.movieInfo
+  console.log(route)
+
   const [currentIndex, setCurrentIndex] = useState(0); // État pour stocker l'index de la card lieux actuelle
 
   const cardsData = [ // Tableau contenant les données du caroussel (TEMPORAIRE)
@@ -47,12 +52,22 @@ export default function SearchScreen() {
 
   return (
     <>
-      <View style={styles.container}> {/* View contenant les éléments de la page */}
-        <Header title="Roll-In NewYork" showInput={true} /> {/* Affichage du composant Header */}
-        <View style={styles.searchScreenContainer}> {/* View contenant les différents éléments de la page */}
-          <MovieCard /> {/* Affichage du composant MovieCard */}
-          <View style={styles.carouselWrapper}> {/* View contenant le carrousel */}
-            <TouchableOpacity onPress={goToPrevious} style={styles.navigationButtonLeft}> {/* Bouton précédent */}
+      <View style={styles.container}>
+        <Header title="Roll-In NewYork" showInput={true} />
+        <View style={styles.searchScreenContainer}>
+          {/* Card du film séléctionné */}
+          {/* <MovieCard 
+                        title={movieInfo.title} 
+                        poster={movieInfo.poster_path} 
+                        overview={movieInfo.overview} 
+                        date={movieInfo.release_date}
+                        ></MovieCard> */}
+          {/* Card du film séléctionné */}
+          <MovieCard />
+          {/* Carrousel des cards lieux de tournage */}
+          <View style={styles.carouselWrapper}>
+            {/* Bouton previous */}
+            <TouchableOpacity onPress={goToPrevious} style={styles.navigationButtonLeft}>
               <FontAwesomeIcon icon={faChevronLeft} size={20} color="black" />
             </TouchableOpacity>
             <FlatList // Affichage du carrousel

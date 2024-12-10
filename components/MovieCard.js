@@ -12,16 +12,18 @@ export default function MovieCard(movieData) {
   }
 
   return (
-    <View style={styles.card}> {/* View contenant les éléments de la card */}
-      <View style={styles.imageContainer}> {/* View contenant l'image */}
-        <Image source={{ uri: movieData.poster_path }} style={styles.image} />
+    <View style={styles.card}>
+      <View style={styles.imageContainer}>
+        <Image source={{ uri: `https://image.tmdb.org/t/p/original${props.poster}` }} style={styles.image} />
       </View>
-      <View style={styles.verticalBar}></View> {/* View pour un séparateur en forme de barre vertical */}
-      <View style={styles.textContainer}> {/* View contenant le texte */}
-        <Text style={styles.title}>{movieData.original_title}</Text> {/* Ajout du titre */}
-        <Text style={styles.date}>Date de sortie: {movieData.release_date} </Text> {/* Ajout de la date de sortie */}
-        <Text style={styles.description} numberOfLines={4}> {/* Ajout de la Description */}
-          {movieData.overview}
+      {/* View pour un séparateur en forme de barre vertical */}
+      <View style={styles.verticalBar}></View>
+
+      <View style={styles.textContainer}>
+        <Text style={styles.title}>{props.title.length > 20? props.title.substring(0, 20) + "..." : props.title}</Text>
+        <Text style={styles.date}>Date de sortie: {props.date} </Text>
+        <Text style={styles.description} numberOfLines={3}>
+          {props.overview}
         </Text>
       </View>
     </View>
@@ -31,7 +33,7 @@ export default function MovieCard(movieData) {
 // Définition du style des différents éléments
 const styles = StyleSheet.create({
   card: {
-    width: Dimensions.get("window").width - 30,
+    width: Dimensions.get("window").width - 50,
     height: 100,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -46,6 +48,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 5,
+    marginBottom: 10
   },
   imageContainer: {
     width: "25%",
