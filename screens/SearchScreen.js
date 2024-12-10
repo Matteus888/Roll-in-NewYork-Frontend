@@ -5,6 +5,7 @@ import {
     FlatList,
     Dimensions,
     TouchableOpacity,
+    Text
 } from "react-native"; // Import pour react / react-native
 import { useState } from "react"; // Import pour react
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
@@ -21,7 +22,7 @@ const { width } = Dimensions.get("window"); // Récupération de la largeur de l
 export default function SearchScreen(route) {
     // récupération des info du film cliqué en page d'accueil
     // const {movieInfo} = route.params.movieInfo
-    console.log(route);
+    // console.log(route);
 
     const [currentIndex, setCurrentIndex] = useState(0); // État pour stocker l'index de la card lieux actuelle
 
@@ -65,7 +66,7 @@ export default function SearchScreen(route) {
             <View style={styles.container}>
                 <Header title="Roll-In NewYork" showInput={true} />
                 <View style={styles.searchScreenContainer}>
-                    <MovieCard />
+                    <Text>Movie card goes here</Text>
                     <View style={styles.carouselWrapper}>
                         <TouchableOpacity
                             onPress={goToPrevious}
