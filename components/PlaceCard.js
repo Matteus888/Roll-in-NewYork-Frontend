@@ -12,7 +12,7 @@ import { faHeart, faCamera, faStar } from "@fortawesome/free-solid-svg-icons";
 const { width } = Dimensions.get("window");
 
 // Création de la card représentant les lieux de tournage référencés
-export default function PlaceCard({ image, title, description }) {
+export default function PlaceCard({ image, title, description, voteAverage }) {
   // Chargement des fonts personnalisés
   const [fontsLoaded] = useFonts({
     "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
@@ -21,6 +21,16 @@ export default function PlaceCard({ image, title, description }) {
 
   if (!fontsLoaded) {
     return null;
+  }
+
+  // Average evaluation
+  const stars = [];
+  for (let i = 0; i < 5; i++) {
+    let style = {};
+    if (i < voteAverage) {
+      style = { color: "yellow" };
+    }
+    stars.push(<FontAwesomeIcon key={i} icon={faStar} style={style} size={12} />);
   }
 
   return (
@@ -33,20 +43,16 @@ export default function PlaceCard({ image, title, description }) {
 
       <View style={styles.textContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.title}>{title.length > 12 ? title.substring(0, 12) + "..." : title}</Text>
           <View style={styles.iconBox}>
             <TouchableOpacity style={styles.iconTouchBox}>
               <FontAwesomeIcon icon={faHeart} size={12} color="#D71111" />
               <FontAwesomeIcon icon={faCamera} size={12} color="#2e90da" />
             </TouchableOpacity>
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" />
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" />
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" />
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" />
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" />
+            {stars}
           </View>
         </View>
-        <Text style={styles.description} numberOfLines={5}>
+        <Text style={styles.description} numberOfLines={4}>
           {description}
         </Text>
       </View>
@@ -57,7 +63,7 @@ export default function PlaceCard({ image, title, description }) {
 // Définition du style des différents éléments
 const styles = StyleSheet.create({
   card: {
-    width: width - 80,
+    width: width - 40,
     height: 100,
     flexDirection: "row",
     justifyContent: "space-between",

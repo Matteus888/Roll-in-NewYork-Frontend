@@ -43,15 +43,6 @@ export default function HomeScreen() {
       });
   }, []);
 
-  // si finalement on veut ajouter la miniCard du lieu dans la modale
-  // const miniCard = places.map((data, i) => {
-  //     if(data.title === markerPressed){
-  //         return (
-  //             <PlaceMiniCard key={`place: ${i}`} markerPressed={data} ></PlaceMiniCard>
-  //         )
-  //     }
-  // })
-
   // Pour afficher les markers pour tout les lieux
   const placesMarker = places.map((data, i) => {
     return (
@@ -80,13 +71,13 @@ export default function HomeScreen() {
       fetch(`https://api.themoviedb.org/3/movie/${data}?api_key=${apiTMDB}`)
         .then((response) => response.json())
         .then((dataFromFetch) => {
-          console.log(dataFromFetch.original_title);
+          //   console.log(dataFromFetch.original_title);
           setMovieData(dataFromFetch);
         });
       return <MovieCard key={`movieCardId: ${i}`} movieData={movieData}></MovieCard>;
     });
     setMovieCards(movieCardsToDisplay);
-    console.log(movieData);
+    // console.log(movieData);
   };
 
   return (
