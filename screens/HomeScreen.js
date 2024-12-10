@@ -101,15 +101,23 @@ export default function HomeScreen({navigation}) {
         <Header title="Roll-In NewYork" showInput={true} />
       </View>
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
-        <TouchableOpacity style={styles.modalBackground} onPress={() => setModalVisible(false)}>
+        <View style={styles.modalBackground}>
           <View style={styles.modalView}>
+            <View style={styles.buttonContainer} >
             <TouchableOpacity style={styles.button} onPress={() => setModalVisible(false)}>
               <Text style={styles.textButton}>Go to maps!</Text>
             </TouchableOpacity>
-            {/* {miniCard} */}
-            {movieCards}
+            <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+              <Text style={styles.textButton}>X</Text>
+            </TouchableOpacity>
+            </View>
+            <View style={{ flex: 1 }}>
+              <ScrollView >
+                {movieCards}
+              </ScrollView>
+            </View>
           </View>
-        </TouchableOpacity>
+        </View>
       </Modal>
       <View style={styles.mapContainer}>
         <MapView
@@ -184,12 +192,6 @@ const styles = StyleSheet.create({
     color: "#DEB973",
     textAlign: "center",
   },
-  calloutContainer: {
-    minWidth: 200,
-    minHeight: 200,
-    padding: 10,
-    alignItems: "center",
-  },
   placePicture: {
     height: 50,
     width: 100,
@@ -240,10 +242,6 @@ const styles = StyleSheet.create({
         justifyContent: "center",
 
     },
-    textButton : {
-        color: "#DEB973",
-        textAlign:'center'
-    },
     closeButton:{
         height: 30,
         width:30,
@@ -253,15 +251,11 @@ const styles = StyleSheet.create({
         justifyContent: "center",
 
     },
-    calloutContainer:{
-        minWidth: 200,
-        minHeight: 200,
-        padding: 10,
-        alignItems: "center"
-    },
+
     placePicture:{
         height: 50,
         width: 100,
     },
+
 
 });

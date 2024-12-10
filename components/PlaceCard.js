@@ -25,23 +25,23 @@ export default function PlaceCard({ image, title, description, noteAverage }) {
   }
 
   return (
-    <View style={styles.card}> {/* View contenant les éléments de la card */}
-      <View style={styles.imageContainer}> {/* View contenant l'image */}
+    <View style={styles.card}> 
+      <View style={styles.imageContainer}>
         <Image source={{ uri: image }} style={styles.image} />
       </View>
-      <View style={styles.verticalBar}></View> {/* View pour un séparateur en forme de barre vertical */}
-      <View style={styles.textContainer}> {/* View contenant le texte */}
-        <View style={styles.titleContainer}> {/* View contenant le titre et les icons */}
-          <Text style={styles.title}>{title.length > 12 ? title.substring(0, 12) + "..." : title}</Text> {/* Ajout du titre */}
-          <View style={styles.iconBox}> {/* View contenant les icons */}
-            <TouchableOpacity style={styles.iconTouchBox}> {/* Bouton pour les icons */}
+      <View style={styles.verticalBar}></View> 
+      <View style={styles.textContainer}> 
+        <View style={styles.titleContainer}>
+          <Text style={styles.title}>{title.length > 12 ? title.substring(0, 12) + "..." : title}</Text> 
+          <View style={styles.iconBox}> 
+            <TouchableOpacity style={styles.iconTouchBox}> 
               <FontAwesomeIcon icon={faHeart} size={12} color="#D71111" />
               <FontAwesomeIcon icon={faCamera} size={12} color="#2e90da" />
             </TouchableOpacity>
             {stars}
           </View>
         </View>
-        <Text style={styles.description} numberOfLines={4}> {/* Ajout de la description */}
+        <Text style={styles.description} numberOfLines={4}> 
           {description}
         </Text>
       </View>
