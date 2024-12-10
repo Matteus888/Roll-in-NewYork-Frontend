@@ -1,5 +1,7 @@
 // Import pour react / react-native
 import { View, TextInput, StyleSheet, TouchableOpacity } from "react-native";
+
+// Import pour expo
 import { useFonts } from "expo-font";
 
 // Import des icones FontAweSome
