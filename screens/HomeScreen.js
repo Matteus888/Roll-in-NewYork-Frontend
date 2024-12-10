@@ -18,7 +18,7 @@ export default function HomeScreen() {
     const [currentPosition, setCurrentPosition] = useState(null);
 
     const [modalVisible, setModalVisible] = useState(false)
-    const [markerPressed, setMarkerPressed] = useState()
+    // const [markerPressed, setMarkerPressed] = useState()
     const [placeMovies, setPlaceMovies] = useState([])
     const [movieData, setMovieData] = useState()
     const [movieCards, setMovieCards] = useState()
@@ -49,25 +49,7 @@ export default function HomeScreen() {
     }, []);
 
 
-    const apiTMDB = 'a98f87059c37903cc153947a91b8dd1c'
-
-    const handleMarkerPressed = () => {
-        setModalVisible(true)   
-        const movieCardsToDisplay = placeMovies.map((data, i)=> {
-        fetch(`https://api.themoviedb.org/3/movie/${data}?api_key=${apiTMDB}`)
-        .then(response => response.json())
-        .then(movieData => {
-        console.log(movieData.original_title)
-        setMovieData(movieData)
-            })
-
-        return (
-            <MovieCard key={`movieCardId: ${i}`} movieData={movieData} ></MovieCard>
-        )
-    })
-    setMovieCards(movieCardsToDisplay)
-    }
-
+// si finalement on veut ajouter la miniCard du lieu dans la modale
     // const miniCard = places.map((data, i) => {
     //     if(data.title === markerPressed){
     //         return (
@@ -78,7 +60,7 @@ export default function HomeScreen() {
 
     
 
-
+// Pour afficher les markers pour tout les lieux
     const placesMarker = places.map((data, i) => {
         return (
             <Marker
@@ -93,11 +75,32 @@ export default function HomeScreen() {
                 onPress={()=> {
                     handleMarkerPressed() 
                     setPlaceMovies(data.moviesList)
-                    setMarkerPressed(data.title)}}
+                    // setMarkerPressed(data.title)
+                }}
             >
             </Marker>
         );
     });
+
+    const apiTMDB = 'a98f87059c37903cc153947a91b8dd1c'
+    const handleMarkerPressed = () => {
+        setModalVisible(true)   
+        const movieCardsToDisplay = placeMovies.map((data, i)=> {
+        fetch(`https://api.themoviedb.org/3/movie/${data}?api_key=${apiTMDB}`)
+        .then(response => response.json())
+        .then(dataFromFetch => {
+        console.log(dataFromFetch.original_title)
+        setMovieData(dataFromFetch)
+            })
+        return (
+            <MovieCard key={`movieCardId: ${i}`} movieData={movieData} ></MovieCard>
+        )
+    })
+    setMovieCards(movieCardsToDisplay)
+    console.log(movieData)
+    }
+
+
 
     return (
         <View style={styles.container}>
