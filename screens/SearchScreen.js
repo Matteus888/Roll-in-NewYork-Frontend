@@ -15,10 +15,15 @@ import MovieCard from "../components/MovieCard";
 const { width } = Dimensions.get("window");
 
 // Création de la page Search
-export default function SearchScreen() {
+export default function SearchScreen(route) {
+
+  // récupération des info du film cliqué en page d'accueil
+  // const {movieInfo} = route.params.movieInfo
+  console.log(route)
+
+
   // Etat de l'index des cards lieux
   const [currentIndex, setCurrentIndex] = useState(0);
-
   const cardsData = [
     {
       id: "1",
@@ -58,7 +63,12 @@ export default function SearchScreen() {
         <Header title="Roll-In NewYork" showInput={true} />
         <View style={styles.searchScreenContainer}>
           {/* Card du film séléctionné */}
-          <MovieCard />
+          {/* <MovieCard 
+                        title={movieInfo.title} 
+                        poster={movieInfo.poster_path} 
+                        overview={movieInfo.overview} 
+                        date={movieInfo.release_date}
+                        ></MovieCard> */}
           {/* Carrousel des cards lieux de tournage */}
           <View style={styles.carouselWrapper}>
             {/* Bouton previous */}

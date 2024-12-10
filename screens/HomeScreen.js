@@ -1,27 +1,36 @@
-import { View, StyleSheet, Image, Text, Modal, TouchableOpacity } from "react-native";
+import { View, StyleSheet, Text, Modal, TouchableOpacity, ScrollView} from "react-native";
 import MapView from "react-native-maps";
-import { Marker, Callout } from "react-native-maps";
+import { Marker} from "react-native-maps";
 import Header from "../components/Header";
 import { useState, useEffect } from "react";
-import PlaceMiniCard from "../components/PlaceMiniCard";
+// import PlaceMiniCard from "../components/PlaceMiniCard";
 import MovieCard from "../components/MovieCard";
+import {useSelector} from "react-redux"
 
 // icons pour les marker sur la maps (man pour localisation user, moviePlace pour les lieux)
 const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/pctlnl7qs4esplvimxui.png";
 const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png";
 
-export default function HomeScreen() {
+export default function HomeScreen({navigation}) {
     // initiation du tableau de lieux à afficher sur la carte
     const [places, setPlaces] = useState([]);
 
     // initiation des coordonnées de localisation de l'utilisateur
     const [currentPosition, setCurrentPosition] = useState(null);
 
+    // récupération des infos de tout les films depuis le reducer
+    const moviesInfo = useSelector((state)=> state.place.value)
+    
+
     const [modalVisible, setModalVisible] = useState(false)
     // const [markerPressed, setMarkerPressed] = useState()
+
+    // initiation de la liste de films(id) tournés sur un lieu
     const [placeMovies, setPlaceMovies] = useState([])
-    const [movieData, setMovieData] = useState()
-    const [movieCards, setMovieCards] = useState()
+
+    const [movieInfo, setMovieInfo] = useState({})
+
+
 
     // demande de permission de localisation et récupération des coordonnées de l'utilisateur
     useEffect(() => {
@@ -75,31 +84,43 @@ export default function HomeScreen() {
                 onPress={()=> {
                     handleMarkerPressed() 
                     setPlaceMovies(data.moviesList)
-                    // setMarkerPressed(data.title)
                 }}
             >
             </Marker>
         );
     });
 
-    const apiTMDB = 'a98f87059c37903cc153947a91b8dd1c'
+
+
     const handleMarkerPressed = () => {
         setModalVisible(true)   
-        const movieCardsToDisplay = placeMovies.map((data, i)=> {
-        fetch(`https://api.themoviedb.org/3/movie/${data}?api_key=${apiTMDB}`)
-        .then(response => response.json())
-        .then(dataFromFetch => {
-        console.log(dataFromFetch.original_title)
-        setMovieData(dataFromFetch)
-            })
-        return (
-            <MovieCard key={`movieCardId: ${i}`} movieData={movieData} ></MovieCard>
-        )
-    })
-    setMovieCards(movieCardsToDisplay)
-    console.log(movieData)
     }
 
+
+
+    // pour afficher les films au click sur un lieu
+    const movieCards = placeMovies.map((data, i)=> {
+        for (let j=0; j<moviesInfo.length; j++){
+            if (moviesInfo[j].id === data){
+                console.log(moviesInfo[j].id)
+                
+                return (
+                    <TouchableOpacity key={`movieCardId: ${i}`} info= {movieInfo} onPress={()=> {
+                        setMovieInfo(moviesInfo[j])
+                        console.log('test', movieInfo)
+                        navigation.navigate("Search", {movieInfo})
+                        }} >
+                        <MovieCard 
+                        title={moviesInfo[j].title} 
+                        poster={moviesInfo[j].poster_path} 
+                        overview={moviesInfo[j].overview} 
+                        date={moviesInfo[j].release_date}
+                        ></MovieCard>
+                    </TouchableOpacity>
+                )
+            }
+        }
+})
 
 
     return (
@@ -112,15 +133,25 @@ export default function HomeScreen() {
                 animationType="slide"
                 transparent = {true}
                 >
-                    <TouchableOpacity style={styles.modalBackground}  onPress={()=> setModalVisible(false)} >
+                    <View style={styles.modalBackground} >
                     <View style={styles.modalView} >
+                        <View style={styles.buttonContainer} >
                         <TouchableOpacity style={styles.button} onPress={()=> setModalVisible(false)}>
                             <Text style={styles.textButton} >Go to maps!</Text>
                         </TouchableOpacity>
+                        <TouchableOpacity style={styles.closeButton} onPress={()=> setModalVisible(false)}>
+                            <Text style={styles.textButton} >X</Text>
+                        </TouchableOpacity>
+                        </View>
                         {/* {miniCard} */}
-                        {movieCards}
+                        <View style={{ flex: 1 }}> 
+                            <ScrollView showsVerticalScrollIndicator={false}>
+                                {movieCards}
+                            </ScrollView>
+                        </View>
+                        
                     </View>
-                    </TouchableOpacity>
+                    </View>
                     
                 </Modal>
             <View style={styles.mapContainer}>
@@ -186,10 +217,16 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         padding: 10
     },
+    buttonContainer:{
+        flexDirection: 'row',
+        alignItems:'center',
+        height: "10%",
+        marginBottom: 10
+    },
     button:{
         backgroundColor: "#001F3F",
         width: "30%",
-        height: "10%",
+        height: "100%",
         borderRadius: 20,
         justifyContent: "center",
 
@@ -197,6 +234,15 @@ const styles = StyleSheet.create({
     textButton : {
         color: "#DEB973",
         textAlign:'center'
+    },
+    closeButton:{
+        height: 30,
+        width:30,
+        marginLeft: 70,
+        backgroundColor:'#001F3F',
+        borderRadius: 20,
+        justifyContent: "center",
+
     },
     calloutContainer:{
         minWidth: 200,
@@ -207,5 +253,6 @@ const styles = StyleSheet.create({
     placePicture:{
         height: 50,
         width: 100,
-    }
+    },
+
 });

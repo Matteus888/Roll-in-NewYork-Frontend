@@ -8,7 +8,7 @@ import { useFonts } from "expo-font";
 const { width } = Dimensions.get("window");
 
 // Création du composant représentant une fiche film
-export default function MovieCard(movieData) {
+export default function MovieCard(props) {
   // Chargement des fonts personnalisés
   const [fontsLoaded] = useFonts({
     "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
@@ -22,16 +22,16 @@ export default function MovieCard(movieData) {
   return (
     <View style={styles.card}>
       <View style={styles.imageContainer}>
-        <Image source={{ uri: movieData.poster_path }} style={styles.image} />
+        <Image source={{ uri: `https://image.tmdb.org/t/p/original${props.poster}` }} style={styles.image} />
       </View>
       {/* View pour un séparateur en forme de barre vertical */}
       <View style={styles.verticalBar}></View>
 
       <View style={styles.textContainer}>
-        <Text style={styles.title}>{movieData.original_title}</Text>
-        <Text style={styles.date}>Date de sortie: {movieData.release_date} </Text>
-        <Text style={styles.description} numberOfLines={4}>
-          {movieData.overview}
+        <Text style={styles.title}>{props.title.length > 20? props.title.substring(0, 20) + "..." : props.title}</Text>
+        <Text style={styles.date}>Date de sortie: {props.date} </Text>
+        <Text style={styles.description} numberOfLines={3}>
+          {props.overview}
         </Text>
       </View>
     </View>
@@ -41,7 +41,7 @@ export default function MovieCard(movieData) {
 // Définition du style des différents éléments
 const styles = StyleSheet.create({
   card: {
-    width: width - 30,
+    width: width - 50,
     height: 100,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -56,6 +56,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     elevation: 5,
+    marginBottom: 10
   },
   imageContainer: {
     width: "25%",
