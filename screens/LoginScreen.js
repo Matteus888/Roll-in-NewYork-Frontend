@@ -48,7 +48,7 @@ export default function LoginScreen() {
                 style={styles.methodConnexionButton}
                 activeOpacity={0.8}
               >
-                <Image style={styles.icon} source={{uri: icon}} />
+                <Image style={styles.icon} source={{ uri: icon }} />
                 <Text style={styles.methodConnexionTextButton}>{text}</Text>
               </TouchableOpacity>
             ))}

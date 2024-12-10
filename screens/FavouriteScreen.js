@@ -16,7 +16,7 @@ export default function FavouriteScreen() {
   console.log(user);
 
   useEffect(() => {
-    fetch("http://localhost:3000/favorites/places/pzCyWVJ77-oU9IRSf5sNZM8P-99e0rMY")
+    fetch("https://https://roll-in-new-york-backend.vercel.app/favorites/places/pzCyWVJ77-oU9IRSf5sNZM8P-99e0rMY")
       .then((response) => response.json())
       .then((data) => {
         setPlacesList(data.favoritesPlaces);
