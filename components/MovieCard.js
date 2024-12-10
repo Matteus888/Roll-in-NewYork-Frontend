@@ -6,7 +6,7 @@ import { useFonts } from "expo-font";
 const { width } = Dimensions.get("window");
 
 // Création du composant représentant une fiche film
-export default function MovieCard() {
+export default function MovieCard(movieData) {
   // Chargement des fonts personnalisés
   const [fontsLoaded] = useFonts({
     "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
@@ -20,17 +20,16 @@ export default function MovieCard() {
   return (
     <View style={styles.card}>
       <View style={styles.imageContainer}>
-        <Image source={{ uri: "https://via.placeholder.com/100x150.png" }} style={styles.image} />
+        <Image source={{ uri: movieData.poster_path }} style={styles.image} />
       </View>
       {/* View pour un séparateur en forme de barre vertical */}
       <View style={styles.verticalBar}></View>
 
       <View style={styles.textContainer}>
-        <Text style={styles.title}>Film</Text>
-        <Text style={styles.date}>Année de sortie: </Text>
+        <Text style={styles.title}>{movieData.original_title}</Text>
+        <Text style={styles.date}>Date de sortie: {movieData.release_date} </Text>
         <Text style={styles.description} numberOfLines={4}>
-          Lorem ipsum dolor sit amet consectetur, adipisicing elit. Eius quam ex animi temporibus nobis blanditiis,
-          deleniti dolor autem iure tenetur sequi corrupti aut quas, voluptates at, repudiandae deserunt rem aliquam!
+          {movieData.overview}
         </Text>
       </View>
     </View>

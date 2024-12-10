@@ -6,7 +6,7 @@ import { useFonts } from "expo-font";
 const { width } = Dimensions.get("window");
 
 // Création de la card (en version simplifié) représentant les lieux de tournage référencés
-export default function PlaceMiniCard({ image, title, address }) {
+export default function PlaceMiniCard({ markerPressed }) {
   // Chargement des fonts personnalisés
   const [fontsLoaded] = useFonts({
     "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
@@ -19,17 +19,17 @@ export default function PlaceMiniCard({ image, title, address }) {
   return (
     <View style={styles.card}>
       <View style={styles.imageContainer}>
-        <Image source={{ uri: image }} style={styles.image} />
+        {/* <Image source={{ uri: markerPressed.placePicture }} style={styles.image} /> */}
       </View>
       {/* View pour un séparateur en forme de barre vertical */}
       <View style={styles.verticalBar}></View>
 
       <View style={styles.textContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.title}>{markerPressed.title}</Text>
         </View>
         <Text style={styles.address} numberOfLines={2}>
-          {address}
+          {markerPressed.address}
         </Text>
       </View>
     </View>
