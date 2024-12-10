@@ -40,7 +40,7 @@ export default function HomeScreen() {
         })();
         // mise en place du fetch pour récupérer les lieux et les afficher sur la carte
         fetch(
-            "https://roll-in-new-york-backend-mk511sfxd-0xk0s-projects.vercel.app/places"
+            "https://roll-in-new-york-backend.vercel.app/places"
         )
             .then((response) => response.json())
             .then((data) => {
