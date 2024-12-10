@@ -1,31 +1,25 @@
-// Import des différents compostants / fonctions des différentes librairies
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faHouse, faHeart, faMagnifyingGlass, faUser } from "@fortawesome/free-solid-svg-icons";
-// Import des différentes pages ./screens
+import { useEffect } from "react";
+import { StyleSheet } from "react-native";
+import { Provider, useDispatch, useSelector } from 'react-redux'; // Import de react-redux
+import { configureStore } from '@reduxjs/toolkit';
+import user from './reducers/users';
+import place, { addMovie } from './reducers/places';
+import ToastManager from "toastify-react-native";
 import HomeScreen from "./screens/HomeScreen";
 import FavouriteScreen from "./screens/FavouriteScreen";
 import SearchScreen from "./screens/SearchScreen";
 import LoginScreen from "./screens/LoginScreen";
-import { StyleSheet } from "react-native";
-// Import des différents élément pour mettre en place le store redux
-import { Provider } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import user from './reducers/users';
 
-import ToastManager from "toastify-react-native";
-import { useSelector } from "react-redux";
-import { useEffect } from "react";
-
-// Création d'une constant 'Tab' qui prend pour fonction createBottomTabNavigator de la librairie '@react-navigation/bottom-tabs'
 const Tab = createBottomTabNavigator();
 
 const store = configureStore({
-  reducer: { user },
-})
+  reducer: { user, place },
+});
 
-// Création de la fonction principale du frontend
 export default function App() {
   return (
     <Provider store={store}>
@@ -39,6 +33,40 @@ export default function App() {
 
 function MainTabs() {
   const user = useSelector((state) => state.user.value);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    let allMoviesId = [];
+    fetch('https://roll-in-new-york-backend.vercel.app/places/')
+      .then((response) => response.json())
+      .then((data) => {
+        data.places.forEach((place) => {
+          place.moviesList.forEach((movie) => {
+            if (!allMoviesId.includes(movie)) {
+              allMoviesId.push(movie);
+            }
+          });
+        });
+        
+        // Récupération des films
+        allMoviesId.map((dataId) => {
+          fetch(`https://api.themoviedb.org/3/movie/${dataId}?api_key=a98f87059c37903cc153947a91b8dd1c`)
+            .then((response) => response.json())
+            .then((data) => {
+              //console.log("Movie data:", data);  // Affichez les données avant d'ajouter le film
+              if (data.original_title && data.poster_path) { // Vérifiez que les données sont valides
+                dispatch(addMovie({
+                  id: dataId,
+                  title: data.original_title,
+                  poster_path: data.poster_path,
+                  overview: data.overview,
+                  release_date: data.release_date,
+                }));
+              }
+            });
+        });
+      });
+  }, [dispatch]); // Ajout de dispatch comme dépendance
 
   return (
     <Tab.Navigator
@@ -67,7 +95,6 @@ function MainTabs() {
         tabBarActiveTintColor: "#DEB973",
         tabBarInactiveTintColor: "#a39374",
         headerShown: false,
-        scrollEnabled: true,
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
@@ -77,7 +104,6 @@ function MainTabs() {
     </Tab.Navigator>
   );
 }
-
 
 const styles = StyleSheet.create({
   navbar: {

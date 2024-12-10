@@ -5,14 +5,23 @@ import { useFonts } from "expo-font";
 // Import des icones FontAweSome
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
 
 // Création du composant SearchInput
 export default function SearchInput() {
+  const [search, setSearch] = useState("");
+
   // Chargement des fonts personnalisés
   const [fontsLoaded] = useFonts({
     "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
   });
-  const handleSearch = () => {};
+
+  const searchMovies = async (value) => {
+  };
+
+  const handleSearch = () => {
+    
+  };
 
   if (!fontsLoaded) {
     return null;
@@ -21,7 +30,7 @@ export default function SearchInput() {
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
-        <TextInput placeholder="Search for a movie..." placeholderTextColor="#DEB973" style={styles.input} />
+        <TextInput placeholder="Search for a movie..." placeholderTextColor="#DEB973" style={styles.input} onChangeText={(value) => setSearch(value)} value={search}/>
         <TouchableOpacity onPress={() => handleSearch()}>
           <FontAwesomeIcon icon={faMagnifyingGlass} size={20} color="#DEB973" style={styles.iconeSearch} />
         </TouchableOpacity>
