@@ -1,9 +1,12 @@
 import { useState } from "react";
 import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, TextInput, Image, KeyboardAvoidingView, Platform } from "react-native";
+import { useDispatch } from "react-redux";
+import { login } from "../reducers/users";
 import { Toast } from "toastify-react-native";
 const tower = 'https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/eh4j1tvmizqd9dwftj25.png';
 
 export default function SignUp({ isOpen, onClose }) {
+    const dispatch = useDispatch();
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -33,7 +36,7 @@ export default function SignUp({ isOpen, onClose }) {
             setErrorMessage('');
         }
 
-
+        console.log('test')
         try {
             let response = await fetch('https://roll-in-new-york-backend.vercel.app/users/signup/classic', {
                 method: 'POST',
@@ -45,22 +48,22 @@ export default function SignUp({ isOpen, onClose }) {
                 let data = await response.json(); 
                 if (data.result === true) {
                     Toast.success("Le compte a été créé", "top", { duration: 2000 });
-                    dispatch(updateUser(data.username));
+                    dispatch(login({username: data.username, email: data.email, token: data.token}));
                     onClose();
-                    username('');
-                    email('');
-                    password('');
-                    confirmPassword('');
+                    setUsername('');
+                    setEmail('');
+                    setPassword('');
+                    setConfirmPassword('');
                 } else {
                     console.log(data)
-                    Toast.error("Utilisateur existe déjà", "top", { duration: 2000 });
+                    Toast.error("Échec de la connexion", "top", { duration: 2000 });
                 }
             } else {
                 console.log("❌ Database SignUp Error:", response.status);
                 return;
             }
         } catch (err) {
-            console.error("❌ Database SignIn Error:", err);
+            console.error("❌ Database SignUp Error:", err);
             Toast.error("Une erreur est survenue", { duration: 2000 });
         }
     };

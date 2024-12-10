@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, TextInput, Image } from "react-native";
 import { useDispatch } from "react-redux";
-import { updateUser } from "../reducers/users";
+import { login } from "../reducers/users";
 import { Toast } from "toastify-react-native";
 const tower = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/eh4j1tvmizqd9dwftj25.png";
 
@@ -45,7 +45,7 @@ export default function SignIn({ isOpen, onClose }) {
         let data = await response.json();
         if (data.result === true) {
           Toast.success("Connexion réussie", "top", { duration: 2000 });
-          dispatch(updateUser(data.username));
+          dispatch(login({username: data.username, email: data.email, token: data.token}));
           onClose();
         } else {
           Toast.error("Échec de la connexion", "top", { duration: 2000 });
