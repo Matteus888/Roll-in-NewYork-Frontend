@@ -11,7 +11,7 @@ export const placeSlice = createSlice({
         addMovie: (state, action) => {
             const { id, title, poster_path, overview, release_date } = action.payload; 
             state.value.push({ id, title, poster_path, overview, release_date });
-          },
+        },
         removeMovie: (state) => {
             state.value.filter((movie) => movie.id !== action.payload.id);
         },
