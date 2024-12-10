@@ -4,18 +4,19 @@ import { Marker } from "react-native-maps";
 import Header from "../components/Header";
 import { useState, useEffect } from "react";
 
-// icons pour les marker sur la maps (man pour localisation user, moviePlace pour les lieux)
-import manWalking from "../assets/icons/man.png";
-import moviePlace from "../assets/icons/moviePlace.png";
+// Icons pour les marker sur la maps (man pour localisation user, moviePlace pour les lieux)
+const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/pctlnl7qs4esplvimxui.png";
+const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png";
 
 export default function HomeScreen() {
-  // initiation du tableau de lieux à afficher sur la carte
+  // Initiation du tableau de lieux à afficher sur la carte
   const [places, setPlaces] = useState([]);
 
-  // initiation des coordonnées de localisation de l'utilisateur
+  // Initiation des coordonnées de localisation de l'utilisateur
   const [currentPosition, setCurrentPosition] = useState(null);
 
-  // demande de permission de localisation et récupération des coordonnées de l'utilisateur
+  // Demande de permission de localisation et récupération des coordonnées de l'utilisateur
+  // + Mise en place du fetch pour récupérer les lieux et les afficher sur la carte
   useEffect(() => {
     (async () => {
       const result = await Location.requestForegroundPermissionsAsync();
@@ -27,11 +28,8 @@ export default function HomeScreen() {
         });
       }
     })();
-  }, []);
 
-  // mise en place du fetch pour récupérer les lieux et les afficher sur la carte
-  useEffect(() => {
-    fetch("https://roll-in-new-york-backend-mk511sfxd-0xk0s-projects.vercel.app/places")
+    fetch("https://roll-in-new-york-backend.vercel.app/places")
       .then((response) => response.json())
       .then((data) => {
         setPlaces(data.places);

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, TextInput, Image, KeyboardAvoidingView, Platform } from "react-native";
-
-import tower from '../assets/icons/logo-ny.png';
+import { Toast } from "toastify-react-native";
+const tower = 'https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/eh4j1tvmizqd9dwftj25.png';
 
 export default function SignUp({ isOpen, onClose }) {
     const [username, setUsername] = useState('');
@@ -16,7 +16,7 @@ export default function SignUp({ isOpen, onClose }) {
     }
 
     const handleSubmit = async () => {
-        const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/;
+        const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
         if (username === '' || email === '' || password === '') {
             setError(true);
             setErrorMessage("Veuillez remplir tous les champs");
@@ -35,7 +35,7 @@ export default function SignUp({ isOpen, onClose }) {
 
 
         try {
-            let response = await fetch('https://roll-in-new-york-backend-mk511sfxd-0xk0s-projects.vercel.app/users/signup/classic', {
+            let response = await fetch('https://roll-in-new-york-backend.vercel.app/users/signup/classic', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ username: username, email: email, password: confirmPassword })
@@ -47,8 +47,13 @@ export default function SignUp({ isOpen, onClose }) {
                     Toast.success("Le compte a été créé", "top", { duration: 2000 });
                     dispatch(updateUser(data.username));
                     onClose();
+                    username('');
+                    email('');
+                    password('');
+                    confirmPassword('');
                 } else {
-                    Toast.error("Échec de la connexion", "top", { duration: 2000 });
+                    console.log(data)
+                    Toast.error("Utilisateur existe déjà", "top", { duration: 2000 });
                 }
             } else {
                 console.log("❌ Database SignUp Error:", response.status);
@@ -67,7 +72,7 @@ export default function SignUp({ isOpen, onClose }) {
                         <View style={styles.modalContent}>
                             <View style={styles.container}>
                                 <View style={styles.titleContainer}>
-                                    <Image source={tower} style={styles.logo} />
+                                    <Image source={{uri: tower}} height={70} width={40} style={styles.logo} />
                                     <Text style={styles.title}>Connexion</Text>
                                 </View>
                                 {error && <Text style={styles.error}>{errorMessage}</Text>}
@@ -120,7 +125,6 @@ const styles = StyleSheet.create({
         marginBottom: 20,
     },
     logo: {
-        height: 70,
         resizeMode: "contain",
         marginRight: 10,
     },

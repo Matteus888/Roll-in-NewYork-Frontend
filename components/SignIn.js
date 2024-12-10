@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, TextInput, Image } from "react-native";
 import { useDispatch } from "react-redux";
-import tower from "../assets/icons/logo-ny.png";
 import { updateUser } from "../reducers/users";
 import { Toast } from "toastify-react-native";
+const tower = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/eh4j1tvmizqd9dwftj25.png";
 
 export default function SignIn({ isOpen, onClose }) {
   const dispatch = useDispatch();
@@ -33,7 +33,7 @@ export default function SignIn({ isOpen, onClose }) {
 
     try {
       let response = await fetch(
-        "https://roll-in-new-york-backend-mk511sfxd-0xk0s-projects.vercel.app/users/signin/classic",
+        "https://roll-in-new-york-backend.vercel.app/users/signin/classic",
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -41,9 +41,8 @@ export default function SignIn({ isOpen, onClose }) {
         }
       );
 
-      // Assurez-vous que la réponse est un JSON
       if (response.ok) {
-        let data = await response.json(); // Utilisez directement .json() ici
+        let data = await response.json();
         if (data.result === true) {
           Toast.success("Connexion réussie", "top", { duration: 2000 });
           dispatch(updateUser(data.username));
@@ -67,7 +66,7 @@ export default function SignIn({ isOpen, onClose }) {
           <View style={styles.modalContent}>
             <View style={styles.container}>
               <View style={styles.titleContainer}>
-                <Image source={tower} style={styles.logo} />
+                <Image source={{uri: tower}} height={70} width={40} style={styles.logo} />
                 <Text style={styles.title}>Connexion</Text>
               </View>
               {error && <Text style={styles.error}>{errorMessage}</Text>}
@@ -127,7 +126,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   logo: {
-    height: 70,
     resizeMode: "contain",
     marginRight: 10,
   },
