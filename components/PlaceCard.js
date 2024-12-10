@@ -12,7 +12,7 @@ import { faHeart, faCamera, faStar } from "@fortawesome/free-solid-svg-icons";
 const { width } = Dimensions.get("window");
 
 // Création de la card représentant les lieux de tournage référencés
-export default function PlaceCard({ image, title, description, voteAverage }) {
+export default function PlaceCard({ image, title, description, noteAverage }) {
   // Chargement des fonts personnalisés
   const [fontsLoaded] = useFonts({
     "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
@@ -27,7 +27,7 @@ export default function PlaceCard({ image, title, description, voteAverage }) {
   const stars = [];
   for (let i = 0; i < 5; i++) {
     let style = {};
-    if (i < voteAverage) {
+    if (i < noteAverage) {
       style = { color: "yellow" };
     }
     stars.push(<FontAwesomeIcon key={i} icon={faStar} style={style} size={12} />);
