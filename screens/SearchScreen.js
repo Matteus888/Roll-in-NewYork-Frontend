@@ -1,25 +1,18 @@
-// Import pour react / react-native
-import { StyleSheet, View, FlatList, Dimensions, TouchableOpacity } from "react-native";
-import { useState } from "react";
+// Réalisation des différents imports
+import { StyleSheet, View, FlatList, Dimensions, TouchableOpacity } from "react-native"; // Import pour react / react-native
+import { useState } from "react"; // Import pour react
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
+import Header from "../components/Header"; // Import du composant Header
+import PlaceCard from "../components/PlaceCard"; // Import du composant PlaceCard
+import MovieCard from "../components/MovieCard";  // Import du composant MovieCard
 
-// Import des icones FontAweSome
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+const { width } = Dimensions.get("window"); // Récupération de la largeur de l'écran du téléphone
 
-// Import des composants
-import Header from "../components/Header";
-import PlaceCard from "../components/PlaceCard";
-import MovieCard from "../components/MovieCard";
-
-// Récupération de la largeur de l'écran du téléphone
-const { width } = Dimensions.get("window");
-
-// Création de la page Search
 export default function SearchScreen() {
-  // Etat de l'index des cards lieux
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [currentIndex, setCurrentIndex] = useState(0); // État pour stocker l'index de la card lieux actuelle
 
-  const cardsData = [
+  const cardsData = [ // Tableau contenant les données du caroussel (TEMPORAIRE)
     {
       id: "1",
       image: "https://via.placeholder.com/300x200.png?text=Image+1",
@@ -40,13 +33,13 @@ export default function SearchScreen() {
     },
   ];
 
-  // Fonction pour passer à la card lieux suivante
+  // Fonction pour passer à la card du lieu suivant
   const goToNext = () => {
-    const nextIndex = (currentIndex + 1) % cardsData.length;
+    const nextIndex = (currentIndex + 1) % cardsData.length; 
     setCurrentIndex(nextIndex);
   };
 
-  // Fonction pour passer à la card lieux précédente
+  // Fonction pour passer à la card du lieu précédent
   const goToPrevious = () => {
     const prevIndex = (currentIndex - 1 + cardsData.length) % cardsData.length;
     setCurrentIndex(prevIndex);
@@ -54,40 +47,34 @@ export default function SearchScreen() {
 
   return (
     <>
-      <View style={styles.container}>
-        <Header title="Roll-In NewYork" showInput={true} />
-        <View style={styles.searchScreenContainer}>
-          {/* Card du film séléctionné */}
-          <MovieCard />
-          {/* Carrousel des cards lieux de tournage */}
-          <View style={styles.carouselWrapper}>
-            {/* Bouton previous */}
-            <TouchableOpacity onPress={goToPrevious} style={styles.navigationButtonLeft}>
+      <View style={styles.container}> {/* View contenant les éléments de la page */}
+        <Header title="Roll-In NewYork" showInput={true} /> {/* Affichage du composant Header */}
+        <View style={styles.searchScreenContainer}> {/* View contenant les différents éléments de la page */}
+          <MovieCard /> {/* Affichage du composant MovieCard */}
+          <View style={styles.carouselWrapper}> {/* View contenant le carrousel */}
+            <TouchableOpacity onPress={goToPrevious} style={styles.navigationButtonLeft}> {/* Bouton précédent */}
               <FontAwesomeIcon icon={faChevronLeft} size={20} color="black" />
             </TouchableOpacity>
-            {/* Carrousel */}
-            <FlatList
-              data={cardsData}
-              horizontal
-              renderItem={({ item, index }) =>
-                index === currentIndex ? (
+            <FlatList // Affichage du carrousel
+              data={cardsData} 
+              horizontal // Indication de l'affichage horizontal
+              renderItem={({ item, index }) => // Affichage des éléments du carrousel
+                index === currentIndex ? ( // Si l'index de l'élément est égal à l'index actuel alors on affiche la card
                   <View style={styles.cardWrapper}>
                     <PlaceCard key={item.id} image={item.image} title={item.title} description={item.description} />
                   </View>
                 ) : null
               }
-              keyExtractor={(item) => item.id}
-              showsHorizontalScrollIndicator={false}
-              snapToInterval={width}
-              contentContainerStyle={{ justifyContent: "center" }}
+              keyExtractor={(item) => item.id} // Assurez-vous que chaque élément a un id unique
+              showsHorizontalScrollIndicator={false} // Désactivation de la barre de défilement horizontale
+              snapToInterval={width} // Défilement d'une card à la fois
+              contentContainerStyle={{ justifyContent: "center" }} // Centrage des éléments du carrousel
             />
-            {/* Bouton next */}
-            <TouchableOpacity onPress={goToNext} style={styles.navigationButtonRight}>
+            <TouchableOpacity onPress={goToNext} style={styles.navigationButtonRight}> {/* Bouton suivant */}
               <FontAwesomeIcon icon={faChevronRight} size={20} color="black" />
             </TouchableOpacity>
           </View>
-          {/* Pagination du carrousel */}
-          <View style={styles.pagination}>
+          <View style={styles.pagination}> {/* Affichage de la pagination du carrousel */}
             {cardsData.map((_, index) => (
               <View key={index} style={[styles.pageLine, currentIndex === index && styles.activePageLine]} />
             ))}

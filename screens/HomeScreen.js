@@ -1,35 +1,30 @@
-import { View, StyleSheet, Image, Text, Modal, TouchableOpacity } from "react-native";
-import MapView from "react-native-maps";
-import { Marker, Callout } from "react-native-maps";
-import Header from "../components/Header";
-import { useState, useEffect } from "react";
-import PlaceMiniCard from "../components/PlaceMiniCard";
-import MovieCard from "../components/MovieCard";
+// Réalisation des différents imports
+import { View, StyleSheet, Text, Modal, TouchableOpacity } from "react-native"; // Import pour react-native
+import { useState, useEffect } from "react"; // Import pour react
+import { Marker } from "react-native-maps"; // Import pour la carte
+import MapView from "react-native-maps"; // Import pour la map
+import Header from "../components/Header"; // Import du composant Header.js
+import MovieCard from "../components/MovieCard"; // Import du composant MovieCard.js
 
-// icons pour les marker sur la maps (man pour localisation user, moviePlace pour les lieux)
+// Import des icons depuis cloudinary
 const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/pctlnl7qs4esplvimxui.png";
 const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png";
 
 export default function HomeScreen() {
-    // initiation du tableau de lieux à afficher sur la carte
-    const [places, setPlaces] = useState([]);
+    const [places, setPlaces] = useState([]); // Initiation du tableau de lieux à afficher sur la carte
+    const [currentPosition, setCurrentPosition] = useState(null); // Initiation des coordonnées de localisation de l'utilisateur
+    const [modalVisible, setModalVisible] = useState(false) // Initiation de la modale pour afficher les informations du lieu
+    const [placeMovies, setPlaceMovies] = useState([]) // Initiation du tableau de films du lieu
+    const [movieData, setMovieData] = useState() // Initiation des données du film
+    const [movieCards, setMovieCards] = useState() // Initiation des cartes de films à afficher dans la modale
 
-    // initiation des coordonnées de localisation de l'utilisateur
-    const [currentPosition, setCurrentPosition] = useState(null);
-
-    const [modalVisible, setModalVisible] = useState(false)
-    // const [markerPressed, setMarkerPressed] = useState()
-    const [placeMovies, setPlaceMovies] = useState([])
-    const [movieData, setMovieData] = useState()
-    const [movieCards, setMovieCards] = useState()
-
-    // demande de permission de localisation et récupération des coordonnées de l'utilisateur
+    // Demande de permission pour récupérer la localisation de l'utilisateur
     useEffect(() => {
         (async () => {
-            const result = await Location.requestForegroundPermissionsAsync();
-            const status = result?.status;
+            const result = await Location.requestForegroundPermissionsAsync(); // Demande de permission pour la localisation
+            const status = result?.status; // Récupération du statut de la permission
 
-            if (status === "granted") {
+            if (status === "granted") { // Si la permission est accordée alors on récupère la localisation de l'utilisateur
                 Location.watchPositionAsync(
                     { distanceInterval: 10 },
                     (location) => {
@@ -38,29 +33,15 @@ export default function HomeScreen() {
                 );
             }
         })();
-        // mise en place du fetch pour récupérer les lieux et les afficher sur la carte
-        fetch(
-            "https://roll-in-new-york-backend-mk511sfxd-0xk0s-projects.vercel.app/places"
-        )
+        // Mise en place du fetch pour récupérer les lieux et les afficher sur la carte
+        fetch("https://roll-in-new-york-backend-mk511sfxd-0xk0s-projects.vercel.app/places")
             .then((response) => response.json())
             .then((data) => {
                 setPlaces(data.places);
             });
     }, []);
 
-
-// si finalement on veut ajouter la miniCard du lieu dans la modale
-    // const miniCard = places.map((data, i) => {
-    //     if(data.title === markerPressed){
-    //         return (
-    //             <PlaceMiniCard key={`place: ${i}`} markerPressed={data} ></PlaceMiniCard>
-    //         )
-    //     }
-    // })
-
-    
-
-// Pour afficher les markers pour tout les lieux
+    // Mise en place des markers pour afficher les lieux sur la carte
     const placesMarker = places.map((data, i) => {
         return (
             <Marker
@@ -75,7 +56,6 @@ export default function HomeScreen() {
                 onPress={()=> {
                     handleMarkerPressed() 
                     setPlaceMovies(data.moviesList)
-                    // setMarkerPressed(data.title)
                 }}
             >
             </Marker>

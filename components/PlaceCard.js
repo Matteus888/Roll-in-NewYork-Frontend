@@ -1,52 +1,41 @@
-// Import pour react / react-native
-import { StyleSheet, TouchableOpacity, Dimensions, View, Text, Image } from "react-native";
-
-// Import pour expo
-import { useFonts } from "expo-font";
-
-// Import des icones FontAweSome
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faHeart, faCamera, faStar } from "@fortawesome/free-solid-svg-icons";
-
-// Récupération de la largeur de l'écran du téléphone
-const { width } = Dimensions.get("window");
+// Réalisation des différents imports
+import { StyleSheet, TouchableOpacity, Dimensions, View, Text, Image } from "react-native"; // Import pour react / react-native
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
+import { faHeart, faCamera, faStar } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
+import { useFonts } from "expo-font"; // Import pour expo
 
 // Création de la card représentant les lieux de tournage référencés
 export default function PlaceCard({ image, title, description }) {
-  // Chargement des fonts personnalisés
-  const [fontsLoaded] = useFonts({
-    "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
+  const [fontsLoaded] = useFonts({ // Chargement des fonts personnalisés
     "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
   });
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded) { // Si les fonts ne sont pas chargées, on retourne null
     return null;
   }
 
   return (
-    <View style={styles.card}>
-      <View style={styles.imageContainer}>
+    <View style={styles.card}> {/* View contenant les éléments de la card */}
+      <View style={styles.imageContainer}> {/* View contenant l'image */}
         <Image source={{ uri: image }} style={styles.image} />
       </View>
-      {/* View pour un séparateur en forme de barre vertical */}
-      <View style={styles.verticalBar}></View>
-
-      <View style={styles.textContainer}>
-        <View style={styles.titleContainer}>
-          <Text style={styles.title}>{title}</Text>
-          <View style={styles.iconBox}>
-            <TouchableOpacity style={styles.iconTouchBox}>
+      <View style={styles.verticalBar}></View> {/* View pour un séparateur en forme de barre vertical */}
+      <View style={styles.textContainer}> {/* View contenant le texte */}
+        <View style={styles.titleContainer}> {/* View contenant le titre et les icons */}
+          <Text style={styles.title}>{title}</Text> {/* Ajout du titre */}
+          <View style={styles.iconBox}> {/* View contenant les icons */}
+            <TouchableOpacity style={styles.iconTouchBox}> {/* Bouton pour les icons */}
               <FontAwesomeIcon icon={faHeart} size={12} color="#D71111" />
               <FontAwesomeIcon icon={faCamera} size={12} color="#2e90da" />
             </TouchableOpacity>
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" />
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" />
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" />
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" />
-            <FontAwesomeIcon icon={faStar} size={12} color="yellow" />
+            <FontAwesomeIcon icon={faStar} size={12} color="yellow" /> {/* Icon étoile */}
+            <FontAwesomeIcon icon={faStar} size={12} color="yellow" /> {/* Icon étoile */}
+            <FontAwesomeIcon icon={faStar} size={12} color="yellow" /> {/* Icon étoile */}
+            <FontAwesomeIcon icon={faStar} size={12} color="yellow" /> {/* Icon étoile */}
+            <FontAwesomeIcon icon={faStar} size={12} color="yellow" /> {/* Icon étoile */}
           </View>
         </View>
-        <Text style={styles.description} numberOfLines={5}>
+        <Text style={styles.description} numberOfLines={5}> {/* Ajout de la description */}
           {description}
         </Text>
       </View>
@@ -57,7 +46,7 @@ export default function PlaceCard({ image, title, description }) {
 // Définition du style des différents éléments
 const styles = StyleSheet.create({
   card: {
-    width: width - 80,
+    width: Dimensions.get("window").width - 80,
     height: 100,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -121,7 +110,6 @@ const styles = StyleSheet.create({
   description: {
     maxWidth: "100%",
     fontSize: 12,
-    fontFamily: "Montserrat-Regular",
     color: "black",
     textAlign: "left",
     marginTop: 2,

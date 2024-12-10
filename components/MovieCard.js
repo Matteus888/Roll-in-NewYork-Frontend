@@ -1,36 +1,26 @@
-// Import pour react / react-native
-import { StyleSheet, TouchableOpacity, Dimensions, View, Text, Image } from "react-native";
+// Réalisation des différents imports
+import { StyleSheet, Dimensions, View, Text, Image } from "react-native"; // Import pour react / react-native
+import { useFonts } from "expo-font"; // Import pour expo
 
-// Import pour expo
-import { useFonts } from "expo-font";
-
-// Récupération de la largeur de l'écran du téléphone
-const { width } = Dimensions.get("window");
-
-// Création du composant représentant une fiche film
 export default function MovieCard(movieData) {
-  // Chargement des fonts personnalisés
-  const [fontsLoaded] = useFonts({
-    "Montserrat-Regular": require("../assets/fonts/Montserrat-Regular.ttf"),
+  const [fontsLoaded] = useFonts({ // Chargement des fonts personnalisés
     "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
   });
 
-  if (!fontsLoaded) {
+  if (!fontsLoaded) { // Si les fonts ne sont pas chargées, on retourne null
     return null;
   }
 
   return (
-    <View style={styles.card}>
-      <View style={styles.imageContainer}>
+    <View style={styles.card}> {/* View contenant les éléments de la card */}
+      <View style={styles.imageContainer}> {/* View contenant l'image */}
         <Image source={{ uri: movieData.poster_path }} style={styles.image} />
       </View>
-      {/* View pour un séparateur en forme de barre vertical */}
-      <View style={styles.verticalBar}></View>
-
-      <View style={styles.textContainer}>
-        <Text style={styles.title}>{movieData.original_title}</Text>
-        <Text style={styles.date}>Date de sortie: {movieData.release_date} </Text>
-        <Text style={styles.description} numberOfLines={4}>
+      <View style={styles.verticalBar}></View> {/* View pour un séparateur en forme de barre vertical */}
+      <View style={styles.textContainer}> {/* View contenant le texte */}
+        <Text style={styles.title}>{movieData.original_title}</Text> {/* Ajout du titre */}
+        <Text style={styles.date}>Date de sortie: {movieData.release_date} </Text> {/* Ajout de la date de sortie */}
+        <Text style={styles.description} numberOfLines={4}> {/* Ajout de la Description */}
           {movieData.overview}
         </Text>
       </View>
@@ -41,7 +31,7 @@ export default function MovieCard(movieData) {
 // Définition du style des différents éléments
 const styles = StyleSheet.create({
   card: {
-    width: width - 30,
+    width: Dimensions.get("window").width - 30,
     height: 100,
     flexDirection: "row",
     justifyContent: "space-between",
@@ -87,13 +77,11 @@ const styles = StyleSheet.create({
   },
   date: {
     fontSize: 10,
-    fontFamily: "Montserrat-Regular",
     opacity: 0.5,
   },
   description: {
     maxWidth: "100%",
     fontSize: 12,
-    fontFamily: "Montserrat-Regular",
     color: "black",
     textAlign: "left",
     marginTop: 2,
