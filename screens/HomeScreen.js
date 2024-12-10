@@ -7,8 +7,8 @@ import PlaceMiniCard from "../components/PlaceMiniCard";
 import MovieCard from "../components/MovieCard";
 
 // icons pour les marker sur la maps (man pour localisation user, moviePlace pour les lieux)
-import manWalking from "../assets/icons/man.png";
-import moviePlace from "../assets/icons/moviePlace.png";
+const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/pctlnl7qs4esplvimxui.png";
+const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png";
 
 export default function HomeScreen() {
     // initiation du tableau de lieux à afficher sur la carte
