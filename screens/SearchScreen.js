@@ -23,72 +23,50 @@ export default function SearchScreen({ route }) {
 
 
     const [currentIndex, setCurrentIndex] = useState(0); // État pour stocker l'index de la card lieux actuelle
-    const [movieId, setMovieId] = useState(0)
-    const [moviePlaces, setMoviePlaces] = useState([]) // Etat pour stocker les lieux de tournage du film selectionné
+    const [allPlaces, setAllPlaces] = useState([])  // Etat pour stocker tout les lieux
 
     
     
+    // useEffect pour fetch tout les lieux 
+        useEffect(()=>{
+            fetch("https://roll-in-new-york-backend.vercel.app/places")
+            .then((response) => response.json())
+            .then((data) => {
+                setAllPlaces(data.places)
+            })
+        },[])
+
+    
     let movieCard
+    let moviePlaces
     if (route.params===undefined){
-        movieCard = <Text>Search a movie!</Text>
+        movieCard = <Text style={styles.searchMovie} >Search a movie!</Text>
     }else{
         // récupération des info du film cliqué en page d'accueil
         const {selectedMovie} = route.params
-        console.log(selectedMovie)
         movieCard =  <MovieCard 
         title={selectedMovie.title} 
         poster={selectedMovie.poster_path} 
         overview={selectedMovie.overview} 
         date={selectedMovie.release_date}
         ></MovieCard>
-        // setMovieId(selectedMovie.id)
+
+        // récupération des lieux du film
+        moviePlaces= allPlaces.filter(place => place.moviesList.includes(selectedMovie.id));
+        
     }
     
-    // useEffect pour fetch les lieux et les filtrer en fonction du film
-        useEffect(()=>{
-            let placesTodisplay
-            fetch("https://roll-in-new-york-backend.vercel.app/places")
-            .then((response) => response.json())
-            .then((data) => {
-                console.log("data", data.places[1].moviesList)
-                placesTodisplay= data.filter(place => place.moviesList.includes(selectedMovie.id));
-
-            })
-            console.log("placesTodisplay", placesTodisplay)
-        },[])
-    
-    const cardsData = [
-        // Tableau contenant les données du caroussel (TEMPORAIRE)
-        {
-            id: "1",
-            image: "https://via.placeholder.com/300x200.png?text=Image+1",
-            title: "Lieu 1",
-            description: "Description de la première carte.",
-        },
-        {
-            id: "2",
-            image: "https://via.placeholder.com/300x200.png?text=Image+2",
-            title: "Lieu 2",
-            description: "Description de la deuxième carte.",
-        },
-        {
-            id: "3",
-            image: "https://via.placeholder.com/300x200.png?text=Image+3",
-            title: "Lieu 3",
-            description: "Description de la troisième carte.",
-        },
-    ];
 
     // Fonction pour passer à la card du lieu suivant
     const goToNext = () => {
-        const nextIndex = (currentIndex + 1) % cardsData.length;
+        const nextIndex = (currentIndex + 1) % moviePlaces.length;
         setCurrentIndex(nextIndex);
     };
 
     // Fonction pour passer à la card du lieu précédent
     const goToPrevious = () => {
         const prevIndex =
-            (currentIndex - 1 + cardsData.length) % cardsData.length;
+            (currentIndex - 1 + moviePlaces.length) % moviePlaces.length;
         setCurrentIndex(prevIndex);
     };
 
@@ -98,6 +76,8 @@ export default function SearchScreen({ route }) {
                 <Header title="Roll-In NewYork" showInput={true} />
                 <View style={styles.searchScreenContainer}>
                     {movieCard}
+                    {moviePlaces && moviePlaces.length>0 ? (
+                        <>
                     <View style={styles.carouselWrapper}>
                         <TouchableOpacity
                             onPress={goToPrevious}
@@ -110,7 +90,7 @@ export default function SearchScreen({ route }) {
                             />
                         </TouchableOpacity>
                         <FlatList // Affichage du carrousel
-                            data={cardsData}
+                            data={moviePlaces}
                             horizontal // Indication de l'affichage horizontal
                             renderItem={(
                                 { item, index } // Affichage des éléments du carrousel
@@ -118,15 +98,15 @@ export default function SearchScreen({ route }) {
                                 index === currentIndex ? ( // Si l'index de l'élément est égal à l'index actuel alors on affiche la card
                                     <View style={styles.cardWrapper}>
                                         <PlaceCard
-                                            key={item.id}
-                                            image={item.image}
+                                            key={item._id}
+                                            image={item.placePicture}
                                             title={item.title}
-                                            description={item.description}
+                                            description={item.overview}
                                         />
                                     </View>
                                 ) : null
                             }
-                            keyExtractor={(item) => item.id} // Assurez-vous que chaque élément a un id unique
+                            keyExtractor={(item) => item._id} // Assurez-vous que chaque élément a un id unique
                             showsHorizontalScrollIndicator={false} // Désactivation de la barre de défilement horizontale
                             snapToInterval={width} // Défilement d'une card à la fois
                             contentContainerStyle={{ justifyContent: "center" }} // Centrage des éléments du carrousel
@@ -143,7 +123,7 @@ export default function SearchScreen({ route }) {
                         </TouchableOpacity>
                     </View>
                     <View style={styles.pagination}>
-                        {cardsData.map((_, index) => (
+                        {moviePlaces.map((_, index) => (
                             <View
                                 key={index}
                                 style={[
@@ -154,6 +134,8 @@ export default function SearchScreen({ route }) {
                             />
                         ))}
                     </View>
+                    </>
+                    ): (<></>)}
                 </View>
             </View>
         </>
@@ -210,5 +192,8 @@ const styles = StyleSheet.create({
         zIndex: 1,
         padding: 1,
         borderRadius: 20,
+    },
+    searchMovie: {
+
     },
 });
