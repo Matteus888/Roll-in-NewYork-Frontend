@@ -4,8 +4,8 @@ const initialState = { // Initialisation de l'utilisateur avec un tableau vide p
     value: [],
 }
 
-export const placeSlice = createSlice({ // Création du slice pour les lieux
-    name: 'place',
+export const movieSlice = createSlice({ // Création du slice pour les lieux
+    name: 'movie',
     initialState,
     reducers: {
         addMovie: (state, action) => { // Fonction pour ajouter un film
@@ -18,8 +18,8 @@ export const placeSlice = createSlice({ // Création du slice pour les lieux
         removeAllMovies: (state) => { // Fonction pour supprimer tous les films
             state.value = [];
         }
-    }
+    } 
 })
 
-export const { addMovie, removeMovie, removeAllMovies } = placeSlice.actions;
-export default placeSlice.reducer;
+export const { addMovie, removeMovie, removeAllMovies } = movieSlice.actions;
+export default movieSlice.reducer;
