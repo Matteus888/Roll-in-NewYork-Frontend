@@ -11,6 +11,8 @@ import {
 import SignIn from "../components/SignIn"; // Import du composant SignIn.js
 import SignUp from "../components/SignUp"; // Import du composant SignUp.js
 import Header from "../components/Header"; // Import du composant Header.js
+import { useDispatch, useSelector } from "react-redux";
+import { logout } from "../reducers/users";
 
 // Import des icons depuis cloudinary
 const GoogleIcon =
@@ -22,6 +24,8 @@ const InstagramIcon =
 
 // Création de la page Login
 export default function LoginScreen() {
+    const dispatch = useDispatch(); // Initialisation de la fonction dispatch pour envoyer les actions à redux
+    const user = useSelector((state) => state.user.value); // Récupération des données de l'utilisateur
     const [isSignIn, setIsSignIn] = useState(false); // État pour afficher ou non le composant SignIn
     const [isSignUp, setIsSignUp] = useState(false); // État pour afficher ou non le composant SignUp
 
@@ -30,61 +34,70 @@ export default function LoginScreen() {
             <View style={styles.container}>
                 <Header title="My connexion" showInput={false} />
                 <View style={styles.loginContainer}>
-                    <View style={styles.signContainer}>
-                        <TouchableOpacity
-                            onPress={() => setIsSignIn(true)}
-                            style={styles.button}
-                            activeOpacity={0.8}
-                        >
-                            <Text style={styles.textButton}>SIGN-IN</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => setIsSignUp(true)}
-                            style={styles.button}
-                            activeOpacity={0.8}
-                        >
-                            <Text style={styles.textButton}>SIGN-UP</Text>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.separateContainer}>
-                        <View style={styles.separateBar}></View>
-                        <Text style={styles.separateText}>OU</Text>
-                        <View style={styles.separateBar}></View>
-                    </View>
-                    <View style={styles.methodConnexionContainer}>
-                        {[
-                            { icon: GoogleIcon, text: "Sign with Google" },
-                            { icon: AppleIcon, text: "Sign with Apple" },
-                            {
-                                icon: InstagramIcon,
-                                text: "Sign with Instagram",
-                            },
-                        ].map(
-                            (
-                                { icon, text },
-                                index // Boucle pour afficher les différents boutons en fonction de l'icon et du texte
-                            ) => (
+                {user.token !== null ? <Text>Bienvenue {user.username}</Text> : null}
+                    {user.token === null ? ( // Remarquez l'usage des accolades pour insérer une expression JSX
+                        <>
+                            <View style={styles.signContainer}>
                                 <TouchableOpacity
-                                    key={index}
-                                    onPress={() => handleSubmit()} // Fonction à appeler lors du clic sur le bouton (Google, Apple ou Instagram)
-                                    style={styles.methodConnexionButton}
+                                    onPress={() => setIsSignIn(true)}
+                                    style={styles.button}
                                     activeOpacity={0.8}
                                 >
-                                    <Image
-                                        style={styles.icon}
-                                        source={{ uri: icon }}
-                                    />
-                                    <Text
-                                        style={styles.methodConnexionTextButton}
-                                    >
-                                        {text}
-                                    </Text>
+                                    <Text style={styles.textButton}>SIGN-IN</Text>
                                 </TouchableOpacity>
-                            )
-                        )}
-                    </View>
+                                <TouchableOpacity
+                                    onPress={() => setIsSignUp(true)}
+                                    style={styles.button}
+                                    activeOpacity={0.8}
+                                >
+                                    <Text style={styles.textButton}>SIGN-UP</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={styles.separateContainer}>
+                                <View style={styles.separateBar}></View>
+                                <Text style={styles.separateText}>OU</Text>
+                                <View style={styles.separateBar}></View>
+                            </View>
+                            <View style={styles.methodConnexionContainer}>
+                                {[
+                                    { icon: GoogleIcon, text: "Sign with Google" },
+                                    { icon: AppleIcon, text: "Sign with Apple" },
+                                    {
+                                        icon: InstagramIcon,
+                                        text: "Sign with Instagram",
+                                    },
+                                ].map(({ icon, text }, index) => (
+                                    <TouchableOpacity
+                                        key={index}
+                                        onPress={() => handleSubmit()}
+                                        style={styles.methodConnexionButton}
+                                        activeOpacity={0.8}
+                                    >
+                                        <Image
+                                            style={styles.icon}
+                                            source={{ uri: icon }}
+                                        />
+                                        <Text style={styles.methodConnexionTextButton}>
+                                            {text}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ))}
+                            </View>
+                        </>
+                    ) : (
+                        <View style={styles.signContainer}>
+                            <TouchableOpacity
+                                onPress={() => dispatch(logout())}
+                                style={styles.button}
+                                activeOpacity={0.8}
+                            >
+                                <Text style={styles.textButton}>LOGOUT</Text>
+                            </TouchableOpacity>
+                        </View>
+                    )}
                 </View>
             </View>
+
 
             <SignIn isOpen={isSignIn} onClose={() => setIsSignIn(false)} />
             <SignUp isOpen={isSignUp} onClose={() => setIsSignUp(false)} />

@@ -5,9 +5,9 @@ import {
     FlatList,
     Dimensions,
     TouchableOpacity,
-    Text
+    Text,
 } from "react-native"; // Import pour react / react-native
-import { useState } from "react"; // Import pour react
+import { useState, useEffect } from "react"; // Import pour react
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
 import {
     faChevronLeft,
@@ -19,13 +19,44 @@ import MovieCard from "../components/MovieCard"; // Import du composant MovieCar
 
 const { width } = Dimensions.get("window"); // Récupération de la largeur de l'écran du téléphone
 
-export default function SearchScreen(route) {
-    // récupération des info du film cliqué en page d'accueil
-    // const {movieInfo} = route.params.movieInfo
-    // console.log(route);
+export default function SearchScreen({ route }) {
+
 
     const [currentIndex, setCurrentIndex] = useState(0); // État pour stocker l'index de la card lieux actuelle
+    const [movieId, setMovieId] = useState(0)
+    const [moviePlaces, setMoviePlaces] = useState([]) // Etat pour stocker les lieux de tournage du film selectionné
 
+    
+    
+    let movieCard
+    if (route.params===undefined){
+        movieCard = <Text>Search a movie!</Text>
+    }else{
+        // récupération des info du film cliqué en page d'accueil
+        const {selectedMovie} = route.params
+        console.log(selectedMovie)
+        movieCard =  <MovieCard 
+        title={selectedMovie.title} 
+        poster={selectedMovie.poster_path} 
+        overview={selectedMovie.overview} 
+        date={selectedMovie.release_date}
+        ></MovieCard>
+        // setMovieId(selectedMovie.id)
+    }
+    
+    // useEffect pour fetch les lieux et les filtrer en fonction du film
+        useEffect(()=>{
+            let placesTodisplay
+            fetch("https://roll-in-new-york-backend.vercel.app/places")
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("data", data.places[1].moviesList)
+                placesTodisplay= data.filter(place => place.moviesList.includes(selectedMovie.id));
+
+            })
+            console.log("placesTodisplay", placesTodisplay)
+        },[])
+    
     const cardsData = [
         // Tableau contenant les données du caroussel (TEMPORAIRE)
         {
@@ -66,7 +97,7 @@ export default function SearchScreen(route) {
             <View style={styles.container}>
                 <Header title="Roll-In NewYork" showInput={true} />
                 <View style={styles.searchScreenContainer}>
-                    <Text>Movie card goes here</Text>
+                    {movieCard}
                     <View style={styles.carouselWrapper}>
                         <TouchableOpacity
                             onPress={goToPrevious}

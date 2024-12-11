@@ -2,10 +2,10 @@ import { StyleSheet } from "react-native";
 import { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Provider, useDispatch, useSelector } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
-import movie, { addMovie } from "./reducers/movies";
-import user from "./reducers/users";
+import { Provider, useDispatch, useSelector } from 'react-redux';
+import { configureStore } from '@reduxjs/toolkit';
+import movie, { addMovie } from './reducers/movies';
+import user from './reducers/users';
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faHouse, faHeart, faMagnifyingGlass, faUser } from "@fortawesome/free-solid-svg-icons";
 import ToastManager from "toastify-react-native";
@@ -17,7 +17,7 @@ import LoginScreen from "./screens/LoginScreen";
 const Tab = createBottomTabNavigator();
 
 const store = configureStore({
-  reducer: { user, movie },
+  reducer: { user, movie }
 });
 
 export default function App() {
@@ -98,8 +98,8 @@ function Navigation() {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
-      <Tab.Screen name="Favourite" component={FavouriteScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
+      <Tab.Screen name="Favourite" component={FavouriteScreen} />
       <Tab.Screen name={user.username === null ? "Login" : user.username} component={LoginScreen} />
     </Tab.Navigator>
   );
