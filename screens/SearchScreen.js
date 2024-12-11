@@ -144,7 +144,8 @@ export default function SearchScreen({ route, navigation }) {
                                                 >
                                                     <PlaceCard
                                                         key={item._id}
-                                                        image={
+                                                        id={item._id}
+                                            image={
                                                             item.placePicture
                                                         }
                                                         title={item.title}

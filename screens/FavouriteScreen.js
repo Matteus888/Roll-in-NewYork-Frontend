@@ -75,6 +75,7 @@ export default function FavouriteScreen() {
           noteAverage={3}
         />
       </View>
+      <PlaceCard key={i} id={place._id} title={place.title} image={place.placePicture} description={place.overview} noteAverage={3} />
     ));
   } else {
     content = <Text style={styles.textNoFavAdded}>No favorite places at the moment</Text>;
