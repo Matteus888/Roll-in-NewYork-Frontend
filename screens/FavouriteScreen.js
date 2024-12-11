@@ -39,8 +39,8 @@ export default function FavouriteScreen() {
       .catch((err) => {
         console.error("Error during fetch data", err);
       });
-      goLogin()
-  }, [user.token, navigation]);
+
+  }, [user, navigation]);
 
   const toggleCheckbox = (index) => {
     const updatedStates = [...checkedStates]; // Copie de l'état actuel
