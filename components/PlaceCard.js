@@ -3,9 +3,10 @@ import { StyleSheet, TouchableOpacity, Dimensions, View, Text, Image } from "rea
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
 import { faHeart, faCamera, faStar } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
 import { useFonts } from "expo-font"; // Import pour expo
+import ReviewsScreen from "../screens/ReviewsScreen";
 
 // Création de la card représentant les lieux de tournage référencés
-export default function PlaceCard({ image, title, description, noteAverage }) {
+export default function PlaceCard({ image, title, description, noteAverage, navigation }) {
   const [fontsLoaded] = useFonts({
     // Chargement des fonts personnalisés
     "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
@@ -36,11 +37,13 @@ export default function PlaceCard({ image, title, description, noteAverage }) {
         <View style={styles.titleContainer}>
           <Text style={styles.title}>{title.length > 10 ? title.substring(0, 10) + "..." : title}</Text>
           <View style={styles.iconBox}>
-            <TouchableOpacity style={styles.iconTouchBox}>
+            <TouchableOpacity style={styles.iconTouchBox} onPress={() => { navigation.navigate('Reviews') }}>
               <FontAwesomeIcon icon={faHeart} size={10} color="#D71111" />
               <FontAwesomeIcon icon={faCamera} size={10} color="#2e90da" />
+              <View style={styles.stars}>
+                {stars}
+              </View>
             </TouchableOpacity>
-            {stars}
           </View>
         </View>
         <Text style={styles.description} numberOfLines={4}>
@@ -109,6 +112,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     marginHorizontal: 10,
     gap: 8,
+  },
+  stars: {
+    flexDirection: "row",
   },
   title: {
     fontSize: 20,
