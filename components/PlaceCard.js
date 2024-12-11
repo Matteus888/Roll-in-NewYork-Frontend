@@ -198,7 +198,10 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
+    marginRight: 1,
+    overflow: "hidden",
   },
   iconTouchBox: {
     flexDirection: "row",
@@ -206,9 +209,11 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: "JosefinSans-Bold",
+    flex: 1,
     color: "black",
+    marginRight: 8,
   },
   description: {
     fontSize: 12,
