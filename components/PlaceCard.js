@@ -34,7 +34,7 @@ export default function PlaceCard({ image, title, description, noteAverage, navi
       <View style={styles.verticalBar}></View>
       <View style={styles.textContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>{title.length > 14 ? title.substring(0, 14) + "..." : title}</Text>
+          <Text style={styles.title}>{title}</Text>
           <TouchableOpacity style={styles.iconTouchBox}>
             <FontAwesomeIcon icon={faHeart} size={10} color="#D71111" />
             <FontAwesomeIcon icon={faStar} size={12} color="#DEB973" />
@@ -97,8 +97,10 @@ const styles = StyleSheet.create({
   },
   titleContainer: {
     flexDirection: "row",
+    alignItems: "center",
     justifyContent: "space-between",
     marginRight: 1,
+    overflow: "hidden",
   },
   iconTouchBox: {
     flexDirection: "row",
@@ -106,9 +108,11 @@ const styles = StyleSheet.create({
     gap: 5,
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontFamily: "JosefinSans-Bold",
+    flex: 1,
     color: "black",
+    marginRight: 8,
   },
   description: {
     maxWidth: "100%",
