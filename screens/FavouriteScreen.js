@@ -19,6 +19,7 @@ export default function FavouriteScreen() {
 
   useEffect(() => {
     (async () => {
+      console.log("user.token", user.token);
       if (user.token === null) {
         navigation.navigate("Login");
         return;
@@ -28,7 +29,7 @@ export default function FavouriteScreen() {
     fetch(`https://roll-in-new-york-backend.vercel.app/favorites/places/${user.token}`) // Requête pour récupérer les lieux likés
       .then((response) => response.json())
       .then((data) => {
-        const favoritePlaces = Array.isArray(data.favoritePlaces) ? data.favoritePlaces : [];
+        const favoritePlaces = Array.isArray(data.favoritePlaces) ? data.favoritePlaces : []; // Vérifie si c'est un tableau
         setPlacesLikedList(data.favoritePlaces || null); // Stockage des lieux likés dans l'état placesLikedList
         setCheckedStates(Array(favoritePlaces.length).fill(false)); // Initialisation des états pour chaque case à cocher
         setIsLoading(false);
@@ -39,11 +40,12 @@ export default function FavouriteScreen() {
   }, [user, navigation]);
 
   const toggleCheckbox = (index) => {
-    const updatedStates = [...checkedStates];
+    const updatedStates = [...checkedStates]; // Copie de l'état actuel
     updatedStates[index] = !updatedStates[index]; // Inverser l'état de la case sélectionnée
-    setCheckedStates(updatedStates);
+    setCheckedStates(updatedStates); // Mise à jour des états de chaque checkbox
   };
 
+  // Affiche/Masque checkbox
   const handlePlanMyDay = () => {
     setCheckBtn(!checkBtn);
   };
@@ -125,7 +127,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   textNoFavAdded: {
-    marginTop: 80,
+    marginTop: 50,
     fontSize: 24,
+    fontWeight: 600,
+    color: "#282C37",
   },
 });
