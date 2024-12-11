@@ -42,7 +42,6 @@ export default function HomeScreen({navigation}) {
         setPlaces(data.places);
       });
   }, []);
-  
 
   // Mise en place des markers pour afficher les lieux sur la carte
   const placesMarker = places.map((data, i) => {

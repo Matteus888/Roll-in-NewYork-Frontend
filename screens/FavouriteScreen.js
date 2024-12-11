@@ -17,6 +17,8 @@ export default function FavouriteScreen() {
   const user = useSelector((state) => state.user.value);
   const navigation = useNavigation();
 
+
+
   useEffect(() => {
     (async () => {
       console.log("user.token", user.token);
@@ -24,7 +26,7 @@ export default function FavouriteScreen() {
         navigation.navigate("Login");
         return;
       }
-    })();
+    };
 
     fetch(`https://roll-in-new-york-backend.vercel.app/favorites/places/${user.token}`) // Requête pour récupérer les lieux likés
       .then((response) => response.json())
@@ -37,7 +39,8 @@ export default function FavouriteScreen() {
       .catch((err) => {
         console.error("Error during fetch data", err);
       });
-  }, [user, navigation]);
+      goLogin()
+  }, [user.token, navigation]);
 
   const toggleCheckbox = (index) => {
     const updatedStates = [...checkedStates]; // Copie de l'état actuel
@@ -56,6 +59,8 @@ export default function FavouriteScreen() {
     content = <Text style={styles.textLoading}>Loading favorites ...</Text>;
   } else if (placesLikedList && placesLikedList.length > 0) {
     content = placesLikedList.map((place, i) => (
+      <>
+      
       <View style={styles.cardLine} key={`view-${i}`}>
         {checkBtn && (
           <Checkbox
@@ -74,6 +79,9 @@ export default function FavouriteScreen() {
           noteAverage={3}
         />
       </View>
+      
+      <PlaceCard key={i} id={place._id} title={place.title} image={place.placePicture} description={place.overview} noteAverage={3} />
+      </>
     ));
   } else {
     content = <Text style={styles.textNoFavAdded}>No favorite places at the moment</Text>;
