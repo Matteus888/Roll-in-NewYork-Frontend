@@ -19,7 +19,7 @@ export default function HomeScreen({navigation}) {
   const [placeCoords, setPlaceCoords] = useState() // Initiation des coordonnées du lieu
   // récupération des infos de tout les films depuis le reducer
   const moviesInfo = useSelector((state)=> state.movie.value)
-  const [movieInfo, setMovieInfo] = useState({})
+
 
   // Demande de permission pour récupérer la localisation de l'utilisateur
   useEffect(() => {
@@ -71,29 +71,30 @@ export default function HomeScreen({navigation}) {
       setModalVisible(true)   
   }
 
-  // pour afficher les films au click sur un lieu
-  const movieCards = placeMovies.map((data, i)=> {
-    for (let j=0; j<moviesInfo.length; j++){
-        if (moviesInfo[j].id === data){
-            console.log(moviesInfo[j].id)
-            
-            return (
-                <TouchableOpacity key={`movieCardId: ${i}`} info= {movieInfo} onPress={()=> {
-                    setMovieInfo(moviesInfo[j])
-                    console.log('test', movieInfo)
-                    navigation.navigate("Search", {movieInfo})
-                    }} >
-                    <MovieCard 
-                    title={moviesInfo[j].title} 
-                    poster={moviesInfo[j].poster_path} 
-                    overview={moviesInfo[j].overview} 
-                    date={moviesInfo[j].release_date}
-                    ></MovieCard>
-                </TouchableOpacity>
-            )
+    // pour afficher les films au click sur un lieu
+    const movieCards = placeMovies.map((data, i)=> {
+        for (let j=0; j<moviesInfo.length; j++){
+            if (moviesInfo[j].id === data){
+
+                
+                return (
+                    <TouchableOpacity key={`movieCardId: ${i}`} onPress={()=> {
+                        let selectedMovie = moviesInfo[j]
+              
+                        navigation.navigate("Search", {selectedMovie})
+                        setModalVisible(false)
+                        }} >
+                        <MovieCard 
+                        title={moviesInfo[j].title} 
+                        poster={moviesInfo[j].poster_path} 
+                        overview={moviesInfo[j].overview} 
+                        date={moviesInfo[j].release_date}
+                        ></MovieCard>
+                    </TouchableOpacity>
+                )
+            }
         }
-    }
-  })
+})
 
   function goToMap(origin, destination) {
     const { latitude: originLat, longitude: originLon } = origin;
