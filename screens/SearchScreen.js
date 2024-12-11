@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
     },
     searchMovie: {
-        fontSize: 40,
+        fontSize: 24,
         color: "#282C37",
         fontWeight: 600,
         marginTop: 50,

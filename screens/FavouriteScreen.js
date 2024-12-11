@@ -17,13 +17,15 @@ export default function FavouriteScreen() {
   const user = useSelector((state) => state.user.value);
   const navigation = useNavigation();
 
+
+
   useEffect(() => {
-    (async () => {
+  const goLogin =  async () => {
       if (user.token === null) {
         navigation.navigate("Login");
         return;
       }
-    })();
+    };
 
     fetch(`https://roll-in-new-york-backend.vercel.app/favorites/places/${user.token}`) // Requête pour récupérer les lieux likés
       .then((response) => response.json())
@@ -36,7 +38,8 @@ export default function FavouriteScreen() {
       .catch((err) => {
         console.error("Error during fetch data", err);
       });
-  }, [user, navigation]);
+      goLogin()
+  }, [user.token, navigation]);
 
   const toggleCheckbox = (index) => {
     const updatedStates = [...checkedStates];
