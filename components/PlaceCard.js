@@ -3,9 +3,10 @@ import { StyleSheet, TouchableOpacity, Dimensions, View, Text, Image } from "rea
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
 import { faHeart, faCamera, faStar } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
 import { useFonts } from "expo-font"; // Import pour expo
+import ReviewsScreen from "../screens/ReviewsScreen";
 
 // Création de la card représentant les lieux de tournage référencés
-export default function PlaceCard({ image, title, description, noteAverage }) {
+export default function PlaceCard({ image, title, description, noteAverage, navigation }) {
   const [fontsLoaded] = useFonts({
     // Chargement des fonts personnalisés
     "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),

@@ -13,6 +13,7 @@ import HomeScreen from "./screens/HomeScreen";
 import FavouriteScreen from "./screens/FavouriteScreen";
 import SearchScreen from "./screens/SearchScreen";
 import LoginScreen from "./screens/LoginScreen";
+import ReviewsScreen from "./screens/ReviewsScreen";
 
 const Tab = createBottomTabNavigator();
 

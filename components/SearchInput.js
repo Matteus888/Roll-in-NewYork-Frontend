@@ -5,9 +5,10 @@ import { useSelector } from "react-redux"; // Import pour récupérer les donné
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
 
-export default function SearchInput() {
+export default function SearchInput({navigation}) {
     const [filteredMovie, setFilteredMovie] = useState([]); // État pour stocker les résultats
     const [showPopup, setShowPopup] = useState(false); // État pour contrôler l'affichage de la pop-up
+    const [search, setSearch] = useState(''); // État pour stocker la valeur de la recherche
     const movie = useSelector((state) => state.movie.value); // Récupération des données du store place
 
     const searchMovies = (searchValue) => {
@@ -27,7 +28,8 @@ export default function SearchInput() {
                     placeholder="Search for a movie..."
                     placeholderTextColor="#DEB973"
                     style={styles.input}
-                    onChangeText={(value) => searchMovies(value)}
+                    onChangeText={(value) => {searchMovies(value); setSearch(value);}}
+                    value={search}
                 />
                 <TouchableOpacity>
                     <FontAwesomeIcon
@@ -44,7 +46,12 @@ export default function SearchInput() {
                         data={filteredMovie}
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={({ item }) => (
-                            <Text style={styles.popupItem} onPress={() => console.log(item.id)}>{item.title}</Text>
+                            <Text style={styles.popupItem} onPress={() => {
+                                let selectedMovie = {id: item.id, title: item.title, overview: item.overview, poster_path: item.poster_path, release_date: item.release_date}
+                                setSearch(''); // Réinitialisation de la recherche
+                                setShowPopup(false); // Fermeture de la pop-up
+                                navigation.navigate("Search", {selectedMovie}); // Navigation vers la page Search avec les données du film sélectionné
+                            }}>{item.title}</Text> //console.log(item.id)
                         )}
                     />
                 </View>

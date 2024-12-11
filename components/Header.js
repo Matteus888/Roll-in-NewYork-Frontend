@@ -7,7 +7,7 @@ import SearchInput from "./SearchInput"; // Import du composant SearchInput.js
 const background = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818358/appIcons/vq0xpnmecpqy9a8myr93.jpg"
 const tower = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/eh4j1tvmizqd9dwftj25.png"
 
-export default function Header({ title, showInput }) {
+export default function Header({ title, showInput, navigation }) {
   const [fontsLoaded] = useFonts({ // Chargement des fonts personnalisés
     "JosefinSans-SemiBold": require("../assets/fonts/JosefinSans-SemiBold.ttf"),
   });
@@ -24,7 +24,7 @@ export default function Header({ title, showInput }) {
       </View>
       {showInput && ( // Si showInput est vrai alors on affiche le composant SearchInput
         <View style={styles.input}>
-          <SearchInput />
+          <SearchInput navigation={navigation}/>
         </View>
       )}
     </ImageBackground>
