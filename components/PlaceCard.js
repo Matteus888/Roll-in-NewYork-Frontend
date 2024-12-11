@@ -12,19 +12,18 @@ export default function PlaceCard({ image, title, description, noteAverage }) {
   });
 
   if (!fontsLoaded) {
-    // Si les fonts ne sont pas chargées, on retourne null
     return null;
   }
 
-  // Average evaluation
-  const stars = [];
-  for (let i = 0; i < 5; i++) {
-    let style = {};
-    if (i < noteAverage) {
-      style = { color: "yellow" };
-    }
-    stars.push(<FontAwesomeIcon key={i} icon={faStar} style={style} size={10} />);
-  }
+  // // Average evaluation
+  // const stars = [];
+  // for (let i = 0; i < 5; i++) {
+  //   let style = {};
+  //   if (i < noteAverage) {
+  //     style = { color: "yellow" };
+  //   }
+  //   stars.push(<FontAwesomeIcon key={i} icon={faStar} style={style} size={10} />);
+  // }
 
   return (
     <View style={styles.card}>
@@ -34,14 +33,12 @@ export default function PlaceCard({ image, title, description, noteAverage }) {
       <View style={styles.verticalBar}></View>
       <View style={styles.textContainer}>
         <View style={styles.titleContainer}>
-          <Text style={styles.title}>{title.length > 10 ? title.substring(0, 10) + "..." : title}</Text>
-          <View style={styles.iconBox}>
-            <TouchableOpacity style={styles.iconTouchBox}>
-              <FontAwesomeIcon icon={faHeart} size={10} color="#D71111" />
-              <FontAwesomeIcon icon={faCamera} size={10} color="#2e90da" />
-            </TouchableOpacity>
-            {stars}
-          </View>
+          <Text style={styles.title}>{title.length > 14 ? title.substring(0, 14) + "..." : title}</Text>
+          <TouchableOpacity style={styles.iconTouchBox}>
+            <FontAwesomeIcon icon={faHeart} size={10} color="#D71111" />
+            <FontAwesomeIcon icon={faStar} size={12} color="#DEB973" />
+            <Text>3/5</Text>
+          </TouchableOpacity>
         </View>
         <Text style={styles.description} numberOfLines={4}>
           {description}
@@ -102,13 +99,10 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginRight: 1,
   },
-  iconBox: {
-    flexDirection: "row",
-  },
   iconTouchBox: {
     flexDirection: "row",
-    marginHorizontal: 10,
-    gap: 8,
+    marginHorizontal: 5,
+    gap: 5,
   },
   title: {
     fontSize: 20,

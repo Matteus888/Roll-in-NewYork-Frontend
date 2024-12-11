@@ -1,7 +1,8 @@
 // Import pour react / react-native
-import { View, StyleSheet, Dimensions, ScrollView, TouchableOpacity, Text } from "react-native"; // Import pour react / react-native
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text } from "react-native"; // Import pour react / react-native
 import { useEffect, useState } from "react"; // Import pour react
 import { useSelector } from "react-redux"; // Import pour récupérer les données du store
+import { useNavigation } from "@react-navigation/native";
 import Header from "../components/Header"; // Import du composant Header.js
 import PlaceCard from "../components/PlaceCard"; // Import du composant PlaceCard.js
 
@@ -11,8 +12,14 @@ export default function FavouriteScreen() {
   const [isLoading, setIsLoading] = useState(true);
 
   const user = useSelector((state) => state.user.value);
+  const navigation = useNavigation();
 
   useEffect(() => {
+    if (!user || !user.token) {
+      navigation.navigate("Login");
+      return;
+    }
+
     fetch(`https://roll-in-new-york-backend.vercel.app/favorites/places/${user.token}`) // Requête pour récupérer les lieux likés
       .then((response) => response.json())
       .then((data) => {
@@ -22,9 +29,7 @@ export default function FavouriteScreen() {
       .catch((err) => {
         console.error("Error during fetch data", err);
       });
-  }, [user.token]);
-
-  console.log(placesLikedList);
+  }, [user, navigation]);
 
   let content;
 
