@@ -37,7 +37,7 @@ export default function FavouriteScreen() {
     content = <Text style={styles.textNoFavAdded}>Loading favorites ...</Text>;
   } else if (placesLikedList && placesLikedList.length > 0) {
     content = placesLikedList.map((place, i) => (
-      <PlaceCard key={i} title={place.title} image={place.placePicture} description={place.overview} noteAverage={3} />
+      <PlaceCard key={i} id={place._id} title={place.title} image={place.placePicture} description={place.overview} noteAverage={3} />
     ));
   } else {
     content = <Text style={styles.textNoFavAdded}>No favorite places at the moment</Text>;

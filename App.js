@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import movie, { addMovie } from './reducers/movies';
+import movie, { addMovie, removeAllMovies } from './reducers/movies';
 import user from './reducers/users';
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faHouse, faHeart, faMagnifyingGlass, faUser } from "@fortawesome/free-solid-svg-icons";
@@ -37,6 +37,7 @@ function Navigation() {
   const user = useSelector((state) => state.user.value);
 
   useEffect(() => {
+    dispatch(removeAllMovies());
     let allMoviesId = [];
     fetch("https://roll-in-new-york-backend.vercel.app/places/")
       .then((response) => response.json())
@@ -48,7 +49,6 @@ function Navigation() {
             }
           });
         });
-
         allMoviesId.map((dataId) => {
           fetch(`https://api.themoviedb.org/3/movie/${dataId}?api_key=a98f87059c37903cc153947a91b8dd1c`)
             .then((response) => response.json())

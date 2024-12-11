@@ -89,6 +89,7 @@ export default function SearchScreen({ route, navigation }) {
                                     <View style={styles.cardWrapper}>
                                         <PlaceCard
                                             key={item._id}
+                                            id={item._id}
                                             image={item.placePicture}
                                             title={item.title}
                                             description={item.overview}
