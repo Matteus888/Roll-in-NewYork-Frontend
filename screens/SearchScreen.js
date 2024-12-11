@@ -19,7 +19,7 @@ import MovieCard from "../components/MovieCard"; // Import du composant MovieCar
 
 const { width } = Dimensions.get("window"); // Récupération de la largeur de l'écran du téléphone
 
-export default function SearchScreen({ route }) {
+export default function SearchScreen({ route, navigation }) {
 
 
     const [currentIndex, setCurrentIndex] = useState(0); // État pour stocker l'index de la card lieux actuelle
@@ -95,7 +95,7 @@ export default function SearchScreen({ route }) {
     return (
         <>
             <View style={styles.container}>
-                <Header title="Roll-In NewYork" showInput={true} />
+                <Header title="Roll-In NewYork" showInput={true} navigation={navigation}/>
                 <View style={styles.searchScreenContainer}>
                     {movieCard}
                     <View style={styles.carouselWrapper}>
@@ -122,6 +122,7 @@ export default function SearchScreen({ route }) {
                                             image={item.image}
                                             title={item.title}
                                             description={item.description}
+                                            navigation={navigation}
                                         />
                                     </View>
                                 ) : null

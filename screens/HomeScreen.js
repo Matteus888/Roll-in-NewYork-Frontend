@@ -73,28 +73,26 @@ export default function HomeScreen({navigation}) {
 
     // pour afficher les films au click sur un lieu
     const movieCards = placeMovies.map((data, i)=> {
-        for (let j=0; j<moviesInfo.length; j++){
-            if (moviesInfo[j].id === data){
-
-                
-                return (
-                    <TouchableOpacity key={`movieCardId: ${i}`} onPress={()=> {
-                        let selectedMovie = moviesInfo[j]
-              
-                        navigation.navigate("Search", {selectedMovie})
-                        setModalVisible(false)
-                        }} >
-                        <MovieCard 
-                        title={moviesInfo[j].title} 
-                        poster={moviesInfo[j].poster_path} 
-                        overview={moviesInfo[j].overview} 
-                        date={moviesInfo[j].release_date}
-                        ></MovieCard>
-                    </TouchableOpacity>
-                )
-            }
+      for (let j=0; j<moviesInfo.length; j++){
+        if (moviesInfo[j].id === data){
+          return (
+            <TouchableOpacity key={`movieCardId: ${i}`} onPress={()=> {
+              let selectedMovie = moviesInfo[j]
+              console.log(selectedMovie)
+              navigation.navigate("Search", {selectedMovie})
+              setModalVisible(false)
+              }} >
+              <MovieCard 
+              title={moviesInfo[j].title} 
+              poster={moviesInfo[j].poster_path} 
+              overview={moviesInfo[j].overview} 
+              date={moviesInfo[j].release_date}
+              ></MovieCard>
+            </TouchableOpacity>
+          )
         }
-})
+      }
+    })
 
   function goToMap(origin, destination) {
     const { latitude: originLat, longitude: originLon } = origin;
@@ -123,10 +121,28 @@ export default function HomeScreen({navigation}) {
     }
   }
 
+  function getDistanceBetweenTwoCoords(lat1, lon1, lat2, lon2) { // Fonction pour calculer la distance entre deux coordonnées
+    const R = 6371000; // Rayon de la Terre en mètres
+    const toRadians = (degree) => (degree * Math.PI) / 180; // Fonction pour convertir les degrés en radians
+  
+    const dLat = toRadians(lat2 - lat1); // Différence de latitude
+    const dLon = toRadians(lon2 - lon1); // Différence de longitude
+    // Formule de Haversine
+    const a = 
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) + 
+      Math.cos(toRadians(lat1)) *
+        Math.cos(toRadians(lat2)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+    
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a)); 
+    return R * c;
+  }  
+
   return (
     <View style={styles.container}>
       <View>
-        <Header title="Roll-In NewYork" showInput={true} />
+        <Header title="Roll-In NewYork" showInput={true} navigation={navigation} />
       </View>
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
         <View style={styles.modalBackground}>
@@ -151,20 +167,44 @@ export default function HomeScreen({navigation}) {
           // la key est une string avec un identifiant "map" pour le différencier des key "i" dans le place.map
           key={`map-${places.length}`}
           // focus au dessus de central park
-          initialRegion={{
-            latitude: 40.7857122,
-            longitude: -73.9745249,
-            latitudeDelta: 0.1,
-            longitudeDelta: 0.1,
-          }}
+          initialRegion={
+            currentPosition &&
+            places.some((place) => {
+              const distance = getDistanceBetweenTwoCoords(
+                currentPosition.latitude,
+                currentPosition.longitude,
+                place.coords.lat,
+                place.coords.lon
+              );
+              return distance <= 30;
+            })
+              ? {
+                  latitude: currentPosition.latitude,
+                  longitude: currentPosition.longitude,
+                  latitudeDelta: 0.1,
+                  longitudeDelta: 0.1,
+                }
+              : {
+                  latitude: 40.772087, // Coordonnées par défaut
+                  longitude: -73.973159,
+                  latitudeDelta: 0.1,
+                  longitudeDelta: 0.1,
+                }
+          }
           style={styles.map}
         >
           <Marker
             // marker "en dur" pour localisation de l'utilisateur dans central park si pas à new york
-            coordinate={{
-              latitude: 40.772087,
-              longitude: -73.973159,
-            }}
+            coordinate={
+              currentPosition ? (
+                {
+                  latitude: currentPosition.latitude,
+                  longitude: currentPosition.longitude,
+                }
+              ) : (
+                { latitude: 40.772087, longitude: -73.973159 }
+              )
+            }
             image={manWalking || null}
           />
           {placesMarker}
