@@ -7,35 +7,47 @@ import PlaceCard from "../components/PlaceCard"; // Import du composant PlaceCar
 
 // Création de la page Favoris
 export default function FavouriteScreen() {
-  const [placesLikedList, setPlacesList] = useState([]); // État pour stocker la liste des lieux likés
+  const [placesLikedList, setPlacesLikedList] = useState(null); // État pour stocker la liste des lieux likés
+  const [isLoading, setIsLoading] = useState(true);
 
   const user = useSelector((state) => state.user.value);
-  console.log(user);
 
   useEffect(() => {
     fetch(`https://roll-in-new-york-backend.vercel.app/favorites/places/${user.token}`) // Requête pour récupérer les lieux likés
       .then((response) => response.json())
       .then((data) => {
-        setPlacesList(data.favoritePlaces); // Stockage des lieux likés dans l'état placesLikedList
+        setPlacesLikedList(data.favoritePlaces || null); // Stockage des lieux likés dans l'état placesLikedList
+        setIsLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error during fetch data", err);
       });
-  }, []);
+  }, [user.token]);
 
-  const placesLiked = placesLikedList.map((place, i) => {
-    // Boucle pour afficher les lieux likés
-    return (
-      // Il manque la moyenne des avis venant des reviews
+  console.log(placesLikedList);
+
+  let content;
+
+  if (isLoading) {
+    content = <Text style={styles.textNoFavAdded}>Loading favorites ...</Text>;
+  } else if (placesLikedList && placesLikedList.length > 0) {
+    content = placesLikedList.map((place, i) => (
       <PlaceCard key={i} title={place.title} image={place.placePicture} description={place.overview} noteAverage={3} />
-    );
-  });
+    ));
+  } else {
+    content = <Text style={styles.textNoFavAdded}>No favorite places at the moment</Text>;
+  }
 
   return (
     <View style={styles.container}>
       <Header title="My Favorites" showInput={false} />
       <View style={styles.favouritesScreenContainer}>
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.textButton}>Plan my day !</Text>
-        </TouchableOpacity>
-        <ScrollView showsVerticalScrollIndicator={false}>{placesLiked}</ScrollView>
+        {placesLikedList && placesLikedList.length > 0 && (
+          <TouchableOpacity style={styles.button}>
+            <Text style={styles.textButton}>Plan my day !</Text>
+          </TouchableOpacity>
+        )}
+        <ScrollView showsVerticalScrollIndicator={false}>{content}</ScrollView>
       </View>
     </View>
   );
@@ -64,5 +76,9 @@ const styles = StyleSheet.create({
     color: "#DEB973",
     textAlign: "center",
     fontWeight: 600,
+  },
+  textNoFavAdded: {
+    marginTop: 80,
+    fontSize: 24,
   },
 });

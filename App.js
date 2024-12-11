@@ -2,10 +2,10 @@ import { StyleSheet } from "react-native";
 import { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { Provider, useDispatch, useSelector } from 'react-redux';
-import { configureStore } from '@reduxjs/toolkit';
-import place, { addMovie } from './reducers/places';
-import user from './reducers/users';
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { configureStore } from "@reduxjs/toolkit";
+import movie, { addMovie } from "./reducers/movies";
+import user from "./reducers/users";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faHouse, faHeart, faMagnifyingGlass, faUser } from "@fortawesome/free-solid-svg-icons";
 import ToastManager from "toastify-react-native";
@@ -17,10 +17,10 @@ import LoginScreen from "./screens/LoginScreen";
 const Tab = createBottomTabNavigator();
 
 const store = configureStore({
-  reducer: { user, place }
+  reducer: { user, movie },
 });
 
-export default function App() { 
+export default function App() {
   return (
     <Provider store={store}>
       <ToastManager />
@@ -37,7 +37,7 @@ function Navigation() {
 
   useEffect(() => {
     let allMoviesId = [];
-    fetch('https://roll-in-new-york-backend.vercel.app/places/')
+    fetch("https://roll-in-new-york-backend.vercel.app/places/")
       .then((response) => response.json())
       .then((data) => {
         data.places.forEach((place) => {
@@ -47,19 +47,21 @@ function Navigation() {
             }
           });
         });
-        
+
         allMoviesId.map((dataId) => {
           fetch(`https://api.themoviedb.org/3/movie/${dataId}?api_key=a98f87059c37903cc153947a91b8dd1c`)
             .then((response) => response.json())
             .then((data) => {
               if (data.original_title && data.poster_path) {
-                dispatch(addMovie({
-                  id: dataId,
-                  title: data.original_title,
-                  poster_path: data.poster_path,
-                  overview: data.overview,
-                  release_date: data.release_date,
-                }));
+                dispatch(
+                  addMovie({
+                    id: dataId,
+                    title: data.original_title,
+                    poster_path: data.poster_path,
+                    overview: data.overview,
+                    release_date: data.release_date,
+                  })
+                );
               }
             });
         });
@@ -82,7 +84,7 @@ function Navigation() {
             case "Search":
               iconName = faMagnifyingGlass;
               break;
-            case (user.username === null ? "Login" : user.username):
+            case user.username === null ? "Login" : user.username:
               iconName = faUser;
               break;
           }
