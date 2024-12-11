@@ -16,10 +16,9 @@ export default function HomeScreen({navigation}) {
     const [currentPosition, setCurrentPosition] = useState(null); // Initiation des coordonnées de localisation de l'utilisateur
     const [modalVisible, setModalVisible] = useState(false) // Initiation de la modale pour afficher les informations du lieu
     const [placeMovies, setPlaceMovies] = useState([]) // Initiation du tableau de films du lieu
-    const [movieData, setMovieData] = useState() // Initiation des données du film
     // récupération des infos de tout les films depuis le reducer
-    const moviesInfo = useSelector((state)=> state.place.value)
-    const [movieInfo, setMovieInfo] = useState({})
+    const moviesInfo = useSelector((state)=> state.movie.value)
+
 
     // Demande de permission pour récupérer la localisation de l'utilisateur
     useEffect(() => {
@@ -74,13 +73,14 @@ export default function HomeScreen({navigation}) {
     const movieCards = placeMovies.map((data, i)=> {
         for (let j=0; j<moviesInfo.length; j++){
             if (moviesInfo[j].id === data){
-                console.log(moviesInfo[j].id)
+
                 
                 return (
-                    <TouchableOpacity key={`movieCardId: ${i}`} info= {movieInfo} onPress={()=> {
-                        setMovieInfo(moviesInfo[j])
-                        console.log('test', movieInfo)
-                        navigation.navigate("Search", {movieInfo})
+                    <TouchableOpacity key={`movieCardId: ${i}`} onPress={()=> {
+                        let selectedMovie = moviesInfo[j]
+              
+                        navigation.navigate("Search", {selectedMovie})
+                        setModalVisible(false)
                         }} >
                         <MovieCard 
                         title={moviesInfo[j].title} 

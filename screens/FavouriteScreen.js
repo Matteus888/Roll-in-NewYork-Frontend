@@ -25,7 +25,7 @@ export default function FavouriteScreen() {
         ) // Requête pour récupérer les lieux likés
             .then((response) => response.json())
             .then((data) => {
-                setPlacesList(data.favoritePlaces ?? []); // Stockage des lieux likés dans l'état placesLikedList
+                setPlacesList(data.favoritePlaces); // Stockage des lieux likés dans l'état placesLikedList
             });
     }, []);
 

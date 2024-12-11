@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Provider, useDispatch, useSelector } from 'react-redux';
 import { configureStore } from '@reduxjs/toolkit';
-import place, { addMovie } from './reducers/places';
+import movie, { addMovie } from './reducers/movies';
 import user from './reducers/users';
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faHouse, faHeart, faMagnifyingGlass, faUser } from "@fortawesome/free-solid-svg-icons";
@@ -17,7 +17,7 @@ import LoginScreen from "./screens/LoginScreen";
 const Tab = createBottomTabNavigator();
 
 const store = configureStore({
-  reducer: { user, place }
+  reducer: { user, movie }
 });
 
 export default function App() { 

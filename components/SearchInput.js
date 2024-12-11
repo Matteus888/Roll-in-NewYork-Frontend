@@ -15,12 +15,12 @@ import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"; // Import
 export default function SearchInput() {
     const [filteredMovie, setFilteredMovie] = useState([]); // État pour stocker les résultats
     const [showPopup, setShowPopup] = useState(false); // État pour contrôler l'affichage de la pop-up
-    const place = useSelector((state) => state.place.value); // Récupération des données du store place
+    const movie = useSelector((state) => state.movie.value); // Récupération des données du store place
 
     const searchMovies = (searchValue) => {
         // Fonction pour rechercher les films
         const hashtagPattern = new RegExp(`${searchValue}`, "i"); // Variable qui permet de faire une recherche en equalsIgnoreCase en fonction de la valeur de la recherche
-        const results = place.filter((movie) =>
+        const results = movie.filter((movie) =>
             movie.title.match(hashtagPattern)
         ); // Récupération des résultats en fonction de la recherche
         setFilteredMovie(results); // Mise à jour des résultats
