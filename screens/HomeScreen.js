@@ -78,7 +78,6 @@ export default function HomeScreen({navigation}) {
           return (
             <TouchableOpacity key={`movieCardId: ${i}`} onPress={()=> {
               let selectedMovie = moviesInfo[j]
-              console.log(selectedMovie)
               navigation.navigate("Search", {selectedMovie})
               setModalVisible(false)
               }} >
