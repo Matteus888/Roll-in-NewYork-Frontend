@@ -26,7 +26,7 @@ export default function FavouriteScreen() {
         navigation.navigate("Login");
         return;
       }
-    };
+    })();
 
     fetch(`https://roll-in-new-york-backend.vercel.app/favorites/places/${user.token}`) // Requête pour récupérer les lieux likés
       .then((response) => response.json())
