@@ -10,20 +10,25 @@ import {
   Pressable,
 } from "react-native"; // Import pour react / react-native
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
-import { faHeart, faStar } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
-import { useFonts } from "expo-font"; // Import pour expo
+import { faHeart, faStar, faImage } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
+import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addPlaceToFavorites, removePlaceToFavorites } from "../reducers/favorites";
+import { addMovie } from "../reducers/movies";
 
 // Création de la card représentant les lieux de tournage référencés
 export default function PlaceCard({ id, image, title, description, navigation }) {
   const user = useSelector((state) => state.user.value);
+  const nav = useNavigation();
   const [popupVisible, setPopupVisible] = useState(false);
   const [likeStyle, setLikeStyle] = useState({ color: "white" });
   const [isLiked, setIsLiked] = useState(false);
 
+  const dispatch = useDispatch();
+
   //stockage des infos de la placeCard dans une variable:
-  const placeInfo = { id, image, title, description}
+  const placeInfo = { id, image, title, description };
 
   useEffect(() => {
     (async () => {
@@ -40,14 +45,13 @@ export default function PlaceCard({ id, image, title, description, navigation })
         })
         .catch((err) => console.error("Error checking like status:", err));
     })();
-
   }, [user.token, id]);
 
   const handleLike = () => {
     setPopupVisible(false);
 
     if (user.token === null) {
-      navigation.navigate("Login");
+      navigation.navigate("Login", { navigation });
       return;
     }
     try {
@@ -59,9 +63,11 @@ export default function PlaceCard({ id, image, title, description, navigation })
           if (data.status === "Added") {
             setLikeStyle({ color: "red" });
             setIsLiked(true);
+            dispatch(addPlaceToFavorites(id));
           } else if (data.status === "Removed") {
             setLikeStyle({ color: "white" });
             setIsLiked(false);
+            dispatch(removePlaceToFavorites());
           }
         })
         .catch((err) => console.error("Error during fetch data", err));
@@ -70,9 +76,17 @@ export default function PlaceCard({ id, image, title, description, navigation })
     }
   };
 
+  const goToMemories = () => {
+    const selectedPlace = { id, image, title, description };
+    navigation.navigate("Memories", { selectedPlace });
+    setPopupVisible(false);
+  };
+
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => setPopupVisible(true)}>
+      <Pressable
+        onPress={() => (nav.getState().routes[nav.getState().index].name === "Memories" ? null : setPopupVisible(true))}
+      >
         <View style={styles.card}>
           <View style={styles.imageContainer}>
             <Image source={{ uri: image }} style={styles.image} />
@@ -80,11 +94,11 @@ export default function PlaceCard({ id, image, title, description, navigation })
           <View style={styles.verticalBar}></View>
           <View style={styles.textContainer}>
             <View style={styles.titleContainer}>
-              <Text style={styles.title} numberOfLines={2} >
+              <Text style={styles.title} numberOfLines={2}>
                 {title}
               </Text>
               <TouchableOpacity style={styles.iconTouchBox}>
-                <FontAwesomeIcon icon={faHeart} size={10} style={isLiked ? {color: "red"} : likeStyle} />
+                <FontAwesomeIcon icon={faHeart} size={10} style={isLiked ? { color: "red" } : likeStyle} />
                 <FontAwesomeIcon icon={faStar} size={12} color="#DEB973" />
                 <Text>3/5</Text>
               </TouchableOpacity>
@@ -102,12 +116,25 @@ export default function PlaceCard({ id, image, title, description, navigation })
             <View style={styles.popupContent}>
               <TouchableOpacity onPress={handleLike} style={styles.popupButton} activeOpacity={0.8}>
                 <FontAwesomeIcon icon={faHeart} size={40} style={likeStyle} />
-                <Text style={styles.popupText}>Add to favourites</Text>
+                <Text style={styles.popupText}>Favourites</Text>
               </TouchableOpacity>
               <View style={styles.popupSeparator}></View>
-              <TouchableOpacity onPress={() => navigation.navigate("Reviews", {placeInfo})} style={styles.popupButton} activeOpacity={0.8}>
-                <FontAwesomeIcon icon={faStar} size={40} color="#DEB973"/>
-                <Text style={styles.popupText}>Consult reviews</Text>
+              {user.token !== null && isLiked == true && (
+                <>
+                  <TouchableOpacity onPress={goToMemories} style={styles.popupButton} activeOpacity={0.8}>
+                    <FontAwesomeIcon icon={faImage} size={40} color="#4198f0" />
+                    <Text style={styles.popupText}>Memories</Text>
+                  </TouchableOpacity>
+                  <View style={styles.popupSeparator}></View>
+                </>
+              )}
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Reviews", { placeInfo })}
+                style={styles.popupButton}
+                activeOpacity={0.8}
+              >
+                <FontAwesomeIcon icon={faStar} size={40} color="#DEB973" />
+                <Text style={styles.popupText}>Reviews</Text>
               </TouchableOpacity>
             </View>
           </TouchableWithoutFeedback>
@@ -166,7 +193,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   popupSeparator: {
-    width: 10,
+    width: 30,
     marginHorizontal: 5,
   },
   popupButton: {
@@ -185,6 +212,8 @@ const styles = StyleSheet.create({
   image: {
     width: "100%",
     height: "100%",
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
   },
