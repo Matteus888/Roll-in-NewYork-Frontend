@@ -201,7 +201,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     marginRight: 1,
-    overflow: "hidden",
   },
   iconTouchBox: {
     flexDirection: "row",
