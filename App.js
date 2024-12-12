@@ -7,6 +7,7 @@ import { configureStore } from "@reduxjs/toolkit";
 import movie, { addMovie, removeAllMovies } from "./reducers/movies";
 import user from "./reducers/users";
 import favorite from "./reducers/favorites";
+import picture from "./reducers/pictures";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faHouse, faHeart, faMagnifyingGlass, faUser } from "@fortawesome/free-solid-svg-icons";
 import ToastManager from "toastify-react-native";
@@ -16,11 +17,12 @@ import SearchScreen from "./screens/SearchScreen";
 import LoginScreen from "./screens/LoginScreen";
 import MemoriesScreen from "./screens/MemoriesScreen";
 import ReviewsScreen from "./screens/ReviewsScreen";
+import CameraScreen from "./screens/CameraScreen";
 
 const Tab = createBottomTabNavigator();
 
 const store = configureStore({
-  reducer: { user, movie, favorite },
+  reducer: { user, movie, favorite, picture },
 });
 
 export default function App() {
@@ -106,6 +108,7 @@ function TabNavigator() {
       <Tab.Screen name={user.username === null ? "Login" : user.username} component={LoginScreen} />
       <Tab.Screen name="Memories" component={MemoriesScreen} options={{tabBarButton: () => null}} />
       <Tab.Screen name="Reviews" component={ReviewsScreen} options={{tabBarButton: () => null}} />
+      <Tab.Screen name="Camera" component={CameraScreen} options={{tabBarButton: () => null, tabBarStyle: { display: 'none' }}} />
     </Tab.Navigator>
   );
 }

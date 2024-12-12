@@ -61,13 +61,13 @@ export default function PlaceCard({ id, image, title, description, navigation })
         .then((response) => response.json())
         .then((data) => {
           if (data.status === "Added") {
+            dispatch(addPlaceToFavorites(id));
             setLikeStyle({ color: "red" });
             setIsLiked(true);
-            dispatch(addPlaceToFavorites(id));
           } else if (data.status === "Removed") {
+            dispatch(removePlaceToFavorites());
             setLikeStyle({ color: "white" });
             setIsLiked(false);
-            dispatch(removePlaceToFavorites());
           }
         })
         .catch((err) => console.error("Error during fetch data", err));
