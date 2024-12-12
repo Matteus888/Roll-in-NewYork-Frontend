@@ -37,8 +37,7 @@ export default function FavouriteScreen() {
       .catch((err) => {
         console.error("Error during fetch data", err);
       });
-
-  }, [user, navigation]);
+  }, [user.token, navigation]);
 
   const toggleCheckbox = (index) => {
     const updatedStates = [...checkedStates]; // Copie de l'état actuel
@@ -54,7 +53,7 @@ export default function FavouriteScreen() {
   let content;
 
   if (isLoading) {
-    content = <Text style={styles.textLoading}>Loading favorites ...</Text>;
+    content = <Text style={styles.textError}>Loading favorites ...</Text>;
   } else if (placesLikedList && placesLikedList.length > 0) {
     content = placesLikedList.map((place, i) => (
       <View style={styles.cardLine} key={`view-${i}`}>
@@ -67,11 +66,20 @@ export default function FavouriteScreen() {
           />
         )}
 
-        <PlaceCard key={i} id={place._id} title={place.title} image={place.placePicture} description={place.overview} noteAverage={3} />
+        <PlaceCard
+          key={i}
+          id={place._id}
+          title={place.title}
+          image={place.placePicture}
+          description={place.overview}
+          noteAverage={3}
+        />
       </View>
     ));
+  } else if (user.token) {
+    content = <Text style={styles.textError}>No favorite places at the moment</Text>;
   } else {
-    content = <Text style={styles.textNoFavAdded}>No favorite places at the moment</Text>;
+    content = <Text style={styles.textError}>Connection required</Text>;
   }
 
   return (
@@ -113,18 +121,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontWeight: 600,
   },
-  textLoading: {
-    marginTop: 80,
-    fontSize: 24,
-  },
-  cardLine: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  textNoFavAdded: {
+  textError: {
     marginTop: 50,
     fontSize: 24,
     fontWeight: 600,
     color: "#282C37",
+  },
+  cardLine: {
+    flexDirection: "row",
+    alignItems: "center",
   },
 });
