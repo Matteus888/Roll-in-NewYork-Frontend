@@ -4,7 +4,7 @@ import { Marker } from "react-native-maps";
 import MapView from "react-native-maps";
 import { useState, useEffect } from "react"; // Import pour react
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
-const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png";
+const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png"; //import du maker pour afficher le lieu sur la map
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
 import Header from "../components/Header"; // Import du composant Header
 import PlaceCard from "../components/PlaceCard"; // Import du composant PlaceCard

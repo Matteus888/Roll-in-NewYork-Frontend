@@ -22,6 +22,9 @@ export default function PlaceCard({ id, image, title, description, navigation })
   const [likeStyle, setLikeStyle] = useState({ color: "white" });
   const [isLiked, setIsLiked] = useState(false);
 
+  //stockage des infos de la placeCard dans une variable:
+  const placeInfo = { id, image, title, description}
+
   useEffect(() => {
     (async () => {
       fetch(`https://roll-in-new-york-backend.vercel.app/users/isLiked/${user.token}/${id}`)
@@ -102,8 +105,8 @@ export default function PlaceCard({ id, image, title, description, navigation })
                 <Text style={styles.popupText}>Add to favourites</Text>
               </TouchableOpacity>
               <View style={styles.popupSeparator}></View>
-              <TouchableOpacity onPress={() => console.log("test")} style={styles.popupButton} activeOpacity={0.8}>
-                <FontAwesomeIcon icon={faStar} size={40} color="#DEB973" />
+              <TouchableOpacity onPress={() => navigation.navigate("Reviews", {placeInfo})} style={styles.popupButton} activeOpacity={0.8}>
+                <FontAwesomeIcon icon={faStar} size={40} color="#DEB973"/>
                 <Text style={styles.popupText}>Consult reviews</Text>
               </TouchableOpacity>
             </View>
