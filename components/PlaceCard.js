@@ -13,7 +13,9 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Impo
 import { faHeart, faStar } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
 import { useFonts } from "expo-font"; // Import pour expo
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { addPlaceToFavorites, removePlaceToFavorites } from "../reducers/favorites";
+import { addMovie } from "../reducers/movies";
 
 // Création de la card représentant les lieux de tournage référencés
 export default function PlaceCard({ id, image, title, description, navigation }) {
@@ -21,6 +23,8 @@ export default function PlaceCard({ id, image, title, description, navigation })
   const [popupVisible, setPopupVisible] = useState(false);
   const [likeStyle, setLikeStyle] = useState({ color: "white" });
   const [isLiked, setIsLiked] = useState(false);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     (async () => {
@@ -37,7 +41,6 @@ export default function PlaceCard({ id, image, title, description, navigation })
         })
         .catch((err) => console.error("Error checking like status:", err));
     })();
-
   }, [user.token, id]);
 
   const handleLike = () => {
@@ -56,9 +59,11 @@ export default function PlaceCard({ id, image, title, description, navigation })
           if (data.status === "Added") {
             setLikeStyle({ color: "red" });
             setIsLiked(true);
+            dispatch(addPlaceToFavorites(id));
           } else if (data.status === "Removed") {
             setLikeStyle({ color: "white" });
             setIsLiked(false);
+            dispatch(removePlaceToFavorites());
           }
         })
         .catch((err) => console.error("Error during fetch data", err));
@@ -77,11 +82,11 @@ export default function PlaceCard({ id, image, title, description, navigation })
           <View style={styles.verticalBar}></View>
           <View style={styles.textContainer}>
             <View style={styles.titleContainer}>
-              <Text style={styles.title} numberOfLines={2} >
+              <Text style={styles.title} numberOfLines={2}>
                 {title}
               </Text>
               <TouchableOpacity style={styles.iconTouchBox}>
-                <FontAwesomeIcon icon={faHeart} size={10} style={isLiked ? {color: "red"} : likeStyle} />
+                <FontAwesomeIcon icon={faHeart} size={10} style={isLiked ? { color: "red" } : likeStyle} />
                 <FontAwesomeIcon icon={faStar} size={12} color="#DEB973" />
                 <Text>3/5</Text>
               </TouchableOpacity>
@@ -178,11 +183,12 @@ const styles = StyleSheet.create({
     height: "100%",
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
-    overflow: "hidden",
   },
   image: {
     width: "100%",
     height: "100%",
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
   },
   verticalBar: {
     width: 1,
