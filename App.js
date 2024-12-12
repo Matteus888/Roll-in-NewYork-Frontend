@@ -14,6 +14,7 @@ import HomeScreen from "./screens/HomeScreen";
 import FavouriteScreen from "./screens/FavouriteScreen";
 import SearchScreen from "./screens/SearchScreen";
 import LoginScreen from "./screens/LoginScreen";
+import MemoriesScreen from "./screens/MemoriesScreen";
 import ReviewsScreen from "./screens/ReviewsScreen";
 
 const Tab = createBottomTabNavigator();
@@ -27,13 +28,13 @@ export default function App() {
     <Provider store={store}>
       <ToastManager />
       <NavigationContainer>
-        <Navigation />
+        <TabNavigator />
       </NavigationContainer>
     </Provider>
   );
 }
 
-function Navigation() {
+function TabNavigator() {
   const dispatch = useDispatch();
   const user = useSelector((state) => state.user.value);
 
@@ -103,6 +104,8 @@ function Navigation() {
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Favourite" component={FavouriteScreen} />
       <Tab.Screen name={user.username === null ? "Login" : user.username} component={LoginScreen} />
+      <Tab.Screen name="Memories" component={MemoriesScreen} options={{tabBarButton: () => null}} />
+      <Tab.Screen name="Reviews" component={ReviewsScreen} options={{tabBarButton: () => null}} />
     </Tab.Navigator>
   );
 }

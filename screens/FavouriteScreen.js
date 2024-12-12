@@ -26,7 +26,7 @@ export default function FavouriteScreen() {
     // Redirection vers la page login si on n'est pas connecté
     (async () => {
       if (user.token === null) {
-        navigation.navigate("Login");
+        navigation.navigate("Memories");
         return;
       }
     })();
