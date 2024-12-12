@@ -21,7 +21,7 @@ export default function FavouriteScreen() {
     (async () => {
       console.log("user.token", user.token);
       if (user.token === null) {
-        navigation.navigate("Memories");
+        navigation.navigate("Login");
         return;
       }
     })();
@@ -73,6 +73,7 @@ export default function FavouriteScreen() {
           image={place.placePicture}
           description={place.overview}
           noteAverage={3}
+          navigation={navigation}
         />
       </View>
     ));

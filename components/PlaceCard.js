@@ -10,14 +10,15 @@ import {
   Pressable,
 } from "react-native"; // Import pour react / react-native
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
-import { faHeart, faStar } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
-import { useFonts } from "expo-font"; // Import pour expo
+import { faHeart, faStar, faImage } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
+import { useNavigation } from '@react-navigation/native';
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 
 // Création de la card représentant les lieux de tournage référencés
 export default function PlaceCard({ id, image, title, description, navigation }) {
   const user = useSelector((state) => state.user.value);
+  const nav = useNavigation();
   const [popupVisible, setPopupVisible] = useState(false);
   const [likeStyle, setLikeStyle] = useState({ color: "white" });
   const [isLiked, setIsLiked] = useState(false);
@@ -44,7 +45,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
     setPopupVisible(false);
 
     if (user.token === null) {
-      navigation.navigate("Login");
+      navigation.navigate("Login", {navigation});
       return;
     }
     try {
@@ -67,9 +68,15 @@ export default function PlaceCard({ id, image, title, description, navigation })
     }
   };
 
+  const goToMemories = () => {
+    const selectedPlace = { id, image, title, description };
+    navigation.navigate("Memories", {selectedPlace});
+    setPopupVisible(false);
+  };
+
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => setPopupVisible(true)}>
+      <Pressable onPress={() => nav.getState().routes[nav.getState().index].name === "Memories" ? null : setPopupVisible(true)}>
         <View style={styles.card}>
           <View style={styles.imageContainer}>
             <Image source={{ uri: image }} style={styles.image} />
@@ -99,12 +106,20 @@ export default function PlaceCard({ id, image, title, description, navigation })
             <View style={styles.popupContent}>
               <TouchableOpacity onPress={handleLike} style={styles.popupButton} activeOpacity={0.8}>
                 <FontAwesomeIcon icon={faHeart} size={40} style={likeStyle} />
-                <Text style={styles.popupText}>Add to favourites</Text>
+                <Text style={styles.popupText}>Favourites</Text>
               </TouchableOpacity>
               <View style={styles.popupSeparator}></View>
+              {user.token !== null && isLiked == true && ( 
+                <>
+                  <TouchableOpacity onPress={goToMemories} style={styles.popupButton} activeOpacity={0.8}>
+                    <FontAwesomeIcon icon={faImage} size={40} color="#4198f0" />
+                    <Text style={styles.popupText}>Memories</Text>
+                  </TouchableOpacity><View style={styles.popupSeparator}></View>
+                </>
+              )}
               <TouchableOpacity onPress={() => console.log("test")} style={styles.popupButton} activeOpacity={0.8}>
                 <FontAwesomeIcon icon={faStar} size={40} color="#DEB973" />
-                <Text style={styles.popupText}>Consult reviews</Text>
+                <Text style={styles.popupText}>Reviews</Text>
               </TouchableOpacity>
             </View>
           </TouchableWithoutFeedback>
@@ -163,7 +178,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   popupSeparator: {
-    width: 10,
+    width: 30,
     marginHorizontal: 5,
   },
   popupButton: {
