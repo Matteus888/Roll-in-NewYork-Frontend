@@ -1,5 +1,11 @@
 // Import pour react / react-native
-import { View, StyleSheet, ScrollView, TouchableOpacity, Text } from "react-native"; // Import pour react / react-native
+import {
+  View,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+  Text,
+} from "react-native"; // Import pour react / react-native
 import { useEffect, useState } from "react"; // Import pour react
 import { useSelector } from "react-redux"; // Import pour récupérer les données du store
 import { useNavigation } from "@react-navigation/native";
@@ -10,8 +16,10 @@ import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 
 // Import des icons depuis cloudinary
-const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/pctlnl7qs4esplvimxui.png";
-const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png";
+const manWalking =
+  "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/pctlnl7qs4esplvimxui.png";
+const moviePlace =
+  "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png";
 
 export default function FavouriteScreen() {
   const [placesLikedList, setPlacesLikedList] = useState(null); // État pour stocker la liste des lieux likés
@@ -39,10 +47,14 @@ export default function FavouriteScreen() {
       }
     })();
     // Requête pour récupérer les lieux likés
-    fetch(`https://roll-in-new-york-backend.vercel.app/favorites/places/${user.token}`)
+    fetch(
+      `https://roll-in-new-york-backend.vercel.app/favorites/places/${user.token}`
+    )
       .then((response) => response.json())
       .then((data) => {
-        const favoritePlaces = Array.isArray(data.favoritePlaces) ? data.favoritePlaces : []; // Vérifie si c'est un tableau
+        const favoritePlaces = Array.isArray(data.favoritePlaces)
+          ? data.favoritePlaces
+          : []; // Vérifie si c'est un tableau
         setPlacesLikedList(data.favoritePlaces || null); // Stockage des lieux likés dans l'état placesLikedList
         setCheckedStates(Array(favoritePlaces.length).fill(false)); // Initialisation des états pour chaque case à cocher
         setPlaces(data.favoritePlaces);
@@ -106,7 +118,9 @@ export default function FavouriteScreen() {
       </View>
     ));
   } else if (user.token) {
-    content = <Text style={styles.textError}>No favorite places at the moment</Text>;
+    content = (
+      <Text style={styles.textError}>No favorite places at the moment</Text>
+    );
   } else {
     content = <Text style={styles.textError}>Connection required</Text>;
   }
@@ -116,9 +130,14 @@ export default function FavouriteScreen() {
   return (
     <View style={styles.container}>
       <Header title="My Favorites" showInput={false} />
-      <View style={[styles.favouritesScreenContainer, { height: dynamicHeight }]}>
+      <View
+        style={[styles.favouritesScreenContainer, { height: dynamicHeight }]}
+      >
         {placesLikedList && placesLikedList.length > 0 && planBtnVisible && (
-          <TouchableOpacity style={styles.button} onPress={() => handlePlanMyDay()}>
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => handlePlanMyDay()}
+          >
             <Text style={styles.txtButton}>Plan my day !</Text>
           </TouchableOpacity>
         )}
@@ -137,7 +156,10 @@ export default function FavouriteScreen() {
               >
                 <Text style={styles.txtButton}>Go to maps!</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.closeButton} onPress={() => handlePlanMyDay()}>
+              <TouchableOpacity
+                style={styles.closeButton}
+                onPress={() => handlePlanMyDay()}
+              >
                 <Text style={styles.txtButton}>X</Text>
               </TouchableOpacity>
             </View>
