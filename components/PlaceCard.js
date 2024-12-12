@@ -178,11 +178,12 @@ const styles = StyleSheet.create({
     height: "100%",
     borderTopLeftRadius: 10,
     borderBottomLeftRadius: 10,
-    overflow: "hidden",
   },
   image: {
     width: "100%",
     height: "100%",
+    borderTopLeftRadius: 10,
+    borderBottomLeftRadius: 10,
   },
   verticalBar: {
     width: 1,
