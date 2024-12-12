@@ -1,11 +1,24 @@
 // Réalisation des différents imports
-import { StyleSheet, View, FlatList, Dimensions, TouchableOpacity, Text, Platform, Linking } from "react-native"; // Import pour react / react-native
+import {
+  StyleSheet,
+  View,
+  FlatList,
+  Dimensions,
+  TouchableOpacity,
+  Text,
+  Platform,
+  Linking,
+} from "react-native"; // Import pour react / react-native
 import { Marker } from "react-native-maps";
 import MapView from "react-native-maps";
 import { useState, useEffect } from "react"; // Import pour react
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
-const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png"; //import du maker pour afficher le lieu sur la map
-import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
+const moviePlace =
+  "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png"; //import du maker pour afficher le lieu sur la map
+import {
+  faChevronLeft,
+  faChevronRight,
+} from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
 import Header from "../components/Header"; // Import du composant Header
 import PlaceCard from "../components/PlaceCard"; // Import du composant PlaceCard
 import MovieCard from "../components/MovieCard"; // Import du composant MovieCard
@@ -43,7 +56,9 @@ export default function SearchScreen({ route, navigation }) {
     );
 
     // récupération des lieux du film
-    moviePlaces = allPlaces.filter((place) => place.moviesList.includes(selectedMovie.id));
+    moviePlaces = allPlaces.filter((place) =>
+      place.moviesList.includes(selectedMovie.id)
+    );
   }
 
   //useEffect pour mettre à jour les coordonnées du marqueur du lieu affiché sur la map
@@ -61,7 +76,8 @@ export default function SearchScreen({ route, navigation }) {
 
   // Fonction pour passer à la card du lieu précédent
   const goToPrevious = () => {
-    const prevIndex = (currentIndex - 1 + moviePlaces.length) % moviePlaces.length;
+    const prevIndex =
+      (currentIndex - 1 + moviePlaces.length) % moviePlaces.length;
     setCurrentIndex(prevIndex);
   };
 
@@ -92,120 +108,110 @@ export default function SearchScreen({ route, navigation }) {
     }
   }
 
-    return (
-        <>
-            <View style={styles.container}>
-                <Header
-                    title="Roll-In NewYork"
-                    showInput={true}
-                    navigation={navigation}
+  return (
+    <>
+      <View style={styles.container}>
+        <Header
+          title="Roll-In NewYork"
+          showInput={true}
+          navigation={navigation}
+        />
+        <View style={styles.searchScreenContainer}>
+          {movieCard}
+          {moviePlaces && moviePlaces.length > 0 ? (
+            <>
+              <View style={styles.carouselWrapper}>
+                <TouchableOpacity
+                  onPress={goToPrevious}
+                  style={styles.navigationButtonLeft}
+                >
+                  <FontAwesomeIcon
+                    icon={faChevronLeft}
+                    size={20}
+                    color="black"
+                  />
+                </TouchableOpacity>
+                <FlatList // Affichage du carrousel
+                  data={moviePlaces}
+                  horizontal // Indication de l'affichage horizontal
+                  renderItem={(
+                    { item, index } // Affichage des éléments du carrousel
+                  ) =>
+                    index === currentIndex ? ( // Si l'index de l'élément est égal à l'index actuel alors on affiche la card
+                      <View style={styles.cardWrapper}>
+                        <PlaceCard
+                          key={item._id}
+                          id={item._id}
+                          image={item.placePicture}
+                          title={item.title}
+                          description={item.overview}
+                          navigation={navigation}
+                        />
+                      </View>
+                    ) : null
+                  }
+                  keyExtractor={(item) => item._id} // Assurez-vous que chaque élément a un id unique
+                  showsHorizontalScrollIndicator={false} // Désactivation de la barre de défilement horizontale
+                  snapToInterval={width} // Défilement d'une card à la fois
+                  contentContainerStyle={{
+                    justifyContent: "center",
+                  }} // Centrage des éléments du carrousel
                 />
-                <View style={styles.searchScreenContainer}>
-                    {movieCard}
-                    {moviePlaces && moviePlaces.length > 0 ? (
-                        <>
-                            <View style={styles.carouselWrapper}>
-                                <TouchableOpacity
-                                    onPress={goToPrevious}
-                                    style={styles.navigationButtonLeft}
-                                >
-                                    <FontAwesomeIcon
-                                        icon={faChevronLeft}
-                                        size={20}
-                                        color="black"
-                                    />
-                                </TouchableOpacity>
-                                <FlatList // Affichage du carrousel
-                                    data={moviePlaces}
-                                    horizontal // Indication de l'affichage horizontal
-                                    renderItem={(
-                                        { item, index } // Affichage des éléments du carrousel
-                                    ) =>
-                                        index === currentIndex // Si l'index de l'élément est égal à l'index actuel alors on affiche la card
-                                            ? (
-                                                <View
-                                                    style={styles.cardWrapper}
-                                                >
-                                                    <PlaceCard
-                                                        key={item._id}
-                                                        id={item._id}
-                                            image={
-                                                            item.placePicture
-                                                        }
-                                                        title={item.title}
-                                                        description={
-                                                            item.overview
-                                                        }
-                                                        navigation={
-                                                            navigation
-                                                        }
-                                                    />
-                                                </View>
-                                            )
-                                            : null
-                                    }
-                                    keyExtractor={(item) => item._id} // Assurez-vous que chaque élément a un id unique
-                                    showsHorizontalScrollIndicator={false} // Désactivation de la barre de défilement horizontale
-                                    snapToInterval={width} // Défilement d'une card à la fois
-                                    contentContainerStyle={{
-                                        justifyContent: "center",
-                                    }} // Centrage des éléments du carrousel
-                                />
-                                <TouchableOpacity
-                                    onPress={goToNext}
-                                    style={styles.navigationButtonRight}
-                                >
-                                    <FontAwesomeIcon
-                                        icon={faChevronRight}
-                                        size={20}
-                                        color="black"
-                                    />
-                                </TouchableOpacity>
-                            </View>
-                            <View style={styles.pagination}>
-                                {moviePlaces.map((_, index) => (
-                                    <View
-                                        key={index}
-                                        style={[
-                                            styles.pageLine,
-                                            currentIndex === index &&
-                                                styles.activePageLine,
-                                        ]}
-                                    />
-                                ))}
-                            </View>
-                            <TouchableOpacity style={styles.button} onPress={() => goToMap(placeCoords)} >
-                                <Text style={styles.textButton}>
-                                    Go to maps!
-                                </Text>
-                            </TouchableOpacity>
-                            <View style={styles.mapContainer}>
-                                <MapView
-                                    region={{
-                                        latitude: placeCoords.lat,
-                                        longitude: placeCoords.lon,
-                                        latitudeDelta: 0.01,
-                                        longitudeDelta: 0.01,
-                                    }}
-                                    style={styles.map}
-                                >
-                                    <Marker
-                                        coordinate={{
-                                            latitude: placeCoords.lat,
-                                            longitude: placeCoords.lon,
-                                        }}
-                                        image={moviePlace || null}
-                                    ></Marker>
-                                </MapView>
-                            </View>
-                        </>
-                    ) : (
-                        <></>
-                    )}
-                </View>
-            </View>
-        </>
-    );
+                <TouchableOpacity
+                  onPress={goToNext}
+                  style={styles.navigationButtonRight}
+                >
+                  <FontAwesomeIcon
+                    icon={faChevronRight}
+                    size={20}
+                    color="black"
+                  />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.pagination}>
+                {moviePlaces.map((_, index) => (
+                  <View
+                    key={index}
+                    style={[
+                      styles.pageLine,
+                      currentIndex === index && styles.activePageLine,
+                    ]}
+                  />
+                ))}
+              </View>
+              <TouchableOpacity
+                style={styles.button}
+                onPress={() => goToMap(placeCoords)}
+              >
+                <Text style={styles.textButton}>Go to maps!</Text>
+              </TouchableOpacity>
+              <View style={styles.mapContainer}>
+                <MapView
+                  region={{
+                    latitude: placeCoords.lat,
+                    longitude: placeCoords.lon,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01,
+                  }}
+                  style={styles.map}
+                >
+                  <Marker
+                    coordinate={{
+                      latitude: placeCoords.lat,
+                      longitude: placeCoords.lon,
+                    }}
+                    image={moviePlace || null}
+                  ></Marker>
+                </MapView>
+              </View>
+            </>
+          ) : (
+            <></>
+          )}
+        </View>
+      </View>
+    </>
+  );
 }
 
 // Définition du style des différents éléments
@@ -229,61 +235,61 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-    pagination: {
-        flexDirection: "row",
-        justifyContent: "center",
-        marginTop: 15,
-    },
-    pageLine: {
-        width: 30,
-        height: 4,
-        backgroundColor: "#ccc",
-        marginVertical: 1,
-        marginHorizontal: 5,
-        borderRadius: 2,
-    },
-    activePageLine: {
-        backgroundColor: "#001F3F",
-    },
-    navigationButtonLeft: {
-        position: "absolute",
-        left: 2,
-        zIndex: 1,
-        padding: 1,
-        borderRadius: 20,
-    },
-    navigationButtonRight: {
-        position: "absolute",
-        right: 2,
-        zIndex: 1,
-        padding: 1,
-        borderRadius: 20,
-    },
-    searchMovie: {
-        fontSize: 24,
-        color: "#282C37",
-        fontWeight: 600,
-        marginTop: 50,
-    },
-    button: {
-        backgroundColor: "#001F3F",
-        width: "30%",
-        height: "6%",
-        borderRadius: 20,
-        justifyContent: "center",
-        margin: 5,
-    },
-    textButton: {
-        color: "#DEB973",
-        textAlign: "center",
-    },
-    mapContainer: {
-        width: "100%",
-        height: "52%",
-        borderTopColor: "#282C37",
-        borderTopWidth: 2,
-    },
-    map: {
-        flex: 1,
-    },
+  pagination: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 15,
+  },
+  pageLine: {
+    width: 30,
+    height: 4,
+    backgroundColor: "#ccc",
+    marginVertical: 1,
+    marginHorizontal: 5,
+    borderRadius: 2,
+  },
+  activePageLine: {
+    backgroundColor: "#001F3F",
+  },
+  navigationButtonLeft: {
+    position: "absolute",
+    left: 2,
+    zIndex: 1,
+    padding: 1,
+    borderRadius: 20,
+  },
+  navigationButtonRight: {
+    position: "absolute",
+    right: 2,
+    zIndex: 1,
+    padding: 1,
+    borderRadius: 20,
+  },
+  searchMovie: {
+    fontSize: 24,
+    color: "#282C37",
+    fontWeight: 600,
+    marginTop: 50,
+  },
+  button: {
+    backgroundColor: "#001F3F",
+    width: "30%",
+    height: "6%",
+    borderRadius: 20,
+    justifyContent: "center",
+    margin: 5,
+  },
+  textButton: {
+    color: "#DEB973",
+    textAlign: "center",
+  },
+  mapContainer: {
+    width: "100%",
+    height: "52%",
+    borderTopColor: "#282C37",
+    borderTopWidth: 2,
+  },
+  map: {
+    flex: 1,
+  },
 });

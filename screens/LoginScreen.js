@@ -1,6 +1,13 @@
 // Réalisation des différentes imports
 import { useState } from "react"; // Import pour react
-import { Dimensions, StyleSheet, View, TouchableOpacity, Text, Image } from "react-native"; // Import pour react-native
+import {
+  Dimensions,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+  Text,
+  Image,
+} from "react-native"; // Import pour react-native
 import SignIn from "../components/SignIn"; // Import du composant SignIn.js
 import SignUp from "../components/SignUp"; // Import du composant SignUp.js
 import Header from "../components/Header"; // Import du composant Header.js
@@ -8,9 +15,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { logout } from "../reducers/users";
 
 // Import des icons depuis cloudinary
-const GoogleIcon = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/rg2ynswpargugmvkxxlr.png";
-const AppleIcon = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/xir2gohgenartsleibcl.png";
-const InstagramIcon = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/ydznsdlqiyfpxdktbyqo.png";
+const GoogleIcon =
+  "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/rg2ynswpargugmvkxxlr.png";
+const AppleIcon =
+  "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/xir2gohgenartsleibcl.png";
+const InstagramIcon =
+  "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/ydznsdlqiyfpxdktbyqo.png";
 
 // Création de la page Login
 export default function LoginScreen() {
@@ -24,14 +34,24 @@ export default function LoginScreen() {
       <View style={styles.container}>
         <Header title="My connexion" showInput={false} />
         <View style={styles.loginContainer}>
-          {user.token !== null ? <Text style={styles.welcomeTxt}>Welcome {user.username}</Text> : null}
+          {user.token !== null ? (
+            <Text style={styles.welcomeTxt}>Welcome {user.username}</Text>
+          ) : null}
           {user.token === null ? ( // Remarquez l'usage des accolades pour insérer une expression JSX
             <>
               <View style={styles.signContainer}>
-                <TouchableOpacity onPress={() => setIsSignIn(true)} style={styles.button} activeOpacity={0.8}>
+                <TouchableOpacity
+                  onPress={() => setIsSignIn(true)}
+                  style={styles.button}
+                  activeOpacity={0.8}
+                >
                   <Text style={styles.textButton}>SIGN-IN</Text>
                 </TouchableOpacity>
-                <TouchableOpacity onPress={() => setIsSignUp(true)} style={styles.button} activeOpacity={0.8}>
+                <TouchableOpacity
+                  onPress={() => setIsSignUp(true)}
+                  style={styles.button}
+                  activeOpacity={0.8}
+                >
                   <Text style={styles.textButton}>SIGN-UP</Text>
                 </TouchableOpacity>
               </View>
@@ -63,7 +83,11 @@ export default function LoginScreen() {
             </>
           ) : (
             <View style={styles.signContainer}>
-              <TouchableOpacity onPress={() => dispatch(logout())} style={styles.button} activeOpacity={0.8}>
+              <TouchableOpacity
+                onPress={() => dispatch(logout())}
+                style={styles.button}
+                activeOpacity={0.8}
+              >
                 <Text style={styles.textButton}>LOGOUT</Text>
               </TouchableOpacity>
             </View>

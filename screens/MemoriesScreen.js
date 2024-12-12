@@ -1,4 +1,11 @@
-import { StyleSheet, Dimensions, View, TouchableOpacity, Text, TextInput } from "react-native";
+import {
+  StyleSheet,
+  Dimensions,
+  View,
+  TouchableOpacity,
+  Text,
+  TextInput,
+} from "react-native";
 import PlaceCard from "../components/PlaceCard";
 import Header from "../components/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
@@ -30,7 +37,9 @@ export default function MemoriesScreen({ route, navigation }) {
     console.log("selectedPlace.id", selectedPlace.id);
     (async () => {
       try {
-        fetch(`https://roll-in-new-york-backend.vercel.app/favorites/pictures/${user.token}/${selectedPlace.id}`)
+        fetch(
+          `https://roll-in-new-york-backend.vercel.app/favorites/pictures/${user.token}/${selectedPlace.id}`
+        )
           .then((response) => response.json())
           .then((data) => {
             console.log("data", data);
@@ -63,7 +72,12 @@ export default function MemoriesScreen({ route, navigation }) {
     }
     personalStars.push(
       <TouchableOpacity onPress={() => setPersonalNote(i + 1)}>
-        <FontAwesomeIcon key={`starIndex: ${i}`} icon={faStar} style={style} size={30} />
+        <FontAwesomeIcon
+          key={`starIndex: ${i}`}
+          icon={faStar}
+          style={style}
+          size={30}
+        />
       </TouchableOpacity>
     );
   }
@@ -78,7 +92,10 @@ export default function MemoriesScreen({ route, navigation }) {
         <View style={styles.postReview}>
           <Text style={styles.title}>My review</Text>
           <View style={styles.inputContainer}>
-            <TextInput style={styles.input} placeholder="Write your review"></TextInput>
+            <TextInput
+              style={styles.input}
+              placeholder="Write your review"
+            ></TextInput>
             <View style={styles.starContainer}>{personalStars}</View>
             <View style={styles.buttonContainer}>
               <TouchableOpacity style={styles.postButton}>
@@ -88,11 +105,17 @@ export default function MemoriesScreen({ route, navigation }) {
           </View>
         </View>
         <View style={styles.buttonPictures}>
-          <TouchableOpacity style={styles.buttonUpload} onPress={() => console.log("upload")}>
+          <TouchableOpacity
+            style={styles.buttonUpload}
+            onPress={() => console.log("upload")}
+          >
             <FontAwesomeIcon icon={faUpload} size={35} color="#DEB973" />
           </TouchableOpacity>
           <View style={styles.buttonPictureSeparator}></View>
-          <TouchableOpacity style={styles.buttonPicture} onPress={() => handleCamera()}>
+          <TouchableOpacity
+            style={styles.buttonPicture}
+            onPress={() => handleCamera()}
+          >
             <FontAwesomeIcon icon={faCamera} size={40} color="#DEB973" />
           </TouchableOpacity>
         </View>

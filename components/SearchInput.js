@@ -1,63 +1,82 @@
 // Réalisation des différents imports
 import { useState } from "react"; // Import pour react
-import { View, TextInput, StyleSheet, TouchableOpacity, Text, FlatList } from "react-native"; // Import pour react-native
+import {
+  View,
+  TextInput,
+  StyleSheet,
+  TouchableOpacity,
+  Text,
+  FlatList,
+} from "react-native"; // Import pour react-native
 import { useSelector } from "react-redux"; // Import pour récupérer les données du store
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
 
-export default function SearchInput({navigation}) {
-    const [filteredMovie, setFilteredMovie] = useState([]); // État pour stocker les résultats
-    const [showPopup, setShowPopup] = useState(false); // État pour contrôler l'affichage de la pop-up
-    const [search, setSearch] = useState(''); // État pour stocker la valeur de la recherche
-    const movie = useSelector((state) => state.movie.value); // Récupération des données du store place
+export default function SearchInput({ navigation }) {
+  const [filteredMovie, setFilteredMovie] = useState([]); // État pour stocker les résultats
+  const [showPopup, setShowPopup] = useState(false); // État pour contrôler l'affichage de la pop-up
+  const [search, setSearch] = useState(""); // État pour stocker la valeur de la recherche
+  const movie = useSelector((state) => state.movie.value); // Récupération des données du store place
 
-    const searchMovies = (searchValue) => {
-        // Fonction pour rechercher les films
-        const hashtagPattern = new RegExp(`${searchValue}`, "i"); // Variable qui permet de faire une recherche en equalsIgnoreCase en fonction de la valeur de la recherche
-        const results = movie.filter((movie) =>
-            movie.title.match(hashtagPattern)
-        ); // Récupération des résultats en fonction de la recherche
-        setFilteredMovie(results); // Mise à jour des résultats
-        setShowPopup(searchValue.length > 0 && results.length > 0); // Afficher la pop-up seulement s'il y a des résultats
-    };
+  const searchMovies = (searchValue) => {
+    // Fonction pour rechercher les films
+    const hashtagPattern = new RegExp(`${searchValue}`, "i"); // Variable qui permet de faire une recherche en equalsIgnoreCase en fonction de la valeur de la recherche
+    const results = movie.filter((movie) => movie.title.match(hashtagPattern)); // Récupération des résultats en fonction de la recherche
+    setFilteredMovie(results); // Mise à jour des résultats
+    setShowPopup(searchValue.length > 0 && results.length > 0); // Afficher la pop-up seulement s'il y a des résultats
+  };
 
-    return (
-        <View style={styles.container}>
-            <View style={styles.inputContainer}>
-                <TextInput
-                    placeholder="Search for a movie..."
-                    placeholderTextColor="#DEB973"
-                    style={styles.input}
-                    onChangeText={(value) => {searchMovies(value); setSearch(value);}}
-                    value={search}
-                />
-                <TouchableOpacity>
-                    <FontAwesomeIcon
-                        icon={faMagnifyingGlass}
-                        size={20}
-                        color="#DEB973"
-                        style={styles.iconeSearch}
-                    />
-                </TouchableOpacity>
-            </View>
-            {showPopup && ( // Affichage de la pop-up si showPopup est à true
-                <View style={styles.popup}>
-                    <FlatList
-                        data={filteredMovie}
-                        keyExtractor={(item) => item.id.toString()}
-                        renderItem={({ item }) => (
-                            <Text style={styles.popupItem} onPress={() => {
-                                let selectedMovie = {id: item.id, title: item.title, overview: item.overview, poster_path: item.poster_path, release_date: item.release_date}
-                                setSearch(''); // Réinitialisation de la recherche
-                                setShowPopup(false); // Fermeture de la pop-up
-                                navigation.navigate("Search", {selectedMovie}); // Navigation vers la page Search avec les données du film sélectionné
-                            }}>{item.title}</Text> //console.log(item.id)
-                        )}
-                    />
-                </View>
+  return (
+    <View style={styles.container}>
+      <View style={styles.inputContainer}>
+        <TextInput
+          placeholder="Search for a movie..."
+          placeholderTextColor="#DEB973"
+          style={styles.input}
+          onChangeText={(value) => {
+            searchMovies(value);
+            setSearch(value);
+          }}
+          value={search}
+        />
+        <TouchableOpacity>
+          <FontAwesomeIcon
+            icon={faMagnifyingGlass}
+            size={20}
+            color="#DEB973"
+            style={styles.iconeSearch}
+          />
+        </TouchableOpacity>
+      </View>
+      {showPopup && ( // Affichage de la pop-up si showPopup est à true
+        <View style={styles.popup}>
+          <FlatList
+            data={filteredMovie}
+            keyExtractor={(item) => item.id.toString()}
+            renderItem={({ item }) => (
+              <Text
+                style={styles.popupItem}
+                onPress={() => {
+                  let selectedMovie = {
+                    id: item.id,
+                    title: item.title,
+                    overview: item.overview,
+                    poster_path: item.poster_path,
+                    release_date: item.release_date,
+                  };
+                  setSearch(""); // Réinitialisation de la recherche
+                  setShowPopup(false); // Fermeture de la pop-up
+                  navigation.navigate("Search", { selectedMovie }); // Navigation vers la page Search avec les données du film sélectionné
+                }}
+              >
+                {item.title}
+              </Text> //console.log(item.id)
             )}
+          />
         </View>
-    );
+      )}
+    </View>
+  );
 }
 
 // Définition du style des différents éléments
