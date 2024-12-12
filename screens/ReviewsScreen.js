@@ -17,12 +17,12 @@ export default function ReviewsScreen({route, navigation}) {
         .then((response) => response.json())
         .then((data)=> {
             setReviewsTable(data.reviews)
-            console.log(data.reviews[0].user)
         })
-    }, [])
+        //lorsqu'on quitte la page on reset le tableau d'avis à un tableau vide
+        return () => {setReviewsTable([])}
+    }, [placeInfo])
 
     const reviews = reviewsTable.map((data, i) => {
-        console.log('data du map', data)
         return (
             <ReviewCard 
             key={`reviewCardId: ${i}`} 
