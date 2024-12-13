@@ -1,38 +1,47 @@
 {
-  "expo": {
-    "name": "roll-in-newyork",
-    "slug": "roll-in-newyork",
-    "version": "1.0.0",
-    "orientation": "portrait",
-    "icon": "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/eh4j1tvmizqd9dwftj25.png",
-    "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/eh4j1tvmizqd9dwftj25.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#001F3F"
-    },
-    "ios": {
-      "supportsTablet": true,
-      "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Cette application nécessite l'accès à votre position pour vous localiser sur la carte."
-      }
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
-      },
-      "permissions": [
-        "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION"
-      ]
-    },
-    "web": {  
-      "favicon": "./assets/favicon.png"
-    },
-    "plugins": [
-      "expo-font"
-    ]
-  }
+    "expo": {
+        "name": "roll-in-newyork",
+        "slug": "roll-in-newyork",
+        "version": "1.0.0",
+        "orientation": "portrait",
+        "icon": "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/eh4j1tvmizqd9dwftj25.png",
+        "userInterfaceStyle": "light",
+        "newArchEnabled": true,
+        "splash": {
+            "image": "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/eh4j1tvmizqd9dwftj25.png",
+            "resizeMode": "contain",
+            "backgroundColor": "#001F3F"
+        },
+        "ios": {
+            "supportsTablet": true,
+            "infoPlist": {
+                "NSLocationWhenInUseUsageDescription": "Cette application nécessite l'accès à votre position pour vous localiser sur la carte."
+            }
+        },
+        "android": {
+            "adaptiveIcon": {
+                "foregroundImage": "./assets/adaptive-icon.png",
+                "backgroundColor": "#ffffff"
+            },
+            "permissions": [
+                "ACCESS_FINE_LOCATION",
+                "ACCESS_COARSE_LOCATION"
+                
+            ]
+        },
+        "web": {
+            "favicon": "./assets/favicon.png"
+        },
+        "plugins": [
+            "expo-font",
+            [
+                "expo-camera",
+                {
+                    "cameraPermission": "Allow FaceUp to access your camera",
+                    "microphonePermission": "Allow FaceUp to access your microphone",
+                    "recordAudioAndroid": true
+                }
+            ]
+        ]
+    }
 }
