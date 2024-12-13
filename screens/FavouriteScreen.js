@@ -36,7 +36,7 @@ export default function FavouriteScreen() {
   const favorite = useSelector((state) => state.favorite.value);
   const navigation = useNavigation();
 
-  console.log(places[0]);
+  //console.log(places[0]);
 
   useEffect(() => {
     // Redirection vers la page login si on n'est pas connecté
@@ -173,7 +173,7 @@ export default function FavouriteScreen() {
                 }}
                 style={styles.map}
               >
-                {placesMarker}
+                {/* {placesMarker} */}
               </MapView>
             </View>
           </View>
