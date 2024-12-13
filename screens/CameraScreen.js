@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity} from "react-native";
+import { StyleSheet, View, TouchableOpacity } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import { CameraView, Camera } from "expo-camera";
 import { useIsFocused } from "@react-navigation/native";
@@ -37,22 +37,21 @@ export default function CameraScreen({ route }) {
         cameraRef.current = null;
       }
     };
-  
   }, []);
 
   // Conditions to prevent more than 1 camera component to run in the bg
   if (!hasPermission || !isFocused) {
     return <View />;
   }
-  
+
   const takePicture = async () => {
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Memories', params: { selectedPlace } }],
+      routes: [{ name: "Memories", params: { selectedPlace } }],
     });
 
     try {
-      const photo = await cameraRef.current?.takePictureAsync({ quality: 0.3 });    
+      const photo = await cameraRef.current?.takePictureAsync({ quality: 0.3 });
       // Effacer les anciennes valeurs de userToken et idPlace
       formData.delete("userToken");
       formData.delete("idPlace");
@@ -60,10 +59,7 @@ export default function CameraScreen({ route }) {
       // Ajouter la photo
       formData.append("photoFromFront", {
         uri: photo.uri,
-        name: photo.uri.substring(
-          photo.uri.lastIndexOf("/") + 1,
-          photo.uri.lastIndexOf(".jpg")
-        ),
+        name: photo.uri.substring(photo.uri.lastIndexOf("/") + 1, photo.uri.lastIndexOf(".jpg")),
         type: "image/jpeg",
       });
 
@@ -84,7 +80,7 @@ export default function CameraScreen({ route }) {
       })
         .then((res) => res.json())
         .then((data) => {
-          photo && dispatch(addPicture(data.url))
+          photo && dispatch(addPicture(data.url));
         })
         .catch((err) => console.log("Impossible de contacter le back", err));
     } catch (err) {
@@ -92,7 +88,6 @@ export default function CameraScreen({ route }) {
     }
   };
 
-  // Functions to toggle camera facing and flash status
   const toggleCameraFacing = () => {
     setFacing((current) => (current === "back" ? "front" : "back"));
   };
@@ -100,22 +95,17 @@ export default function CameraScreen({ route }) {
   const toggleFlash = () => {
     setFlash((current) => (current === false ? true : false));
   };
-  
+
   const handleClose = () => {
     navigation.reset({
       index: 0,
-      routes: [{ name: 'Memories', params: { selectedPlace } }],
+      routes: [{ name: "Memories", params: { selectedPlace } }],
     });
   };
 
   return (
     <>
-      <CameraView
-        style={styles.camera}
-        facing={facing}
-        enableTorch={flash}
-        ref={(ref) => (cameraRef.current = ref)}
-      >
+      <CameraView style={styles.camera} facing={facing} enableTorch={flash} ref={(ref) => (cameraRef.current = ref)}>
         <View style={styles.cameraContainer}>
           <View style={styles.cameraHeader}>
             <View style={styles.cameraHeaderLeft}>
