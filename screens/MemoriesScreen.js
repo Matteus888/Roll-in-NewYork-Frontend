@@ -18,7 +18,10 @@ export default function MemoriesScreen({ route, navigation }) {
   const user = useSelector((state) => state.user.value);
   const [pictures, setPictures] = useState([]);
 
+
+  //mise en place des états pour moster un nouvel avis
   const [personalNote, setPersonalNote] = useState(0);
+  const [newReviewText, setNewReviewText] = useState('')
 
   const { selectedPlace } = route.params;
   const movieCard = (
@@ -33,8 +36,6 @@ export default function MemoriesScreen({ route, navigation }) {
 
   useEffect(() => {
     setPictures([]);
-    console.log("userToken", user.token);
-    console.log("selectedPlace.id", selectedPlace.id);
     (async () => {
       try {
         fetch(
@@ -42,7 +43,6 @@ export default function MemoriesScreen({ route, navigation }) {
         )
           .then((response) => response.json())
           .then((data) => {
-            console.log("data", data);
             // Préparez toutes les images avant de mettre à jour l'état
             const newPictures = data.urls.map((url) => ({ uri: url }));
             setPictures(newPictures); // Une seule mise à jour de l'état
@@ -71,9 +71,8 @@ export default function MemoriesScreen({ route, navigation }) {
       style = { color: "#DEB973" };
     }
     personalStars.push(
-      <TouchableOpacity onPress={() => setPersonalNote(i + 1)}>
+      <TouchableOpacity key={`starIndex-${i}`} onPress={() => setPersonalNote(i + 1)}>
         <FontAwesomeIcon
-          key={`starIndex: ${i}`}
           icon={faStar}
           style={style}
           size={30}
@@ -82,7 +81,31 @@ export default function MemoriesScreen({ route, navigation }) {
     );
   }
 
-  const handlePostReview = () => {};
+  const handlePostReview = () => {
+    const newReviewData = {
+      user: user.id,
+      place: selectedPlace.id,
+      createdAt: new Date(),
+      note: personalNote,
+      content: newReviewText
+    }
+    if(newReviewText === ''){
+      console.log("please write something")
+      return
+    }else{
+      fetch(`https://roll-in-new-york-backend.vercel.app/reviews/${user.token}/${selectedPlace.id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newReviewData)
+      })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("review posted!", data)
+        setNewReviewText("")
+        setPersonalNote(0)
+      })
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -95,10 +118,12 @@ export default function MemoriesScreen({ route, navigation }) {
             <TextInput
               style={styles.input}
               placeholder="Write your review"
+              value={newReviewText}
+              onChangeText={(value) => setNewReviewText(value)}
             ></TextInput>
             <View style={styles.starContainer}>{personalStars}</View>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.postButton}>
+              <TouchableOpacity style={styles.postButton} onPress={() => handlePostReview()} >
                 <Text style={styles.textButton}>Post review</Text>
               </TouchableOpacity>
             </View>

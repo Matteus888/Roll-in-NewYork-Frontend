@@ -73,6 +73,7 @@ export default function SignIn({ isOpen, onClose }) {
               username: data.username,
               email: data.email,
               token: data.token,
+              id: data.id
             })
           ); // On envoie les données de l'utilisateur dans le store
           onClose(); // On ferme la modale (Pop-up SignIn)

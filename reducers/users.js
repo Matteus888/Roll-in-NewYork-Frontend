@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   // Initialisation de l'utilisateur avec des valeurs nulles par défaut
-  value: { username: null, email: null, token: null },
+  value: { username: null, email: null, token: null, id: null },
 };
 
 export const userSlice = createSlice({
@@ -15,12 +15,14 @@ export const userSlice = createSlice({
       state.value.username = action.payload.username;
       state.value.email = action.payload.email;
       state.value.token = action.payload.token;
+      state.value.id = action.payload.id
     },
     logout: (state) => {
       // Fonction pour déconnecter l'utilisateur
       state.value.username = null;
       state.value.email = null;
       state.value.token = null;
+      state.value.id = null
     },
   },
 });
