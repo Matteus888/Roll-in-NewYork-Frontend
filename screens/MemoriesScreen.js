@@ -1,11 +1,4 @@
-import {
-  StyleSheet,
-  Dimensions,
-  View,
-  TouchableOpacity,
-  Text,
-  TextInput,
-} from "react-native";
+import { StyleSheet, Dimensions, View, TouchableOpacity, Text, TextInput, ActivityIndicator } from "react-native";
 import PlaceCard from "../components/PlaceCard";
 import Header from "../components/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
@@ -13,18 +6,21 @@ import { faCamera, faUpload, faStar } from "@fortawesome/free-solid-svg-icons"; 
 import MasonryList from "react-native-masonry-list";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import Picture from "../components/Picture";
 
 export default function MemoriesScreen({ route, navigation }) {
   const user = useSelector((state) => state.user.value);
-  const [pictures, setPictures] = useState([]);
-
+  const { selectedPlace } = route.params;
 
   //mise en place des états pour moster un nouvel avis
   const [personalNote, setPersonalNote] = useState(0);
+  const [pictures, setPictures] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [viewPictures, setViewPictures] = useState(false);
+  const [selectedImage, setSelectedImage] = useState(""); // État pour l'URL de l'image sélectionnée
   const [newReviewText, setNewReviewText] = useState('')
 
-  const { selectedPlace } = route.params;
-  const movieCard = (
+  const placeCard = (
     <PlaceCard
       key={selectedPlace.id}
       id={selectedPlace.id}
@@ -35,22 +31,28 @@ export default function MemoriesScreen({ route, navigation }) {
   );
 
   useEffect(() => {
-    setPictures([]);
     (async () => {
       try {
-        fetch(
+        const response = await fetch(
           `https://roll-in-new-york-backend.vercel.app/favorites/pictures/${user.token}/${selectedPlace.id}`
-        )
-          .then((response) => response.json())
-          .then((data) => {
-            // Préparez toutes les images avant de mettre à jour l'état
-            const newPictures = data.urls.map((url) => ({ uri: url }));
-            setPictures(newPictures); // Une seule mise à jour de l'état
-          });
+        );
+        const data = await response.json();
+        const newPictures = data.urls.map((secure_url) => ({
+          uri: secure_url.secure_url,
+          publicId: secure_url.public_id,
+        }));
+        setPictures(newPictures);
+        setLoading(false); // Les images ont été chargées
       } catch (err) {
         console.error("Error fetching memories:", err);
+        setLoading(false);
       }
     })();
+
+    return () => {
+      setPictures([]);
+      setLoading(true);
+    };
   }, [route.params.selectedPlace.id, user.token]);
 
   const handleCamera = () => {
@@ -60,7 +62,7 @@ export default function MemoriesScreen({ route, navigation }) {
       image: route.params.selectedPlace.image,
       description: route.params.selectedPlace.description,
     };
-    navigation.navigate("Camera", { selectedPlace, navigation });
+    navigation.navigate("Camera", { selectedPlace }); // Ne passez pas `navigation`
   };
 
   //mise en place des étoile pour noter le lieu
@@ -71,12 +73,8 @@ export default function MemoriesScreen({ route, navigation }) {
       style = { color: "#DEB973" };
     }
     personalStars.push(
-      <TouchableOpacity key={`starIndex-${i}`} onPress={() => setPersonalNote(i + 1)}>
-        <FontAwesomeIcon
-          icon={faStar}
-          style={style}
-          size={30}
-        />
+      <TouchableOpacity key={`starIndex: ${i}`} onPress={() => setPersonalNote(i + 1)}>
+        <FontAwesomeIcon icon={faStar} style={style} size={30} />
       </TouchableOpacity>
     );
   }
@@ -108,53 +106,54 @@ export default function MemoriesScreen({ route, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
-      <Header title="Memories" showInput={false} />
-      <View style={styles.memoriesContainer}>
-        {movieCard}
-        <View style={styles.postReview}>
-          <Text style={styles.title}>My review</Text>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="Write your review"
-              value={newReviewText}
-              onChangeText={(value) => setNewReviewText(value)}
-            ></TextInput>
-            <View style={styles.starContainer}>{personalStars}</View>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.postButton} onPress={() => handlePostReview()} >
-                <Text style={styles.textButton}>Post review</Text>
-              </TouchableOpacity>
+    <>
+      <View style={styles.container}>
+        <Header title="Memories" showInput={false} />
+        <View style={styles.memoriesContainer}>
+          {placeCard}
+          <View style={styles.postReview}>
+            <Text style={styles.title}>My review</Text>
+            <View style={styles.inputContainer}>
+              <TextInput style={styles.input} placeholder="Write your review"></TextInput>
+              <View style={styles.starContainer}>{personalStars}</View>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity style={styles.postButton}>
+                  <Text style={styles.textButton}>Post review</Text>
+                </TouchableOpacity>
+              </View>
             </View>
           </View>
-        </View>
-        <View style={styles.buttonPictures}>
-          <TouchableOpacity
-            style={styles.buttonUpload}
-            onPress={() => console.log("upload")}
-          >
-            <FontAwesomeIcon icon={faUpload} size={35} color="#DEB973" />
-          </TouchableOpacity>
-          <View style={styles.buttonPictureSeparator}></View>
-          <TouchableOpacity
-            style={styles.buttonPicture}
-            onPress={() => handleCamera()}
-          >
-            <FontAwesomeIcon icon={faCamera} size={40} color="#DEB973" />
-          </TouchableOpacity>
-        </View>
-        <View style={styles.gallery}>
-          <MasonryList
-            images={pictures}
-            columns={2} // Nombre de colonnes
-            spacing={5} // Espacement entre les images
-            backgroundColor={"#EFEFEF"} // Couleur de fond
-            style={{ backgroundColor: "#EFEFEF" }} // Style de la liste
-          />
+          <View style={styles.buttonPictures}>
+            <TouchableOpacity style={styles.buttonUpload} onPress={() => console.log("upload")}>
+              <FontAwesomeIcon icon={faUpload} size={30} color="#DEB973" />
+            </TouchableOpacity>
+            <View style={styles.buttonPictureSeparator}></View>
+            <TouchableOpacity style={styles.buttonPicture} onPress={() => handleCamera()}>
+              <FontAwesomeIcon icon={faCamera} size={30} color="#DEB973" />
+            </TouchableOpacity>
+          </View>
+          {loading ? (
+            <ActivityIndicator size="large" color="#001F3F" style={{ marginTop: 10 }} />
+          ) : (
+            <View style={styles.gallery}>
+              <MasonryList
+                images={pictures}
+                columns={3}
+                spacing={2}
+                backgroundColor={"#EFEFEF"}
+                style={{ backgroundColor: "#EFEFEF" }}
+                onPressImage={(image) => {
+                  setSelectedImage(image);
+                  setViewPictures(true);
+                }}
+              />
+            </View>
+          )}
         </View>
       </View>
-    </View>
+
+      <Picture isOpen={viewPictures} onClose={() => setViewPictures(false)} selectedImage={selectedImage} />
+    </>
   );
 }
 
@@ -179,7 +178,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     backgroundColor: "#001F3F",
     width: Dimensions.get("window").width - 80,
-    height: "10%",
+    height: "7%",
     borderRadius: 50,
   },
   buttonPictureSeparator: {
@@ -194,7 +193,7 @@ const styles = StyleSheet.create({
     marginLeft: 60,
   },
   gallery: {
-    marginTop: 20,
+    marginTop: 5,
     width: "100%",
     height: "50%",
   },
