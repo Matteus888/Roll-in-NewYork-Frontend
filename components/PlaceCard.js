@@ -15,19 +15,20 @@ import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addPlaceToFavorites, removePlaceToFavorites } from "../reducers/favorites";
+import { usePopupContext } from "../provider/PopupProvider";
 
 // Création de la card représentant les lieux de tournage référencés
 export default function PlaceCard({ id, image, title, description, navigation }) {
   const user = useSelector((state) => state.user.value);
   const nav = useNavigation();
-  const [popupVisible, setPopupVisible] = useState(false);
+  const { activePopupId, setActivePopupId } = usePopupContext();
   const [likeStyle, setLikeStyle] = useState({ color: "white" });
   const [isLiked, setIsLiked] = useState(false);
   const [placeNote, setPlaceNote] = useState(0) //pour affichage de la note
   const [reviewsTable, setReviewsTable]  = useState([]) //pour récupérer les avis du lieu
 
   const dispatch = useDispatch();
-
+  const popupVisible = activePopupId === id;
   //stockage des infos de la placeCard dans une variable:
   const placeInfo = { id, image, title, description };
 
@@ -49,8 +50,12 @@ export default function PlaceCard({ id, image, title, description, navigation })
 
   }, [user.token, id]);
 
+  const togglePopup = () => {
+    setActivePopupId(popupVisible ? null : id); // Ferme si déjà ouvert, sinon ouvre
+  };
+
   const handleLike = () => {
-    setPopupVisible(false);
+    setActivePopupId(null);
 
     if (user.token === null) {
       navigation.navigate("Login", { navigation });
@@ -81,10 +86,8 @@ export default function PlaceCard({ id, image, title, description, navigation })
   const goToMemories = () => {
     const selectedPlace = { id, image, title, description };
     navigation.navigate("Memories", { selectedPlace });
-    setPopupVisible(false);
+    setActivePopupId(null);
   };
-
-
 
   useEffect(() => {
         // récupération des reviews du lieu pour affichage de la note
@@ -94,7 +97,6 @@ export default function PlaceCard({ id, image, title, description, navigation })
           setReviewsTable(data.reviews)
         });
   }, [placeInfo.id])
-
 
   let allNotes
   let averageNote
@@ -126,7 +128,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
   return (
     <View style={styles.container}>
       <Pressable
-        onPress={() => (nav.getState().routes[nav.getState().index].name === "Memories" ? null : setPopupVisible(true))}
+        onPress={() => (nav.getState().routes[nav.getState().index].name === "Memories" ? null : togglePopup())}
       >
         <View style={styles.card}>
           <View style={styles.imageContainer}>
@@ -153,7 +155,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
 
       {popupVisible && (
         <View style={styles.popup}>
-          <TouchableWithoutFeedback onPress={() => setPopupVisible(false)}>
+          <TouchableWithoutFeedback onPress={() => setActivePopupId(null)}>
             <View style={styles.popupContent}>
               <TouchableOpacity onPress={handleLike} style={styles.popupButton} activeOpacity={0.8}>
                 <FontAwesomeIcon icon={faHeart} size={40} style={likeStyle} />

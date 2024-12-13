@@ -18,6 +18,7 @@ import LoginScreen from "./screens/LoginScreen";
 import MemoriesScreen from "./screens/MemoriesScreen";
 import ReviewsScreen from "./screens/ReviewsScreen";
 import CameraScreen from "./screens/CameraScreen";
+import { PopupProvider } from "./provider/PopupProvider";
 
 const Tab = createBottomTabNavigator();
 
@@ -30,7 +31,9 @@ export default function App() {
     <Provider store={store}>
       <ToastManager />
       <NavigationContainer>
-        <TabNavigator />
+        <PopupProvider>
+          <TabNavigator />
+        </PopupProvider>
       </NavigationContainer>
     </Provider>
   );

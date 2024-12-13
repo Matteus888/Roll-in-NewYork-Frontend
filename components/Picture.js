@@ -28,7 +28,10 @@ export default function Picture({ selectedImage, isOpen, onClose }) {
       })
       .then(response => response.json())
       .then(data => {
-        onClose();
+        if (data.result) {
+          
+          onClose();
+        }
       })
       .catch(err => {console.log(err)});
     } catch(err) {
