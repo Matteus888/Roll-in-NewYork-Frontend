@@ -38,6 +38,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
   //stockage des infos de la placeCard dans une variable:
   const placeInfo = { id, image, title, description };
 
+  // mettre à jour la couleur du coeur en fonction de isLiked
   useEffect(() => {
     (async () => {
       fetch(`https://roll-in-new-york-backend.vercel.app/users/isLiked/${user.token}/${id}`)

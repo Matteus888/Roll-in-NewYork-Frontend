@@ -49,7 +49,8 @@ export default function CameraScreen({ route }) {
       index: 0,
       routes: [{ name: "Memories", params: { selectedPlace } }],
     });
-
+    
+    const photo = await cameraRef.current?.takePictureAsync({quality: 0.8});    
     try {
       const photo = await cameraRef.current?.takePictureAsync({ quality: 0.3 });
       // Effacer les anciennes valeurs de userToken et idPlace
@@ -105,7 +106,13 @@ export default function CameraScreen({ route }) {
 
   return (
     <>
-      <CameraView style={styles.camera} facing={facing} enableTorch={flash} ref={(ref) => (cameraRef.current = ref)}>
+      <CameraView
+        style={styles.camera}
+        facing={facing}
+        enableTorch={flash}
+        ref={(ref) => (cameraRef.current = ref)}
+        photo={true}
+      >
         <View style={styles.cameraContainer}>
           <View style={styles.cameraHeader}>
             <View style={styles.cameraHeaderLeft}>
