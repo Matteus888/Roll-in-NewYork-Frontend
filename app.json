@@ -25,14 +25,23 @@
       },
       "permissions": [
         "ACCESS_FINE_LOCATION",
-        "ACCESS_COARSE_LOCATION"
+        "ACCESS_COARSE_LOCATION",
+        "CAMERA"
       ]
     },
-    "web": {  
+    "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      "expo-font"
+      "expo-font",
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "Allow FaceUp to access your camera",
+          "microphonePermission": "Allow FaceUp to access your microphone",
+          "recordAudioAndroid": true 
+        }
+      ]
     ]
   }
 }
