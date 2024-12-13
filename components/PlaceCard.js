@@ -11,6 +11,7 @@ import {
 } from "react-native"; // Import pour react / react-native
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
 import { faHeart, faStar, faImage } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
+import { useFonts } from "expo-font";
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
@@ -24,14 +25,20 @@ export default function PlaceCard({ id, image, title, description, navigation })
   const { activePopupId, setActivePopupId } = usePopupContext();
   const [likeStyle, setLikeStyle] = useState({ color: "white" });
   const [isLiked, setIsLiked] = useState(false);
-  const [placeNote, setPlaceNote] = useState(0) //pour affichage de la note
-  const [reviewsTable, setReviewsTable]  = useState([]) //pour récupérer les avis du lieu
+  const [placeNote, setPlaceNote] = useState(0); //pour affichage de la note
+  const [reviewsTable, setReviewsTable] = useState([]); //pour récupérer les avis du lieu
+
+  const [fontsLoaded] = useFonts({
+    // Chargement des fonts personnalisés
+    "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
+  });
 
   const dispatch = useDispatch();
   const popupVisible = activePopupId === id;
   //stockage des infos de la placeCard dans une variable:
   const placeInfo = { id, image, title, description };
 
+  // mettre à jour la couleur du coeur en fonction de isLiked
   useEffect(() => {
     (async () => {
       fetch(`https://roll-in-new-york-backend.vercel.app/users/isLiked/${user.token}/${id}`)
@@ -47,7 +54,6 @@ export default function PlaceCard({ id, image, title, description, navigation })
         })
         .catch((err) => console.error("Error checking like status:", err));
     })();
-
   }, [user.token, id]);
 
   const togglePopup = () => {
@@ -90,40 +96,35 @@ export default function PlaceCard({ id, image, title, description, navigation })
   };
 
   useEffect(() => {
-        // récupération des reviews du lieu pour affichage de la note
-        fetch(`https://roll-in-new-york-backend.vercel.app/reviews/${placeInfo.id}`)
-        .then((response) => response.json())
-        .then((data) => {
-          setReviewsTable(data.reviews)
-        });
-  }, [placeInfo.id])
+    // récupération des reviews du lieu pour affichage de la note
+    fetch(`https://roll-in-new-york-backend.vercel.app/reviews/${placeInfo.id}`)
+      .then((response) => response.json())
+      .then((data) => {
+        setReviewsTable(data.reviews);
+      });
+  }, [placeInfo.id]);
 
-  let allNotes
-  let averageNote
+  let allNotes;
+  let averageNote;
   // fonction pour récupérer la moyenne des notes
-  let getAverage = table => table.reduce((a,b) => a + b)/allNotes.length
+  let getAverage = (table) => table.reduce((a, b) => a + b) / allNotes.length;
 
-   //récupération des notes des avis du lieux et affichage de la moyenne si il y a des avis sur le lieu
+  //récupération des notes des avis du lieux et affichage de la moyenne si il y a des avis sur le lieu
   useEffect(() => {
-    if (reviewsTable.length === 0){
-      return
-    }else{
-      allNotes = reviewsTable.map((review)=> {
-        return review.note
-      })
-      averageNote = getAverage(allNotes)
-      if(Number.isInteger(averageNote)){
-        setPlaceNote(getAverage(allNotes))
-      }else{
-        setPlaceNote(getAverage(allNotes).toFixed(1))
+    if (reviewsTable.length === 0) {
+      return;
+    } else {
+      allNotes = reviewsTable.map((review) => {
+        return review.note;
+      });
+      averageNote = getAverage(allNotes);
+      if (Number.isInteger(averageNote)) {
+        setPlaceNote(getAverage(allNotes));
+      } else {
+        setPlaceNote(getAverage(allNotes).toFixed(1));
       }
     }
-  }, [reviewsTable])
-
-  
-
-
-
+  }, [reviewsTable]);
 
   return (
     <View style={styles.container}>
@@ -282,7 +283,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
-    paddingRight: 2
+    paddingRight: 2,
   },
   title: {
     fontSize: 18,

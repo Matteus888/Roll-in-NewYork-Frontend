@@ -1,4 +1,13 @@
-import { StyleSheet, Dimensions, View, TouchableOpacity, Text, TextInput, ActivityIndicator } from "react-native";
+import {
+  StyleSheet,
+  Dimensions,
+  View,
+  TouchableOpacity,
+  Text,
+  TextInput,
+  ActivityIndicator,
+  Alert,
+} from "react-native";
 import PlaceCard from "../components/PlaceCard";
 import Header from "../components/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
@@ -6,7 +15,9 @@ import { faCamera, faUpload, faStar } from "@fortawesome/free-solid-svg-icons"; 
 import MasonryList from "react-native-masonry-list";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
+import { useFonts } from "expo-font";
 import Picture from "../components/Picture";
+import * as ImagePicker from "expo-image-picker";
 
 export default function MemoriesScreen({ route, navigation }) {
   const user = useSelector((state) => state.user.value);
@@ -19,6 +30,12 @@ export default function MemoriesScreen({ route, navigation }) {
   const [viewPictures, setViewPictures] = useState(false);
   const [selectedImage, setSelectedImage] = useState(""); // État pour l'URL de l'image sélectionnée
   const [newReviewText, setNewReviewText] = useState("");
+  const [images, setImages] = useState([]); // Etat pour stocker les images sélectionnées
+
+  const [fontsLoaded] = useFonts({
+    // Chargement des fonts personnalisés
+    "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
+  });
 
   const placeCard = (
     <PlaceCard
@@ -105,7 +122,75 @@ export default function MemoriesScreen({ route, navigation }) {
     }
   };
 
-  const handleFilePick = () => {};
+  const handleFilePick = async () => {
+    // Demande autorisation d'accès à la galerie
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      Alert.alert("Permission denied", "We need your permission to access your gallery");
+      return;
+    }
+
+    // Sélecteur d'images
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsMultipleSelection: true,
+      quality: 1,
+    });
+    console.log(result);
+
+    if (!result.canceled) {
+      const selectedImages = result.assets.map((asset) => asset.uri);
+
+      const uploadImage = async (uri) => {
+        const formData = new FormData();
+
+        // Ajouter les informations supplémentaires
+        formData.append("userToken", user.token);
+        formData.append("idPlace", route.params.selectedPlace.id);
+
+        // Ajouter le fichier
+        formData.append("photoFromFront", {
+          uri,
+          name: uri.split("/").pop(), // Nom du fichier
+          type: "image/jpeg",
+        });
+
+        try {
+          const response = await fetch("https://roll-in-new-york-backend.vercel.app/favorites/pictures", {
+            method: "POST",
+            body: formData,
+          });
+
+          if (!response.ok) {
+            console.error(`Failed to upload ${uri}:`, response.statusText);
+            return null;
+          }
+
+          const data = await response.json();
+          return data.url;
+        } catch (error) {
+          console.error(`Error uploading ${uri}:`, error);
+          return null;
+        }
+      };
+
+      // Uploader toutes les images sélectionnées
+      const uploadedUrls = [];
+      for (const uri of selectedImages) {
+        const uploadedUrl = await uploadImage(uri);
+        if (uploadedUrl) {
+          uploadedUrls.push(uploadedUrl);
+          dispatch(addPicture(uploadedUrl)); // Ajouter chaque URL au store Redux
+        }
+      }
+
+      if (uploadedUrls.length) {
+        console.log("All uploaded images:", uploadedUrls);
+      } else {
+        console.error("No images were uploaded.");
+      }
+    }
+  };
 
   return (
     <>
