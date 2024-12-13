@@ -114,10 +114,14 @@ export default function MemoriesScreen({ route, navigation }) {
           <View style={styles.postReview}>
             <Text style={styles.title}>My review</Text>
             <View style={styles.inputContainer}>
-              <TextInput style={styles.input} placeholder="Write your review"></TextInput>
+              <TextInput style={styles.input} 
+              placeholder="Write your review" 
+              onChangeText={(value) => setNewReviewText(value)} 
+              value={newReviewText}>
+              </TextInput>
               <View style={styles.starContainer}>{personalStars}</View>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.postButton}>
+                <TouchableOpacity style={styles.postButton} onPress={() => handlePostReview()} >
                   <Text style={styles.textButton}>Post review</Text>
                 </TouchableOpacity>
               </View>
