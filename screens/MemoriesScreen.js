@@ -18,12 +18,12 @@ export default function MemoriesScreen({ route, navigation }) {
   const user = useSelector((state) => state.user.value);
   const [pictures, setPictures] = useState([]);
 
-  const [isPicture, setIsPicture] = useState(false);
   const [personalNote, setPersonalNote] = useState(0);
 
   const { selectedPlace } = route.params;
   const movieCard = (
     <PlaceCard
+      key={selectedPlace.id}
       id={selectedPlace.id}
       title={selectedPlace.title}
       image={selectedPlace.image}
