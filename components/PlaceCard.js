@@ -59,12 +59,6 @@ export default function PlaceCard({
         .catch((err) => console.error("Error checking like status:", err));
     })();
 
-    // récupération des reviews du lieu pour affichage de la note
-    fetch(`https://roll-in-new-york-backend.vercel.app/reviews/${placeInfo.id}`)
-    .then((response) => response.json())
-    .then((data) => {
-      setReviewsTable(data.reviews)
-    });
   }, [user.token, id]);
 
   const handleLike = () => {
@@ -106,19 +100,38 @@ export default function PlaceCard({
   };
 
 
-  //récupération des notes des avis du lieux et affichage de la moyenne si il y a des avis sur le lieu
+
+  useEffect(() => {
+        // récupération des reviews du lieu pour affichage de la note
+        fetch(`https://roll-in-new-york-backend.vercel.app/reviews/${placeInfo.id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setReviewsTable(data.reviews)
+        });
+  }, [placeInfo.id])
+
+
   let allNotes
+  let averageNote
   // fonction pour récupérer la moyenne des notes
   let getAverage = table => table.reduce((a,b) => a + b)/allNotes.length
+
+   //récupération des notes des avis du lieux et affichage de la moyenne si il y a des avis sur le lieu
+  useEffect(() => {
     if (reviewsTable.length === 0){
       return
     }else{
       allNotes = reviewsTable.map((review)=> {
         return review.note
       })
-      console.log(getAverage(allNotes).toFixed(1))
-      // setPlaceNote(getAverage(allNotes).toFixed(1))
+      averageNote = getAverage(allNotes)
+      if(Number.isInteger(averageNote)){
+        setPlaceNote(getAverage(allNotes))
+      }else{
+        setPlaceNote(getAverage(allNotes).toFixed(1))
+      }
     }
+  }, [reviewsTable])
 
   
 
@@ -298,6 +311,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
+    paddingRight: 2
   },
   title: {
     fontSize: 18,
