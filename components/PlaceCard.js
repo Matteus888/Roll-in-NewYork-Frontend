@@ -14,20 +14,10 @@ import { faHeart, faStar, faImage } from "@fortawesome/free-solid-svg-icons"; //
 import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import {
-  addPlaceToFavorites,
-  removePlaceToFavorites,
-} from "../reducers/favorites";
-import { addMovie } from "../reducers/movies";
+import { addPlaceToFavorites, removePlaceToFavorites } from "../reducers/favorites";
 
 // Création de la card représentant les lieux de tournage référencés
-export default function PlaceCard({
-  id,
-  image,
-  title,
-  description,
-  navigation,
-}) {
+export default function PlaceCard({ id, image, title, description, navigation }) {
   const user = useSelector((state) => state.user.value);
   const nav = useNavigation();
   const [popupVisible, setPopupVisible] = useState(false);
@@ -41,9 +31,7 @@ export default function PlaceCard({
 
   useEffect(() => {
     (async () => {
-      fetch(
-        `https://roll-in-new-york-backend.vercel.app/users/isLiked/${user.token}/${id}`
-      )
+      fetch(`https://roll-in-new-york-backend.vercel.app/users/isLiked/${user.token}/${id}`)
         .then((response) => response.json())
         .then((data) => {
           if (data.result) {
@@ -66,12 +54,9 @@ export default function PlaceCard({
       return;
     }
     try {
-      fetch(
-        `https://roll-in-new-york-backend.vercel.app/users/likePlace/${user.token}/${id}`,
-        {
-          method: "PUT",
-        }
-      )
+      fetch(`https://roll-in-new-york-backend.vercel.app/users/likePlace/${user.token}/${id}`, {
+        method: "PUT",
+      })
         .then((response) => response.json())
         .then((data) => {
           if (data.status === "Added") {
@@ -99,11 +84,7 @@ export default function PlaceCard({
   return (
     <View style={styles.container}>
       <Pressable
-        onPress={() =>
-          nav.getState().routes[nav.getState().index].name === "Memories"
-            ? null
-            : setPopupVisible(true)
-        }
+        onPress={() => (nav.getState().routes[nav.getState().index].name === "Memories" ? null : setPopupVisible(true))}
       >
         <View style={styles.card}>
           <View style={styles.imageContainer}>
@@ -116,11 +97,7 @@ export default function PlaceCard({
                 {title}
               </Text>
               <TouchableOpacity style={styles.iconTouchBox}>
-                <FontAwesomeIcon
-                  icon={faHeart}
-                  size={10}
-                  style={isLiked ? { color: "red" } : likeStyle}
-                />
+                <FontAwesomeIcon icon={faHeart} size={10} style={isLiked ? { color: "red" } : likeStyle} />
                 <FontAwesomeIcon icon={faStar} size={12} color="#DEB973" />
                 <Text>3/5</Text>
               </TouchableOpacity>
@@ -136,22 +113,14 @@ export default function PlaceCard({
         <View style={styles.popup}>
           <TouchableWithoutFeedback onPress={() => setPopupVisible(false)}>
             <View style={styles.popupContent}>
-              <TouchableOpacity
-                onPress={handleLike}
-                style={styles.popupButton}
-                activeOpacity={0.8}
-              >
+              <TouchableOpacity onPress={handleLike} style={styles.popupButton} activeOpacity={0.8}>
                 <FontAwesomeIcon icon={faHeart} size={40} style={likeStyle} />
                 <Text style={styles.popupText}>Favourites</Text>
               </TouchableOpacity>
               <View style={styles.popupSeparator}></View>
               {user.token !== null && isLiked == true && (
                 <>
-                  <TouchableOpacity
-                    onPress={goToMemories}
-                    style={styles.popupButton}
-                    activeOpacity={0.8}
-                  >
+                  <TouchableOpacity onPress={goToMemories} style={styles.popupButton} activeOpacity={0.8}>
                     <FontAwesomeIcon icon={faImage} size={40} color="#4198f0" />
                     <Text style={styles.popupText}>Memories</Text>
                   </TouchableOpacity>
