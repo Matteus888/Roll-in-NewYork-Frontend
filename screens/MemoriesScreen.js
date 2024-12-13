@@ -18,7 +18,7 @@ export default function MemoriesScreen({ route, navigation }) {
   const [loading, setLoading] = useState(true);
   const [viewPictures, setViewPictures] = useState(false);
   const [selectedImage, setSelectedImage] = useState(""); // État pour l'URL de l'image sélectionnée
-  const [newReviewText, setNewReviewText] = useState('')
+  const [newReviewText, setNewReviewText] = useState("");
 
   const placeCard = (
     <PlaceCard
@@ -85,25 +85,27 @@ export default function MemoriesScreen({ route, navigation }) {
       place: selectedPlace.id,
       createdAt: new Date(),
       note: personalNote,
-      content: newReviewText
-    }
-    if(newReviewText === ''){
-      console.log("please write something")
-      return
-    }else{
+      content: newReviewText,
+    };
+    if (newReviewText === "") {
+      console.log("please write something");
+      return;
+    } else {
       fetch(`https://roll-in-new-york-backend.vercel.app/reviews/${user.token}/${selectedPlace.id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newReviewData)
+        body: JSON.stringify(newReviewData),
       })
-      .then((response) => response.json())
-      .then((data) => {
-        console.log("review posted!", data)
-        setNewReviewText("")
-        setPersonalNote(0)
-      })
+        .then((response) => response.json())
+        .then((data) => {
+          console.log("review posted!", data);
+          setNewReviewText("");
+          setPersonalNote(0);
+        });
     }
   };
+
+  const handleFilePick = () => {};
 
   return (
     <>
@@ -117,14 +119,14 @@ export default function MemoriesScreen({ route, navigation }) {
               <TextInput style={styles.input} placeholder="Write your review"></TextInput>
               <View style={styles.starContainer}>{personalStars}</View>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.postButton}>
+                <TouchableOpacity style={styles.postButton} onPress={() => handlePostReview()}>
                   <Text style={styles.textButton}>Post review</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
           <View style={styles.buttonPictures}>
-            <TouchableOpacity style={styles.buttonUpload} onPress={() => console.log("upload")}>
+            <TouchableOpacity style={styles.buttonUpload} onPress={() => handleFilePick()}>
               <FontAwesomeIcon icon={faUpload} size={30} color="#DEB973" />
             </TouchableOpacity>
             <View style={styles.buttonPictureSeparator}></View>
