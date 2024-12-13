@@ -1,32 +1,21 @@
-import {
-  StyleSheet,
-  Dimensions,
-  View,
-  TouchableOpacity,
-  Text,
-  SafeAreaView,
-} from "react-native";
-import PlaceCard from "../components/PlaceCard";
-import Header from "../components/Header";
+import { StyleSheet, View, TouchableOpacity} from "react-native";
 import { useState, useEffect, useRef } from "react";
 import { CameraView, Camera } from "expo-camera";
 import { useIsFocused } from "@react-navigation/native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
-import {
-  faXmark,
-  faO,
-  faRotate,
-  faBolt,
-} from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
+import { faXmark, faO, faRotate, faBolt } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
 import { useDispatch, useSelector } from "react-redux";
 import { addPicture } from "../reducers/pictures";
+import { useNavigation } from "@react-navigation/native";
 const formData = new FormData();
 
-export default function CameraScreen({ route, navigation }) {
+export default function CameraScreen({ route }) {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);
   const isFocused = useIsFocused();
   const cameraRef = useRef(null);
+  const selectedPlace = route.params?.selectedPlace;
 
   const [hasPermission, setHasPermission] = useState(false);
   const [facing, setFacing] = useState("back");
@@ -38,17 +27,32 @@ export default function CameraScreen({ route, navigation }) {
       const result = await Camera.requestCameraPermissionsAsync();
       setHasPermission(result && result?.status === "granted");
     })();
+
+    setFacing("back");
+    setFlash(false);
+
+    return () => {
+      if (cameraRef.current) {
+        console.log("Cleaning up camera");
+        cameraRef.current = null;
+      }
+    };
+  
   }, []);
 
   // Conditions to prevent more than 1 camera component to run in the bg
   if (!hasPermission || !isFocused) {
     return <View />;
   }
-  console.log(route.params.selectedPlace.id);
+  
   const takePicture = async () => {
-    const photo = await cameraRef.current?.takePictureAsync({ quality: 0.6 });
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Memories', params: { selectedPlace } }],
+    });
 
     try {
+      const photo = await cameraRef.current?.takePictureAsync({ quality: 0.3 });    
       // Effacer les anciennes valeurs de userToken et idPlace
       formData.delete("userToken");
       formData.delete("idPlace");
@@ -79,7 +83,9 @@ export default function CameraScreen({ route, navigation }) {
         body: formData,
       })
         .then((res) => res.json())
-        .then((data) => photo && dispatch(addPicture(data.url))) // dispatch(addPhoto(data.url))
+        .then((data) => {
+          photo && dispatch(addPicture(data.url))
+        })
         .catch((err) => console.log("Impossible de contacter le back", err));
     } catch (err) {
       console.error("Erreur lors de l'ajout de la photo :", err);
@@ -94,10 +100,12 @@ export default function CameraScreen({ route, navigation }) {
   const toggleFlash = () => {
     setFlash((current) => (current === false ? true : false));
   };
-
+  
   const handleClose = () => {
-    const selectedPlace = route.params.selectedPlace;
-    navigation.navigate("Memories", { selectedPlace }); // Pass only serializable data
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Memories', params: { selectedPlace } }],
+    });
   };
 
   return (
@@ -118,7 +126,7 @@ export default function CameraScreen({ route, navigation }) {
                 <FontAwesomeIcon icon={faBolt} size={40} color="white" />
               </TouchableOpacity>
             </View>
-            <View style={styles.cameraHeaderRight}>
+            <View>
               <TouchableOpacity onPress={() => handleClose()}>
                 <FontAwesomeIcon icon={faXmark} size={40} color="white" />
               </TouchableOpacity>
