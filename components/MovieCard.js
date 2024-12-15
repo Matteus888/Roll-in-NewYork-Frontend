@@ -9,25 +9,17 @@ export default function MovieCard(props) {
   });
 
   if (!fontsLoaded) {
-    // Si les fonts ne sont pas chargées, on retourne null
     return null;
   }
 
   return (
     <View style={styles.card}>
       <View style={styles.imageContainer}>
-        <Image
-          source={{ uri: `https://image.tmdb.org/t/p/original${props.poster}` }}
-          style={styles.image}
-        />
+        <Image source={{ uri: `https://image.tmdb.org/t/p/original${props.poster}` }} style={styles.image} />
       </View>
       <View style={styles.verticalBar}></View>
       <View style={styles.textContainer}>
-        <Text style={styles.title}>
-          {props.title.length > 20
-            ? props.title.substring(0, 20) + "..."
-            : props.title}
-        </Text>
+        <Text style={styles.title}>{props.title.length > 20 ? props.title.substring(0, 20) + "..." : props.title}</Text>
         <Text style={styles.date}>Date de sortie: {props.date} </Text>
         <Text style={styles.description} numberOfLines={3}>
           {props.overview}

@@ -36,6 +36,10 @@ export default function MemoriesScreen({ route, navigation }) {
     "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
   });
 
+  if (!fontsLoaded) {
+    return null;
+  }
+
   const placeCard = (
     <PlaceCard
       key={selectedPlace.id}
@@ -139,14 +143,13 @@ export default function MemoriesScreen({ route, navigation }) {
     if (!result.canceled) {
       const selectedImage = result.assets[0].uri;
 
+      // Fonction pour envoyer 1 image vers Cloudinary
       const uploadImage = async (uri) => {
         const formData = new FormData();
 
-        // Ajouter les informations supplémentaires
         formData.append("userToken", user.token);
         formData.append("idPlace", route.params.selectedPlace.id);
 
-        // Ajouter le fichier
         formData.append("photoFromFront", {
           uri,
           name: uri.split("/").pop(),
