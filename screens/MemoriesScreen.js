@@ -31,12 +31,15 @@ export default function MemoriesScreen({ route, navigation }) {
   const [viewPictures, setViewPictures] = useState(false);
   const [selectedImage, setSelectedImage] = useState(""); // État pour l'URL de l'image sélectionnée
   const [newReviewText, setNewReviewText] = useState("");
-  const [images, setImages] = useState([]); // Etat pour stocker les images sélectionnées
 
   const [fontsLoaded] = useFonts({
     // Chargement des fonts personnalisés
     "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
   });
+
+  if (!fontsLoaded) {
+    return null;
+  }
 
   const placeCard = (
     <PlaceCard
@@ -133,28 +136,26 @@ export default function MemoriesScreen({ route, navigation }) {
       return;
     }
 
-    // Sélecteur d'images
+    // Sélection d'une image
     const result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: true,
+      allowsMultipleSelection: false,
       quality: 1,
     });
-    console.log(result);
 
     if (!result.canceled) {
-      const selectedImages = result.assets.map((asset) => asset.uri);
+      const selectedImage = result.assets[0].uri;
 
+      // Fonction pour envoyer 1 image vers Cloudinary
       const uploadImage = async (uri) => {
         const formData = new FormData();
 
-        // Ajouter les informations supplémentaires
         formData.append("userToken", user.token);
         formData.append("idPlace", route.params.selectedPlace.id);
 
-        // Ajouter le fichier
         formData.append("photoFromFront", {
           uri,
-          name: uri.split("/").pop(), // Nom du fichier
+          name: uri.split("/").pop(),
           type: "image/jpeg",
         });
 
@@ -177,20 +178,13 @@ export default function MemoriesScreen({ route, navigation }) {
         }
       };
 
-      // Uploader toutes les images sélectionnées
-      const uploadedUrls = [];
-      for (const uri of selectedImages) {
-        const uploadedUrl = await uploadImage(uri);
-        if (uploadedUrl) {
-          uploadedUrls.push(uploadedUrl);
-          dispatch(addPicture(uploadedUrl)); // Ajouter chaque URL au store Redux
-        }
-      }
+      // Upload vers cloudinary de l'image sélectionnée
+      const uploadedPic = await uploadImage(selectedImage);
 
-      if (uploadedUrls.length) {
-        console.log("All uploaded images:", uploadedUrls);
+      if (uploadedPic) {
+        console.log("Picture successfully uploaded:", uploadedPic);
       } else {
-        console.error("No images were uploaded.");
+        console.error("Picture unsuccessfully uploaded.");
       }
     }
   };
@@ -306,7 +300,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.8,
     shadowRadius: 2,
-    elevation: 5,
     marginTop: 10,
   },
   title: {
