@@ -45,20 +45,6 @@ export default function MemoriesScreen({ route, navigation }) {
     return null;
   }
 
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  const placeCard = (
-    <PlaceCard
-      key={selectedPlace.id}
-      id={selectedPlace.id}
-      title={selectedPlace.title}
-      image={selectedPlace.image}
-      description={selectedPlace.description}
-    ></PlaceCard>
-  );
-
   useEffect(() => {
     (async () => {
       try {
