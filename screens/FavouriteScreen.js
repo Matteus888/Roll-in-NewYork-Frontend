@@ -1,13 +1,17 @@
 // Import pour react / react-native
-import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Linking } from "react-native"; // Import pour react / react-native
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Linking, Platform } from "react-native"; // Import pour react / react-native
 import { useEffect, useState } from "react"; // Import pour react
 import { useSelector } from "react-redux"; // Import pour récupérer les données du store
 import { useNavigation } from "@react-navigation/native";
+
 import { Checkbox } from "react-native-paper";
-import Header from "../components/Header"; // Import du composant Header.js
-import PlaceCard from "../components/PlaceCard"; // Import du composant PlaceCard.js
+
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
+
+import Header from "../components/Header";
+import PlaceCard from "../components/PlaceCard";
+import { usePlanDayContext, usePopupContext } from "../provider/AppProvider";
 
 // Import des icons depuis cloudinary
 const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/pctlnl7qs4esplvimxui.png";
@@ -15,13 +19,14 @@ const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v173381836
 
 export default function FavouriteScreen() {
   const [placesLikedList, setPlacesLikedList] = useState(null); // État pour stocker la liste des lieux likés
-  const [isLoading, setIsLoading] = useState(true);
+  const [isLoading, setIsLoading] = useState(true); // Etat du chargement de
   const [checkBtn, setCheckBtn] = useState(false);
   const [checkedStates, setCheckedStates] = useState([]);
   const [modalVisible, setModalVisible] = useState(false);
   const [planBtnVisible, setPlanBtnVisible] = useState(true);
   const [currentPosition, setCurrentPosition] = useState(null);
-  const [placeCoords, setPlaceCoords] = useState();
+  const { setActivePopupId } = usePopupContext();
+  const { isPlanDay, setIsPlanDay } = usePlanDayContext();
 
   const user = useSelector((state) => state.user.value);
   const favorite = useSelector((state) => state.favorite.value);
@@ -42,7 +47,6 @@ export default function FavouriteScreen() {
         const favoritePlaces = Array.isArray(data.favoritePlaces) ? data.favoritePlaces : []; // Vérifie si c'est un tableau
         setPlacesLikedList(data.favoritePlaces || null); // Stockage des lieux likés dans l'état placesLikedList
         setCheckedStates(Array(favoritePlaces.length).fill(false)); // Initialisation des états pour chaque case à cocher
-        // setPlaces(data.favoritePlaces);
         setIsLoading(false);
       })
       .catch((err) => {
@@ -111,10 +115,9 @@ export default function FavouriteScreen() {
         .map((place) => `${place.coords.lat},${place.coords.lon}`)
         .join("|");
 
-      // Construire l'URL Google Maps
+      // Lien Google Maps
       const url = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}`;
 
-      // Lien vers Google Maps
       Linking.openURL(url);
     } else {
       alert("Please select at least one place to generate a route.");
@@ -123,9 +126,9 @@ export default function FavouriteScreen() {
 
   // Check ou uncheck les boxs
   const toggleCheckbox = (index) => {
-    const updatedStates = [...checkedStates]; // Copie de l'état actuel
-    updatedStates[index] = !updatedStates[index]; // Inverser l'état de la case sélectionnée
-    setCheckedStates(updatedStates); // Mise à jour des états de chaque checkbox
+    const updatedStates = [...checkedStates];
+    updatedStates[index] = !updatedStates[index];
+    setCheckedStates(updatedStates);
   };
 
   // Affiche/Masque checkbox
@@ -133,6 +136,8 @@ export default function FavouriteScreen() {
     setCheckBtn(!checkBtn);
     setModalVisible(!modalVisible);
     setPlanBtnVisible(!planBtnVisible);
+    isPlanDay ? setIsPlanDay(false) : setIsPlanDay(true);
+    setActivePopupId(null);
   };
 
   // Affichage de la liste des lieux likés
@@ -143,14 +148,16 @@ export default function FavouriteScreen() {
     content = placesLikedList.map((place, i) => (
       <View style={styles.cardLine} key={`view-${i}`}>
         {checkBtn && (
-          <Checkbox
-            key={`checkbox-${i}`}
-            status={checkedStates[i] ? "checked" : "unchecked"}
-            onPress={() => toggleCheckbox(i)}
-            style={styles.checkbox}
-            color="#001F3F"
-            uncheckedColor="#282C37"
-          />
+          <View style={ Platform.OS === "ios" ? styles.checkboxContainer : null}>
+            <Checkbox
+              key={`checkbox-${i}`}
+              status={checkedStates[i] ? "checked" : "unchecked"}
+              onPress={() => toggleCheckbox(i)}
+              style={styles.checkbox}
+              color="#001F3F"
+              uncheckedColor="#7B8794"
+            />
+          </View>
         )}
 
         <PlaceCard
@@ -206,7 +213,6 @@ export default function FavouriteScreen() {
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => {
-                  // setModalVisible(false);
                   goToMap();
                 }}
               >
@@ -249,7 +255,6 @@ export default function FavouriteScreen() {
   );
 }
 
-// Définition du style des différents éléments
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -262,6 +267,15 @@ const styles = StyleSheet.create({
   modalBackground: {
     alignItems: "center",
     marginBottom: 50,
+  },
+  checkboxContainer: {
+    backgroundColor: "white", // Couleur de fond pour mieux voir
+    borderRadius: 50,
+    borderWidth: 3,
+    borderColor: "#001F3F",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
   },
   modalView: {
     flexDirection: "column",

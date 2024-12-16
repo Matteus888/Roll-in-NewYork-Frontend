@@ -16,7 +16,7 @@ import { useNavigation } from "@react-navigation/native";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addPlaceToFavorites, removePlaceToFavorites } from "../reducers/favorites";
-import { usePopupContext } from "../provider/PopupProvider";
+import { usePlanDayContext, usePopupContext } from "../provider/AppProvider";
 
 // Création de la card représentant les lieux de tournage référencés
 export default function PlaceCard({ id, image, title, description, navigation }) {
@@ -28,6 +28,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
   const [isLiked, setIsLiked] = useState(false);
   const [placeNote, setPlaceNote] = useState(0); //pour affichage de la note
   const [reviewsTable, setReviewsTable] = useState([]); //pour récupérer les avis du lieu
+  const { isPlanDay } = usePlanDayContext();
 
   const [fontsLoaded] = useFonts({
     // Chargement des fonts personnalisés
@@ -59,7 +60,11 @@ export default function PlaceCard({ id, image, title, description, navigation })
   //force le rafraichissement de la placeCard en fonction de l'id du lieu, son status like, de la note et en fonction du user
 
   const togglePopup = () => {
-    setActivePopupId(popupVisible ? null : id); // Ferme si déjà ouvert, sinon ouvre
+    if (isPlanDay) {
+      return;
+    } else {
+      setActivePopupId(popupVisible ? null : id); // Ferme si déjà ouvert, sinon ouvre
+    }
   };
 
   const handleLike = () => {
@@ -128,6 +133,10 @@ export default function PlaceCard({ id, image, title, description, navigation })
     }
   }, [reviewsTable]);
 
+  const handleReviews = () => {
+    navigation.navigate("Reviews", { placeInfo });
+    setActivePopupId(null);
+  }
 
   return (
     <View style={styles.container}>
@@ -176,7 +185,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
                 </>
               )}
               <TouchableOpacity
-                onPress={() => navigation.navigate("Reviews", { placeInfo })}
+                onPress={() => handleReviews()}
                 style={styles.popupButton}
                 activeOpacity={0.8}
               >

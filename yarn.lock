@@ -3792,6 +3792,11 @@ expo-location@^18.0.4:
   resolved "https://registry.yarnpkg.com/expo-location/-/expo-location-18.0.4.tgz#ccc13fb12751b7b897ce286d77c411094187446b"
   integrity sha512-OrZTxRpfi4bCJxjW186wt3kfoe0FHwXceE6dXdbxvjxnwMP9cbKeqY6Y2M1bVwboq7PI2eV/e1rOaGq+F+fZyw==
 
+expo-media-library@^17.0.3:
+  version "17.0.3"
+  resolved "https://registry.yarnpkg.com/expo-media-library/-/expo-media-library-17.0.3.tgz#4ee3e6a8a2544887d910a72eaf2a15858b78cc0e"
+  integrity sha512-vo8AqWxv1C8+U8dA5W43qs8+3dgD3VZDvcCkZBQTBnGr/2Rs7x6nNQD5s7UfYyr6qmW6102JB3+OUKHpkwEssg==
+
 expo-modules-autolinking@2.0.4:
   version "2.0.4"
   resolved "https://registry.yarnpkg.com/expo-modules-autolinking/-/expo-modules-autolinking-2.0.4.tgz#28fcd12fb0d066a2933cca3bf3b597da0f6b2f2a"

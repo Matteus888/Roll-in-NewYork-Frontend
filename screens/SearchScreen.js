@@ -1,24 +1,11 @@
 // Réalisation des différents imports
-import {
-  StyleSheet,
-  View,
-  FlatList,
-  Dimensions,
-  TouchableOpacity,
-  Text,
-  Platform,
-  Linking,
-} from "react-native"; // Import pour react / react-native
+import { StyleSheet, View, FlatList, Dimensions, TouchableOpacity, Text, Platform, Linking } from "react-native"; // Import pour react / react-native
 import { Marker } from "react-native-maps";
 import MapView from "react-native-maps";
 import { useState, useEffect } from "react"; // Import pour react
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
-const moviePlace =
-  "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png"; //import du maker pour afficher le lieu sur la map
-import {
-  faChevronLeft,
-  faChevronRight,
-} from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
+const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png"; //import du maker pour afficher le lieu sur la map
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
 import Header from "../components/Header"; // Import du composant Header
 import PlaceCard from "../components/PlaceCard"; // Import du composant PlaceCard
 import MovieCard from "../components/MovieCard"; // Import du composant MovieCard
@@ -59,9 +46,7 @@ export default function SearchScreen({ route, navigation }) {
     );
 
     // récupération des lieux du film
-    moviePlaces = allPlaces.filter((place) =>
-      place.moviesList.includes(selectedMovie.id)
-    );
+    moviePlaces = allPlaces.filter((place) => place.moviesList.includes(selectedMovie.id));
   }
 
   //useEffect pour mettre à jour les coordonnées du marqueur du lieu affiché sur la map
@@ -79,8 +64,7 @@ export default function SearchScreen({ route, navigation }) {
 
   // Fonction pour passer à la card du lieu précédent
   const goToPrevious = () => {
-    const prevIndex =
-      (currentIndex - 1 + moviePlaces.length) % moviePlaces.length;
+    const prevIndex = (currentIndex - 1 + moviePlaces.length) % moviePlaces.length;
     setCurrentIndex(prevIndex);
   };
 
@@ -114,25 +98,14 @@ export default function SearchScreen({ route, navigation }) {
   return (
     <>
       <View style={styles.container}>
-        <Header
-          title="Roll-In NewYork"
-          showInput={true}
-          navigation={navigation}
-        />
+        <Header title="Roll-In NewYork" showInput={true} navigation={navigation} />
         <View style={styles.searchScreenContainer}>
           {movieCard}
           {moviePlaces && moviePlaces.length > 0 ? (
             <>
               <View style={styles.carouselWrapper}>
-                <TouchableOpacity
-                  onPress={goToPrevious}
-                  style={styles.navigationButtonLeft}
-                >
-                  <FontAwesomeIcon
-                    icon={faChevronLeft}
-                    size={20}
-                    color="black"
-                  />
+                <TouchableOpacity onPress={goToPrevious} style={styles.navigationButtonLeft}>
+                  <FontAwesomeIcon icon={faChevronLeft} size={20} color="black" />
                 </TouchableOpacity>
                 <FlatList // Affichage du carrousel
                   data={moviePlaces}
@@ -160,32 +133,16 @@ export default function SearchScreen({ route, navigation }) {
                     justifyContent: "center",
                   }} // Centrage des éléments du carrousel
                 />
-                <TouchableOpacity
-                  onPress={goToNext}
-                  style={styles.navigationButtonRight}
-                >
-                  <FontAwesomeIcon
-                    icon={faChevronRight}
-                    size={20}
-                    color="black"
-                  />
+                <TouchableOpacity onPress={goToNext} style={styles.navigationButtonRight}>
+                  <FontAwesomeIcon icon={faChevronRight} size={20} color="black" />
                 </TouchableOpacity>
               </View>
               <View style={styles.pagination}>
                 {moviePlaces.map((_, index) => (
-                  <View
-                    key={index}
-                    style={[
-                      styles.pageLine,
-                      currentIndex === index && styles.activePageLine,
-                    ]}
-                  />
+                  <View key={index} style={[styles.pageLine, currentIndex === index && styles.activePageLine]} />
                 ))}
               </View>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => goToMap(placeCoords)}
-              >
+              <TouchableOpacity style={styles.button} onPress={() => goToMap(placeCoords)}>
                 <Text style={styles.textButton}>Go to maps!</Text>
               </TouchableOpacity>
               <View style={styles.mapContainer}>

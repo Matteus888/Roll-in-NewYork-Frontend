@@ -36,12 +36,12 @@ export default function SignIn({ isOpen, onClose }) {
     if (email === "" || password === "") {
       // Condition pour dire que si les champs sont vides
       setError(true); // On met l'erreur à true
-      setErrorMessage("Veuillez remplir tous les champs"); // On affiche un message d'erreur
+      setErrorMessage("Please complete all fields"); // On affiche un message d'erreur
       return;
     } else if (!regex.test(email)) {
       // Condition pour dire que si l'email n'est pas valide
       setError(true); // On met l'erreur à true
-      setErrorMessage("L'addresse email n'est pas valide"); // On affiche un message d'erreur
+      setErrorMessage("Invalid email address"); // On affiche un message d'erreur
       return;
     } else {
       // Sinon, si les champs sont remplis
@@ -65,7 +65,7 @@ export default function SignIn({ isOpen, onClose }) {
         let data = await response.json(); // On stocke les données de la réponse dans la variable data
         if (data.result === true) {
           // Condition pour dire que si le résultat de la réponse est égal à "true"
-          Toast.success("Connexion réussie", "top", {
+          Toast.success("Connexion success !", "top", {
             duration: 2000,
           }); // On affiche une notification de succès
           dispatch(
@@ -78,7 +78,7 @@ export default function SignIn({ isOpen, onClose }) {
           ); // On envoie les données de l'utilisateur dans le store
           onClose(); // On ferme la modale (Pop-up SignIn)
         } else {
-          Toast.error("Échec de la connexion", "top", {
+          Toast.error("Connection failed !", "top", {
             duration: 2000,
           }); // On affiche une notification d'erreur
         }

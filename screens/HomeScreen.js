@@ -9,7 +9,7 @@ import {
   Linking,
   Platform,
 } from "react-native"; // Import pour react-native
-import { useState, useEffect } from "react"; // Import pour react
+import { useState, useEffect, useRef } from "react"; // Import pour react
 import { Marker } from "react-native-maps"; // Import pour la carte
 import MapView from "react-native-maps"; // Import pour la map
 import Header from "../components/Header"; // Import du composant Header.js
@@ -30,6 +30,7 @@ export default function HomeScreen({ navigation }) {
   const [placeCoords, setPlaceCoords] = useState(); // Initiation des coordonnées du lieu
   // récupération des infos de tout les films depuis le reducer
   const moviesInfo = useSelector((state) => state.movie.value);
+  const mapRef = useRef(null);
 
   // Demande de permission pour récupérer la localisation de l'utilisateur
   useEffect(() => {
@@ -51,7 +52,19 @@ export default function HomeScreen({ navigation }) {
       .then((data) => {
         setPlaces(data.places);
       });
-  }, []);
+
+    if (placeCoords && mapRef.current) {
+      mapRef.current.animateToRegion(
+        {
+          latitude: placeCoords.lat + (Platform.OS === "ios" ? 0.0058 : 0), // Ajustez le décalage selon vos besoins
+          longitude: placeCoords.lon,
+          latitudeDelta: 0.05,
+          longitudeDelta: 0.05,
+        },
+        500 // Durée de l'animation
+      );
+    }
+  }, [placeCoords]);
 
   // Mise en place des markers pour afficher les lieux sur la carte
   const placesMarker = places.map((data, i) => {
@@ -186,6 +199,7 @@ export default function HomeScreen({ navigation }) {
       </Modal>
       <View style={styles.mapContainer}>
         <MapView
+          ref={mapRef}
           // force la map à se recharger si changement dans le fetch, évite la disparition des marker
           // la key est une string avec un identifiant "map" pour le différencier des key "i" dans le place.map
           key={`map-${places.length}`}
@@ -214,6 +228,12 @@ export default function HomeScreen({ navigation }) {
                   longitudeDelta: 0.1,
                 }
           }
+          mapPadding={{
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: Platform.OS === "ios" ? 200 : 0, // Padding pour éviter la superposition de la modal
+          }}
           style={styles.map}
         >
           <Marker
@@ -314,6 +334,7 @@ const styles = StyleSheet.create({
     borderColor: "#282C37",
     borderWidth: 2,
     padding: 10,
+    marginBottom: Platform.OS === "ios" ? 28 : 0,
   },
   buttonContainer: {
     flexDirection: "row",
