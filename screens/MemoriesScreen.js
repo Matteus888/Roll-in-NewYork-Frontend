@@ -23,7 +23,6 @@ import * as ImagePicker from "expo-image-picker";
 export default function MemoriesScreen({ route, navigation }) {
   const user = useSelector((state) => state.user.value);
   const { selectedPlace } = route.params;
-  const dispatch = useDispatch()
 
   //mise en place des états pour poster un nouvel avis
   const [personalNote, setPersonalNote] = useState(0);
@@ -32,7 +31,6 @@ export default function MemoriesScreen({ route, navigation }) {
   const [viewPictures, setViewPictures] = useState(false);
   const [selectedImage, setSelectedImage] = useState(""); // État pour l'URL de l'image sélectionnée
   const [newReviewText, setNewReviewText] = useState("");
-  const [images, setImages] = useState([]); // Etat pour stocker les images sélectionnées
   const [refreshKey, setRefreshKey] = useState(0)
 
   const [fontsLoaded] = useFonts({
@@ -43,22 +41,6 @@ export default function MemoriesScreen({ route, navigation }) {
   if (!fontsLoaded) {
     return null;
   }
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  const placeCard = (
-    <PlaceCard
-      key={selectedPlace.id}
-      id={selectedPlace.id}
-      title={selectedPlace.title}
-      image={selectedPlace.image}
-      description={selectedPlace.description}
-    ></PlaceCard>
-  );
-
-
 
 
   useEffect(() => {
@@ -134,10 +116,10 @@ export default function MemoriesScreen({ route, navigation }) {
           }); 
           setNewReviewText("");
           setPersonalNote(0);
+          setRefreshKey(refreshKey+1)
         });
     }
     //mise à jour de la note moyenne et enregitrement dans le reducer
-    setRefreshKey(refreshKey+1)
     console.log("note update")
   };
 

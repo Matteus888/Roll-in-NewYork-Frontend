@@ -85,7 +85,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
             setLikeStyle({ color: "red" });
             setIsLiked(true);
           } else if (data.status === "Removed") {
-            dispatch(removePlaceToFavorites());
+            dispatch(removePlaceToFavorites(id+1));
             setLikeStyle({ color: "white" });
             setIsLiked(false);
           }
@@ -119,6 +119,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
   //récupération des notes des avis du lieux et affichage de la moyenne si il y a des avis sur le lieu
   useEffect(() => {
     if (reviewsTable.length === 0) {
+      setPlaceNote(0)
       return;
     } else {
       allNotes = reviewsTable.map((review) => {

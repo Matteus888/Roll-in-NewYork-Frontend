@@ -24,7 +24,7 @@ const moviePlace =
 
 export default function HomeScreen({ navigation }) {
   const [places, setPlaces] = useState([]); // Initiation du tableau de lieux à afficher sur la carte
-  const [currentPosition, setCurrentPosition] = useState(null); // Initiation des coordonnées de localisation de l'utilisateur
+  const [currentPosition, setCurrentPosition] = useState({ latitude: 40.772087, longitude: -73.973159 }); // Initiation des coordonnées de localisation de l'utilisateur à la position de central park 
   const [modalVisible, setModalVisible] = useState(false); // Initiation de la modale pour afficher les informations du lieu
   const [placeMovies, setPlaceMovies] = useState([]); // Initiation du tableau de films du lieu
   const [placeCoords, setPlaceCoords] = useState(); // Initiation des coordonnées du lieu
