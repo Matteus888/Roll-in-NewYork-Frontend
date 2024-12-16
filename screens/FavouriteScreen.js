@@ -188,7 +188,7 @@ export default function FavouriteScreen() {
   const scrollViewHeight = !modalVisible ? "73.3%" : "31%";
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container} >
       <Header title="My Favorites" showInput={false} />
       <View style={[styles.favouritesScreenContainer, { height: scrollViewHeight }]}>
         {placesLikedList && placesLikedList.length > 0 && planBtnVisible && (

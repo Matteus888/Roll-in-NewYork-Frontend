@@ -21,6 +21,7 @@ import { usePopupContext } from "../provider/PopupProvider";
 // Création de la card représentant les lieux de tournage référencés
 export default function PlaceCard({ id, image, title, description, navigation }) {
   const user = useSelector((state) => state.user.value);
+  const favorite = useSelector((state) => state.favorite.value )
   const nav = useNavigation();
   const { activePopupId, setActivePopupId } = usePopupContext();
   const [likeStyle, setLikeStyle] = useState({ color: "white" });
@@ -54,7 +55,8 @@ export default function PlaceCard({ id, image, title, description, navigation })
         })
         .catch((err) => console.error("Error checking like status:", err));
     })();
-  }, [user.token, id]);
+  }, [user.token, id, favorite]); 
+  //force le rafraichissement de la placeCard en fonction de l'id du lieu, son status like, de la note et en fonction du user
 
   const togglePopup = () => {
     setActivePopupId(popupVisible ? null : id); // Ferme si déjà ouvert, sinon ouvre
@@ -125,6 +127,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
       }
     }
   }, [reviewsTable]);
+
 
   return (
     <View style={styles.container}>

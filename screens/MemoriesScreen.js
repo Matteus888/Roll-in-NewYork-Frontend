@@ -14,7 +14,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Impo
 import { faCamera, faUpload, faStar } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
 import MasonryList from "react-native-masonry-list";
 import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { useFonts } from "expo-font";
 import Picture from "../components/Picture";
 import * as ImagePicker from "expo-image-picker";
@@ -22,8 +22,9 @@ import * as ImagePicker from "expo-image-picker";
 export default function MemoriesScreen({ route, navigation }) {
   const user = useSelector((state) => state.user.value);
   const { selectedPlace } = route.params;
+  const dispatch = useDispatch()
 
-  //mise en place des états pour moster un nouvel avis
+  //mise en place des états pour poster un nouvel avis
   const [personalNote, setPersonalNote] = useState(0);
   const [pictures, setPictures] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -31,21 +32,16 @@ export default function MemoriesScreen({ route, navigation }) {
   const [selectedImage, setSelectedImage] = useState(""); // État pour l'URL de l'image sélectionnée
   const [newReviewText, setNewReviewText] = useState("");
   const [images, setImages] = useState([]); // Etat pour stocker les images sélectionnées
+  const [refreshKey, setRefreshKey] = useState(0)
 
   const [fontsLoaded] = useFonts({
     // Chargement des fonts personnalisés
     "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
   });
 
-  const placeCard = (
-    <PlaceCard
-      key={selectedPlace.id}
-      id={selectedPlace.id}
-      title={selectedPlace.title}
-      image={selectedPlace.image}
-      description={selectedPlace.description}
-    ></PlaceCard>
-  );
+
+
+
 
   useEffect(() => {
     (async () => {
@@ -120,7 +116,20 @@ export default function MemoriesScreen({ route, navigation }) {
           setPersonalNote(0);
         });
     }
+    //mise à jour de la note moyenne et enregitrement dans le reducer
+    setRefreshKey(refreshKey+1)
+    console.log("note update")
   };
+
+  const placeCard = (
+    <PlaceCard
+      key={refreshKey}
+      id={selectedPlace.id}
+      title={selectedPlace.title}
+      image={selectedPlace.image}
+      description={selectedPlace.description}
+    ></PlaceCard>
+  );
 
   const handleFilePick = async () => {
     // Demande autorisation d'accès à la galerie
