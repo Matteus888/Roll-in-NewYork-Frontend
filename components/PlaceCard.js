@@ -33,10 +33,6 @@ export default function PlaceCard({ id, image, title, description, navigation })
     "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
   });
 
-  if (!fontsLoaded) {
-    return null;
-  }
-
   const dispatch = useDispatch();
   const popupVisible = activePopupId === id;
   //stockage des infos de la placeCard dans une variable:

@@ -1,4 +1,4 @@
-import { StyleSheet, View, TouchableOpacity } from "react-native";
+import { StyleSheet, View, TouchableOpacity, Platform, Alert } from "react-native";
 import { useState, useEffect, useRef } from "react";
 import { CameraView, Camera } from "expo-camera";
 import { useIsFocused } from "@react-navigation/native";
@@ -7,7 +7,6 @@ import { faXmark, faO, faRotate, faBolt } from "@fortawesome/free-solid-svg-icon
 import { useDispatch, useSelector } from "react-redux";
 import { addPicture } from "../reducers/pictures";
 import { useNavigation } from "@react-navigation/native";
-const formData = new FormData();
 
 export default function CameraScreen({ route }) {
   const dispatch = useDispatch();
@@ -20,12 +19,16 @@ export default function CameraScreen({ route }) {
   const [hasPermission, setHasPermission] = useState(false);
   const [facing, setFacing] = useState("back");
   const [flash, setFlash] = useState(false);
+  const [isCapturing, setIsCapturing] = useState(false);
 
-  // Effect hook to check permission upon each mount
+  // Demande de permission
   useEffect(() => {
     (async () => {
-      const result = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(result && result?.status === "granted");
+      const { status } = await Camera.requestCameraPermissionsAsync();
+      setHasPermission(status === "granted");
+      if (status !== "granted") {
+        Alert.alert("Permission denied", "Access to camera is required to take photos");
+      }
     })();
 
     setFacing("back");
@@ -45,47 +48,53 @@ export default function CameraScreen({ route }) {
   }
 
   const takePicture = async () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Memories", params: { selectedPlace } }],
-    });
-    
-    const photo = await cameraRef.current?.takePictureAsync({quality: 0.8});    
-    try {
-      const photo = await cameraRef.current?.takePictureAsync({ quality: 0.3 });
-      // Effacer les anciennes valeurs de userToken et idPlace
-      formData.delete("userToken");
-      formData.delete("idPlace");
+    if (isCapturing || !cameraRef.current) return;
 
-      // Ajouter la photo
-      formData.append("photoFromFront", {
-        uri: photo.uri,
-        name: photo.uri.substring(photo.uri.lastIndexOf("/") + 1, photo.uri.lastIndexOf(".jpg")),
-        type: "image/jpeg",
+    try {
+      setIsCapturing(true);
+
+      const photo = await cameraRef.current.takePictureAsync({
+        quality: Platform.OS === "android" ? 0.5 : 0.3,
+        exif: false,
+        skipProcessing: Platform.OS === "android",
       });
 
-      // Ajouter userToken si nécessaire
-      if (!formData.has("userToken")) {
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Memories", params: { selectedPlace } }],
+      });
+      // Si la photo est valide
+      if (photo?.uri) {
+        const formData = new FormData();
+
+        // Effacer les anciennes valeurs de userToken et idPlace
+        formData.delete("userToken");
+        formData.delete("idPlace");
+
+        // Ajouter la photo au FormData
+        formData.append("photoFromFront", {
+          uri: photo.uri,
+          name: photo.uri.split("/").pop(),
+          type: "image/jpeg",
+        });
+
         formData.append("userToken", user.token);
-      }
-
-      // Ajouter idPlace si nécessaire
-      if (!formData.has("idPlace")) {
         formData.append("idPlace", route.params.selectedPlace.id);
-      }
 
-      // Envoi de la requête avec le formData
-      fetch("https://roll-in-new-york-backend.vercel.app/favorites/pictures", {
-        method: "POST",
-        body: formData,
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          photo && dispatch(addPicture(data.url));
-        })
-        .catch((err) => console.log("Impossible de contacter le back", err));
+        // Envoi de la requête avec le formData
+        const response = await fetch("https://roll-in-new-york-backend.vercel.app/favorites/pictures", {
+          method: "POST",
+          body: formData,
+        });
+
+        const data = await response.json();
+        dispatch(addPicture(data.url)); // Mise à jour du store avec l'URL de la photo
+      }
     } catch (err) {
-      console.error("Erreur lors de l'ajout de la photo :", err);
+      console.error("Error taking photo ", err);
+      Alert.alert("An error occurred while taking photo.");
+    } finally {
+      setIsCapturing(false);
     }
   };
 
@@ -110,7 +119,10 @@ export default function CameraScreen({ route }) {
         style={styles.camera}
         facing={facing}
         enableTorch={flash}
-        ref={(ref) => (cameraRef.current = ref)}
+        ref={(ref) => {
+          console.log("Référence de la caméra assignée : ", ref);
+          cameraRef.current = ref;
+        }}
         photo={true}
       >
         <View style={styles.cameraContainer}>
