@@ -18,7 +18,7 @@ export default function Picture({ selectedImage, isOpen, onClose }) {
   if (!isOpen) {
     return null;
   }
-
+  
   const handleDelete = () => {
     try {
       fetch(`https://roll-in-new-york-backend.vercel.app/favorites/pictures`, {

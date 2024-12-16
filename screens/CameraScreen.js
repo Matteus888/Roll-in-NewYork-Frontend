@@ -49,10 +49,10 @@ export default function CameraScreen({ route }) {
       index: 0,
       routes: [{ name: "Memories", params: { selectedPlace } }],
     });
-    
-    const photo = await cameraRef.current?.takePictureAsync({quality: 0.8});    
+
     try {
-      const photo = await cameraRef.current?.takePictureAsync({ quality: 0.3 });
+      const photo = await cameraRef.current?.takePictureAsync({ quality: 0.8 });
+      console.log(photo)
       // Effacer les anciennes valeurs de userToken et idPlace
       formData.delete("userToken");
       formData.delete("idPlace");
@@ -63,7 +63,6 @@ export default function CameraScreen({ route }) {
         name: photo.uri.substring(photo.uri.lastIndexOf("/") + 1, photo.uri.lastIndexOf(".jpg")),
         type: "image/jpeg",
       });
-
       // Ajouter userToken si nécessaire
       if (!formData.has("userToken")) {
         formData.append("userToken", user.token);

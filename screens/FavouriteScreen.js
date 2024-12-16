@@ -1,5 +1,5 @@
 // Import pour react / react-native
-import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Linking } from "react-native"; // Import pour react / react-native
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Linking, Platform } from "react-native"; // Import pour react / react-native
 import { useEffect, useState } from "react"; // Import pour react
 import { useSelector } from "react-redux"; // Import pour récupérer les données du store
 import { useNavigation } from "@react-navigation/native";
@@ -8,6 +8,7 @@ import Header from "../components/Header"; // Import du composant Header.js
 import PlaceCard from "../components/PlaceCard"; // Import du composant PlaceCard.js
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
+import { usePlanDayContext, usePopupContext } from "../provider/AppProvider";
 
 // Import des icons depuis cloudinary
 const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/pctlnl7qs4esplvimxui.png";
@@ -21,7 +22,8 @@ export default function FavouriteScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [planBtnVisible, setPlanBtnVisible] = useState(true);
   const [currentPosition, setCurrentPosition] = useState(null);
-  const [placeCoords, setPlaceCoords] = useState();
+  const { setActivePopupId } = usePopupContext();
+  const { isPlanDay, setIsPlanDay } = usePlanDayContext();
 
   const user = useSelector((state) => state.user.value);
   const favorite = useSelector((state) => state.favorite.value);
@@ -133,6 +135,8 @@ export default function FavouriteScreen() {
     setCheckBtn(!checkBtn);
     setModalVisible(!modalVisible);
     setPlanBtnVisible(!planBtnVisible);
+    isPlanDay ? setIsPlanDay(false) : setIsPlanDay(true);
+    setActivePopupId(null);
   };
 
   // Affichage de la liste des lieux likés
@@ -143,14 +147,16 @@ export default function FavouriteScreen() {
     content = placesLikedList.map((place, i) => (
       <View style={styles.cardLine} key={`view-${i}`}>
         {checkBtn && (
-          <Checkbox
-            key={`checkbox-${i}`}
-            status={checkedStates[i] ? "checked" : "unchecked"}
-            onPress={() => toggleCheckbox(i)}
-            style={styles.checkbox}
-            color="#001F3F"
-            uncheckedColor="#282C37"
-          />
+          <View style={ Platform.OS === "ios" ? styles.checkboxContainer : null}>
+            <Checkbox
+              key={`checkbox-${i}`}
+              status={checkedStates[i] ? "checked" : "unchecked"}
+              onPress={() => toggleCheckbox(i)}
+              style={styles.checkbox}
+              color="#001F3F"
+              uncheckedColor="#7B8794"
+            />
+          </View>
         )}
 
         <PlaceCard
@@ -262,6 +268,15 @@ const styles = StyleSheet.create({
   modalBackground: {
     alignItems: "center",
     marginBottom: 50,
+  },
+  checkboxContainer: {
+    backgroundColor: "white", // Couleur de fond pour mieux voir
+    borderRadius: 50,
+    borderWidth: 3,
+    borderColor: "#001F3F",
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 10,
   },
   modalView: {
     flexDirection: "column",
