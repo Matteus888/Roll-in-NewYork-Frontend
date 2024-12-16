@@ -38,17 +38,17 @@ export default function SignUp({ isOpen, onClose }) {
     if (username === "" || email === "" || password === "") {
       // Condition pour dire que si les champs sont vides
       setError(true); // On met l'erreur à true
-      setErrorMessage("Veuillez remplir tous les champs"); // On affiche un message d'erreur
+      setErrorMessage("Please complete all fields"); // On affiche un message d'erreur
       return;
     } else if (!regex.test(email)) {
       // Condition pour dire que si l'email n'est pas valide
       setError(true); // On met l'erreur à true
-      setErrorMessage("L'addresse email n'est pas valide"); // On affiche un message d'erreur
+      setErrorMessage("Invalid email address"); // On affiche un message d'erreur
       return;
     } else if (password !== confirmPassword) {
       // Condition pour dire que si les mots de passe ne correspondent pas
       setError(true); // On met l'erreur à true
-      setErrorMessage("Les mots de passe ne correspondent pas"); // On affiche un message d'erreur
+      setErrorMessage("Passwords don't match"); // On affiche un message d'erreur
     } else {
       setError(false); // On met l'erreur à false
       setErrorMessage(""); // On vide le message d'erreur
@@ -74,7 +74,7 @@ export default function SignUp({ isOpen, onClose }) {
         let data = await response.json(); // On stocke les données de la réponse dans la variable data
         if (data.result === true) {
           // Condition pour dire que si le résultat de la réponse est égal à "true"
-          Toast.success("Le compte a été créé", "top", {
+          Toast.success("Account created !", "top", {
             duration: 2000,
           }); // On affiche une notification de succès
           dispatch(
@@ -91,7 +91,7 @@ export default function SignUp({ isOpen, onClose }) {
           setPassword(""); // On vide le champ password
           setConfirmPassword(""); // On vide le champ confirmPassword
         } else {
-          Toast.error("Échec de la connexion", "top", {
+          Toast.error("Connexion failed !", "top", {
             duration: 2000,
           }); // On affiche une notification d'erreur
           return;

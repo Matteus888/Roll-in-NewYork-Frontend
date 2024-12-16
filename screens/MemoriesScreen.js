@@ -16,6 +16,7 @@ import MasonryList from "react-native-masonry-list";
 import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useFonts } from "expo-font";
+import { Toast } from "toastify-react-native"; // Import pour les notifications
 import Picture from "../components/Picture";
 import * as ImagePicker from "expo-image-picker";
 
@@ -115,7 +116,9 @@ export default function MemoriesScreen({ route, navigation }) {
       })
         .then((response) => response.json())
         .then((data) => {
-          console.log("review posted!", data);
+          Toast.success("Review posted !", "top", {
+            duration: 2000,
+          }); 
           setNewReviewText("");
           setPersonalNote(0);
         });
