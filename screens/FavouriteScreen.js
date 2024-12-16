@@ -32,6 +32,8 @@ export default function FavouriteScreen() {
   const favorite = useSelector((state) => state.favorite.value);
   const navigation = useNavigation();
 
+
+
   useEffect(() => {
     // Redirection vers la page login si on n'est pas connecté
     (async () => {
@@ -52,6 +54,7 @@ export default function FavouriteScreen() {
       .catch((err) => {
         console.error("Error during fetch places data : ", err);
       });
+      
   }, [user.token, favorite, navigation]);
 
   // Demande de permission pour récupérer la localisation de l'utilisateur

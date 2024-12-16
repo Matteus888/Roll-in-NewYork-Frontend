@@ -45,6 +45,20 @@ export default function MemoriesScreen({ route, navigation }) {
     return null;
   }
 
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  const placeCard = (
+    <PlaceCard
+      key={selectedPlace.id}
+      id={selectedPlace.id}
+      title={selectedPlace.title}
+      image={selectedPlace.image}
+      description={selectedPlace.description}
+    ></PlaceCard>
+  );
+
   useEffect(() => {
     (async () => {
       try {
@@ -118,10 +132,10 @@ export default function MemoriesScreen({ route, navigation }) {
           });
           setNewReviewText("");
           setPersonalNote(0);
+          setRefreshKey(refreshKey + 1);
         });
     }
     //mise à jour de la note moyenne et enregitrement dans le reducer
-    setRefreshKey(refreshKey + 1);
     console.log("note update");
   };
 

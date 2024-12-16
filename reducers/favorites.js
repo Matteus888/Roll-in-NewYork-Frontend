@@ -14,9 +14,9 @@ export const favoriteSlice = createSlice({
       // Fonction pour ajouter un lieu en favoris
       state.value = action.payload;
     },
-    removePlaceToFavorites: (state) => {
+    removePlaceToFavorites: (state, action) => {
       // Fonction pour supprimer un lieu des favoris
-      state.value = "";
+      state.value = action.payload;
     },
   },
 });
