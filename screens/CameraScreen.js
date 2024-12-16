@@ -7,7 +7,6 @@ import { faXmark, faO, faRotate, faBolt } from "@fortawesome/free-solid-svg-icon
 import { useDispatch, useSelector } from "react-redux";
 import { addPicture } from "../reducers/pictures";
 import { useNavigation } from "@react-navigation/native";
-const formData = new FormData();
 
 export default function CameraScreen({ route }) {
   const dispatch = useDispatch();
@@ -31,12 +30,12 @@ export default function CameraScreen({ route }) {
     setFacing("back");
     setFlash(false);
 
-    return () => {
-      if (cameraRef.current) {
-        console.log("Cleaning up camera");
-        cameraRef.current = null;
-      }
-    };
+    // return () => {
+    //   if (cameraRef.current) {
+    //     console.log("Cleaning up camera");
+    //     cameraRef.current = null;
+    //   }
+    // };
   }, []);
 
   // Conditions to prevent more than 1 camera component to run in the bg
@@ -49,14 +48,13 @@ export default function CameraScreen({ route }) {
       index: 0,
       routes: [{ name: "Memories", params: { selectedPlace } }],
     });
-    
-    const photo = await cameraRef.current?.takePictureAsync({quality: 0.8});    
-    try {
+
       const photo = await cameraRef.current?.takePictureAsync({ quality: 0.3 });
       // Effacer les anciennes valeurs de userToken et idPlace
       formData.delete("userToken");
       formData.delete("idPlace");
 
+      const formData = new FormData();
       // Ajouter la photo
       formData.append("photoFromFront", {
         uri: photo.uri,
@@ -75,18 +73,16 @@ export default function CameraScreen({ route }) {
       }
 
       // Envoi de la requête avec le formData
-      fetch("https://roll-in-new-york-backend.vercel.app/favorites/pictures", {
+      const response = await fetch("https://roll-in-new-york-backend.vercel.app/favorites/pictures", {
         method: "POST",
         body: formData,
       })
-        .then((res) => res.json())
-        .then((data) => {
-          photo && dispatch(addPicture(data.url));
-        })
-        .catch((err) => console.log("Impossible de contacter le back", err));
-    } catch (err) {
-      console.error("Erreur lors de l'ajout de la photo :", err);
-    }
+      const result = await response.json()
+
+          photo && dispatch(addPicture(result.url));
+          console.log(result)
+
+
   };
 
   const toggleCameraFacing = () => {
@@ -130,7 +126,7 @@ export default function CameraScreen({ route }) {
             </View>
           </View>
           <View style={styles.cameraFooter}>
-            <TouchableOpacity onPress={takePicture}>
+            <TouchableOpacity onPress={() => takePicture()}>
               <FontAwesomeIcon icon={faO} size={100} color="white" />
             </TouchableOpacity>
           </View>
