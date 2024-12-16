@@ -15,6 +15,7 @@ import { faCamera, faUpload, faStar } from "@fortawesome/free-solid-svg-icons"; 
 import MasonryList from "react-native-masonry-list";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { addPicture } from "../reducers/pictures";
 import { useFonts } from "expo-font";
 import { Toast } from "toastify-react-native"; // Import pour les notifications
 import Picture from "../components/Picture";
@@ -23,7 +24,7 @@ import * as ImagePicker from "expo-image-picker";
 export default function MemoriesScreen({ route, navigation }) {
   const user = useSelector((state) => state.user.value);
   const { selectedPlace } = route.params;
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   //mise en place des états pour poster un nouvel avis
   const [personalNote, setPersonalNote] = useState(0);
@@ -32,8 +33,8 @@ export default function MemoriesScreen({ route, navigation }) {
   const [viewPictures, setViewPictures] = useState(false);
   const [selectedImage, setSelectedImage] = useState(""); // État pour l'URL de l'image sélectionnée
   const [newReviewText, setNewReviewText] = useState("");
-  const [images, setImages] = useState([]); // Etat pour stocker les images sélectionnées
-  const [refreshKey, setRefreshKey] = useState(0)
+  const [refreshKey, setRefreshKey] = useState(0);
+  const [refreshGallery, setRefreshGallery] = useState(0);
 
   const [fontsLoaded] = useFonts({
     // Chargement des fonts personnalisés
@@ -43,23 +44,6 @@ export default function MemoriesScreen({ route, navigation }) {
   if (!fontsLoaded) {
     return null;
   }
-
-  if (!fontsLoaded) {
-    return null;
-  }
-
-  const placeCard = (
-    <PlaceCard
-      key={selectedPlace.id}
-      id={selectedPlace.id}
-      title={selectedPlace.title}
-      image={selectedPlace.image}
-      description={selectedPlace.description}
-    ></PlaceCard>
-  );
-
-
-
 
   useEffect(() => {
     (async () => {
@@ -84,7 +68,7 @@ export default function MemoriesScreen({ route, navigation }) {
       setPictures([]);
       setLoading(true);
     };
-  }, [route.params.selectedPlace.id, user.token]);
+  }, [route.params.selectedPlace.id, user.token, refreshGallery]);
 
   const handleCamera = () => {
     const selectedPlace = {
@@ -119,7 +103,7 @@ export default function MemoriesScreen({ route, navigation }) {
       content: newReviewText,
     };
     if (newReviewText === "") {
-      console.log("please write something");
+      console.log("Please write something");
       return;
     } else {
       fetch(`https://roll-in-new-york-backend.vercel.app/reviews/${user.token}/${selectedPlace.id}`, {
@@ -131,14 +115,14 @@ export default function MemoriesScreen({ route, navigation }) {
         .then((data) => {
           Toast.success("Review posted !", "top", {
             duration: 2000,
-          }); 
+          });
           setNewReviewText("");
           setPersonalNote(0);
         });
     }
     //mise à jour de la note moyenne et enregitrement dans le reducer
-    setRefreshKey(refreshKey+1)
-    console.log("note update")
+    setRefreshKey(refreshKey + 1);
+    console.log("note update");
   };
 
   const placeCard = (
@@ -152,64 +136,72 @@ export default function MemoriesScreen({ route, navigation }) {
   );
 
   const handleFilePick = async () => {
-    // Demande autorisation d'accès à la galerie
-    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (status !== "granted") {
-      Alert.alert("Permission denied", "We need your permission to access your gallery");
-      return;
-    }
-
-    // Sélection d'une image
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsMultipleSelection: false,
-      quality: 1,
-    });
-
-    if (!result.canceled) {
-      const selectedImage = result.assets[0].uri;
-
-      // Fonction pour envoyer 1 image vers Cloudinary
-      const uploadImage = async (uri) => {
-        const formData = new FormData();
-
-        formData.append("userToken", user.token);
-        formData.append("idPlace", route.params.selectedPlace.id);
-
-        formData.append("photoFromFront", {
-          uri,
-          name: uri.split("/").pop(),
-          type: "image/jpeg",
-        });
-
-        try {
-          const response = await fetch("https://roll-in-new-york-backend.vercel.app/favorites/pictures", {
-            method: "POST",
-            body: formData,
-          });
-
-          if (!response.ok) {
-            console.error(`Failed to upload ${uri}:`, response.statusText);
-            return null;
-          }
-
-          const data = await response.json();
-          return data.url;
-        } catch (error) {
-          console.error(`Error uploading ${uri}:`, error);
-          return null;
-        }
-      };
-
-      // Upload vers cloudinary de l'image sélectionnée
-      const uploadedPic = await uploadImage(selectedImage);
-
-      if (uploadedPic) {
-        console.log("Picture successfully uploaded:", uploadedPic);
-      } else {
-        console.error("Picture unsuccessfully uploaded.");
+    try {
+      // Demande autorisation d'accès à la galerie
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert("Permission denied", "We need your permission to access your gallery");
+        return;
       }
+
+      // Sélection d'une ou prlusieurs images de la mémoire du téléphone
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsMultipleSelection: true,
+        quality: 0.5,
+      });
+
+      // Boucle d'envoie de chaque images séléctionnées
+      if (!result.canceled && result.assets.length > 0) {
+        let uploadSuccess = 0;
+
+        for (const asset of result.assets) {
+          try {
+            const formData = new FormData();
+
+            formData.append("photoFromFront", {
+              uri: asset.uri,
+              name: asset.uri.split("/").pop(),
+              type: "image/jpeg",
+            });
+
+            formData.append("userToken", user.token);
+            formData.append("idPlace", route.params.selectedPlace.id);
+
+            const response = await fetch("https://roll-in-new-york-backend.vercel.app/favorites/pictures", {
+              method: "POST",
+              body: formData,
+            });
+
+            const data = await response.json();
+
+            if (data.url) {
+              dispatch(addPicture(data.url));
+              uploadSuccess++;
+            }
+          } catch (error) {
+            console.error("Problem during upload", error);
+          }
+        }
+        if (uploadSuccess > 0) {
+          Alert.alert("Upload finished");
+          setPictures((prevPictures) => [...prevPictures]);
+          setLoading(true);
+
+          setRefreshGallery((prev) => prev + 1);
+        } else {
+          Alert.alert("No photo has been uploaded. Try again.");
+        }
+      }
+    } catch (error) {
+      console.error("Problem during selection picture(s)", error);
+      Alert.alert("Problem during selection of the picture(s). Try again.");
     }
+  };
+
+  const manualRefresh = async () => {
+    setLoading(true);
+    setRefreshGallery((prev) => prev + 1);
   };
 
   return (
@@ -244,11 +236,17 @@ export default function MemoriesScreen({ route, navigation }) {
               <FontAwesomeIcon icon={faCamera} size={30} color="#DEB973" />
             </TouchableOpacity>
           </View>
+          <TouchableOpacity onPress={manualRefresh}>
+            <Text style={styles.refreshButton}>Refresh Gallery</Text>
+          </TouchableOpacity>
           {loading ? (
             <ActivityIndicator size="large" color="#001F3F" style={{ marginTop: 10 }} />
+          ) : pictures.length === 0 ? (
+            <Text style={{ marginTop: 10 }}>No pictures available.</Text>
           ) : (
             <View style={styles.gallery}>
               <MasonryList
+                key={refreshGallery}
                 images={pictures}
                 columns={3}
                 spacing={2}
@@ -303,6 +301,9 @@ const styles = StyleSheet.create({
   },
   buttonUpload: {
     marginLeft: 60,
+  },
+  refreshButton: {
+    color: "#001F3F",
   },
   gallery: {
     marginTop: 5,

@@ -33,13 +33,6 @@ export default function CameraScreen({ route }) {
 
     setFacing("back");
     setFlash(false);
-
-    // return () => {
-    //   if (cameraRef.current) {
-    //     console.log("Cleaning up camera");
-    //     cameraRef.current = null;
-    //   }
-    // };
   }, []);
 
   // Conditions to prevent more than 1 camera component to run in the bg
@@ -120,7 +113,6 @@ export default function CameraScreen({ route }) {
         facing={facing}
         enableTorch={flash}
         ref={(ref) => {
-          console.log("Référence de la caméra assignée : ", ref);
           cameraRef.current = ref;
         }}
         photo={true}

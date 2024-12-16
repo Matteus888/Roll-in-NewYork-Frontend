@@ -1,4 +1,4 @@
-import { View, TouchableWithoutFeedback, StyleSheet, Image, Text, TouchableOpacity } from 'react-native';
+import { View, TouchableWithoutFeedback, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
@@ -7,18 +7,17 @@ export default function Picture({ selectedImage, isOpen, onClose }) {
   if (!selectedImage || !selectedImage.masonryDimensions) {
     return null; // Si les données sont manquantes, ne rien afficher
   }
-  console.log(selectedImage)
   // Récupérer la largeur et la hauteur de l'image sélectionnée
   const image = selectedImage.masonryDimensions;
 
   // Appliquer une rotation de 90 degrés si l'image est plus large que haute
-  const rotationStyle = image.width > image.height ? { transform: [{ rotate: '90deg' }] } : {};
+  const rotationStyle = image.width > image.height ? { transform: [{ rotate: "90deg" }] } : {};
 
   // Si la modale n'est pas ouverte, on ne retourne rien
   if (!isOpen) {
     return null;
   }
-  
+
   const handleDelete = () => {
     try {
       fetch(`https://roll-in-new-york-backend.vercel.app/favorites/pictures`, {
@@ -26,15 +25,16 @@ export default function Picture({ selectedImage, isOpen, onClose }) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ publicId: selectedImage.publicId }),
       })
-      .then(response => response.json())
-      .then(data => {
-        if (data.result) {
-          
-          onClose();
-        }
-      })
-      .catch(err => {console.log(err)});
-    } catch(err) {
+        .then((response) => response.json())
+        .then((data) => {
+          if (data.result) {
+            onClose();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (err) {
       console.error("Error deleting picture:", err);
     }
   };
@@ -45,10 +45,7 @@ export default function Picture({ selectedImage, isOpen, onClose }) {
         <TouchableOpacity onPress={() => handleDelete()} style={styles.deleteButton} activeOpacity={0.8}>
           <FontAwesomeIcon icon={faTrash} size={40} color="red" />
         </TouchableOpacity>
-        <Image 
-          source={{ uri: selectedImage.source.uri }} 
-          style={[styles.image, rotationStyle]} 
-        />
+        <Image source={{ uri: selectedImage.source.uri }} style={[styles.image, rotationStyle]} />
       </View>
     </TouchableWithoutFeedback>
   );
@@ -66,7 +63,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   deleteButton: {
-    backgroundColor: '#001F3F',
+    backgroundColor: "#001F3F",
     padding: 10,
     borderRadius: 50,
     marginBottom: 10,
@@ -74,6 +71,6 @@ const styles = StyleSheet.create({
   image: {
     width: 600,
     height: 600,
-    resizeMode: 'contain',
+    resizeMode: "contain",
   },
 });
