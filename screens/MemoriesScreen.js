@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, Dimensions, View, TouchableOpacity, Text, TextInput, ActivityIndicator, Alert } from "react-native";
 
-import { useSelector, useDispatch } from "react-redux";
-import { addPicture } from "../reducers/pictures";
+import { useSelector } from "react-redux";
 
 import { useFonts } from "expo-font";
 import MasonryList from "react-native-masonry-list";
@@ -19,7 +18,7 @@ import { Toast } from "toastify-react-native";
 export default function MemoriesScreen({ route, navigation }) {
   const { selectedPlace } = route.params;
   const user = useSelector((state) => state.user.value);
-  
+
   const [pictures, setPictures] = useState([]); // Ajout des photos dans le masonryList
   const [personalNote, setPersonalNote] = useState(0); // Récupération de la note au clique sur les étoiles
   const [newReviewText, setNewReviewText] = useState(""); // Récupération du texte de l'avis
@@ -28,9 +27,9 @@ export default function MemoriesScreen({ route, navigation }) {
   const [refreshKey, setRefreshKey] = useState(0); // Rafraichissement de la placeCard
   const [refreshGallery, setRefreshGallery] = useState(0); // Rafraichissement de la galerie
   const [loading, setLoading] = useState(true); // Affichage du loading
-  
-  useFonts({"JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf")});
-  
+
+  useFonts({ "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf") });
+
   const fetchPictures = async () => {
     try {
       const response = await fetch(`https://roll-in-new-york-backend.vercel.app/favorites/pictures/${user.token}/${selectedPlace.id}`);
@@ -55,7 +54,7 @@ export default function MemoriesScreen({ route, navigation }) {
       setLoading(true);
     };
   }, [route.params.selectedPlace.id, user.token, refreshGallery]);
-  
+
   // Boucle pour gérer l'affichage des étoiles en fonction des étoiles cliquées
   const personalStars = [];
   for (let i = 0; i < 5; i++) {
@@ -69,7 +68,7 @@ export default function MemoriesScreen({ route, navigation }) {
       </TouchableOpacity>
     );
   }
-  
+
   const handlePostReview = () => {
     const newReviewData = {
       user: user.id,
@@ -88,14 +87,14 @@ export default function MemoriesScreen({ route, navigation }) {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newReviewData),
         })
-        .then((response) => response.json())
-        .then(() => {
-          Toast.success("Review posted!", "top", { duration: 2000 });
-          setNewReviewText("");
-          setPersonalNote(0);
-          setRefreshKey((prev) => prev + 1);
-        });
-      } catch(err) {
+          .then((response) => response.json())
+          .then(() => {
+            Toast.success("Review posted!", "top", { duration: 2000 });
+            setNewReviewText("");
+            setPersonalNote(0);
+            setRefreshKey((prev) => prev + 1);
+          });
+      } catch (err) {
         console.error("❌ (Memories Screen): Error in connection to database", err);
       }
     }
@@ -111,7 +110,7 @@ export default function MemoriesScreen({ route, navigation }) {
     };
     navigation.navigate("Camera", { selectedPlace });
   };
-  
+
   const handleFilePick = async () => {
     try {
       // Demande d'autorisation pour accéder à la bibliothèque de photos
@@ -177,30 +176,30 @@ export default function MemoriesScreen({ route, navigation }) {
     const aspectRatio = width / height;
     const newWidth = Dimensions.get("window").width / 3 - 4; // Largeur dynamique selon la grille
     const newHeight = newWidth / aspectRatio; // Calculer la hauteur en fonction du ratio
-    
+
     return {
       width: newWidth,
       height: newHeight,
     };
   };
-  
+
   const manualRefresh = async () => {
     setLoading(true);
     setRefreshGallery((prev) => prev + 1);
   };
-  
+
   return (
     <>
       <View style={styles.container}>
         <Header title="My Memories" showInput={false} />
         <View style={styles.memoriesContainer}>
-        <PlaceCard
-          key={refreshKey}
-          id={selectedPlace.id}
-          title={selectedPlace.title}
-          image={selectedPlace.image}
-          description={selectedPlace.description}
-        />
+          <PlaceCard
+            key={refreshKey}
+            id={selectedPlace.id}
+            title={selectedPlace.title}
+            image={selectedPlace.image}
+            description={selectedPlace.description}
+          />
           <View style={styles.postReview}>
             <Text style={styles.title}>My review</Text>
             <View style={styles.inputContainer}>
@@ -232,7 +231,7 @@ export default function MemoriesScreen({ route, navigation }) {
             <ActivityIndicator size="large" color="#001F3F" style={{ marginTop: 10 }} />
           ) : (
             <View style={styles.gallery}>
-              {pictures.length === 0 && ( <Text style={styles.noPicture}>No pictures yet</Text> )}
+              {pictures.length === 0 && <Text style={styles.noPicture}>No pictures yet</Text>}
               <MasonryList
                 key={refreshGallery}
                 images={pictures.map((picture) => {

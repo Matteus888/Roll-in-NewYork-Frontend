@@ -35,7 +35,6 @@ export default function FavouriteScreen() {
   const [currentPosition, setCurrentPosition] = useState(null); // Etat pour stocker la position actuelle de l'utilisateur
   const [refreshKey, setRefreshKey] = useState(0); // Etat pour rafraichir la note sur les placeCard
 
-
   //useFocusEffect met à jour la refreshKey à chaque fois qu'on arrive sur FavoriteScreen
   //la refreshKey est ajoutée à l'id de la placeCard pour forcer le rerender avec la note à jour
   useFocusEffect(
@@ -65,7 +64,7 @@ export default function FavouriteScreen() {
         .catch((err) => {
           console.error("❌ (Favorite Screen): Error in fetch liked places", err);
         });
-    } catch(err) {
+    } catch (err) {
       console.error("❌ (Favorite Screen): Error in database connection", err);
     }
   }, [user.token, favorite, navigation]);
@@ -198,8 +197,6 @@ export default function FavouriteScreen() {
       // Lien Google Maps
       const webUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}`;
       const iosUrl = `comgooglemaps://?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}`;
-      const androidUrl = `google.navigation:q=${destination}&origin=${origin}&waypoints=${waypoints}`;
-
 
       if (Platform.OS === "ios") {
         Linking.canOpenURL("comgooglemaps://").then((supported) => {
@@ -210,13 +207,7 @@ export default function FavouriteScreen() {
           }
         });
       } else if (Platform.OS === "android") {
-        Linking.canOpenURL(androidUrl).then((supported) => {
-          if (supported) {
-            Linking.openURL(androidUrl);
-          } else {
-            Linking.openURL(webUrl); // Rediriger vers le lien web
-          }
-        });
+        Linking.openURL(webUrl); // Rediriger vers le lien web
       }
     } else {
       Alert.alert("No place selected", "Please select at least one place to plan your day.");
@@ -355,5 +346,5 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 600,
     color: "#282C37",
-  }
+  },
 });
