@@ -1,12 +1,14 @@
-
-import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Linking, Platform } from "react-native"; 
-import {  useEffect, useState } from "react"; 
-import { useSelector } from "react-redux"; 
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Linking, Platform } from "react-native";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import React from "react";
 
 import { Checkbox } from "react-native-paper";
 import { Toast } from "toastify-react-native";
+
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
@@ -149,11 +151,17 @@ export default function FavouriteScreen() {
     setActivePopupId(null);
   };
 
-
   // Affichage de la liste des lieux likés
   let content;
   if (isLoading) {
-    content = <Text style={styles.textError}>Loading favorites ...</Text>;
+    content = (
+      <View>
+        <Text style={styles.textError}>Loading favorites ...</Text>
+        <View>
+          <FontAwesomeIcon icon={faArrowsRotate} size={20} color="#282C37" spin />
+        </View>
+      </View>
+    );
   } else if (placesLikedList && placesLikedList.length > 0) {
     content = placesLikedList.map((place, i) => (
       <View style={styles.cardLine} key={`view-${i}`}>
