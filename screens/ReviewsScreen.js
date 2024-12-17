@@ -1,30 +1,32 @@
-import Header from "../components/Header";
+import { useEffect, useState } from "react";
 import { View, StyleSheet, ScrollView } from "react-native";
+
+import Header from "../components/Header";
 import ReviewCard from "../components/ReviewCard";
 import PlaceCard from "../components/PlaceCard";
-import { useEffect, useState } from "react";
-
 
 export default function ReviewsScreen({ route, navigation }) {
-  //récupération des info du lieu cliqué
-  const { placeInfo } = route.params;
+  const { placeInfo } = route.params; //récupération des info du lieu cliqué
 
-  const [reviewsTable, setReviewsTable] = useState([]); //initiation du tableau des avis à afficher
+  const [reviewsTable, setReviewsTable] = useState([]); //initialisation du tableau des avis à afficher
 
   // fetch des avis du lieu
   useEffect(() => {
-    fetch(`https://roll-in-new-york-backend.vercel.app/reviews/${placeInfo.id}`)
-      .then((response) => response.json())
-      .then((data) => {
-        setReviewsTable(data.reviews);
-      });
+    try {
+      fetch(`https://roll-in-new-york-backend.vercel.app/reviews/${placeInfo.id}`)
+        .then((response) => response.json())
+        .then((data) => {
+          setReviewsTable(data.reviews);
+        });
+    } catch(err) {
+      console.error("❌ (Reviews Screen): Error in connection to database", err);
+    }
+
     //lorsqu'on quitte la page on reset le tableau d'avis à un tableau vide
     return () => {
       setReviewsTable([]);
     };
   }, [placeInfo]);
-
-
 
   const reviews = reviewsTable.map((data, i) => {
     return (

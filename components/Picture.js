@@ -1,21 +1,15 @@
-import { View, TouchableWithoutFeedback, StyleSheet, Image, Text, TouchableOpacity } from "react-native";
+import { View, TouchableWithoutFeedback, StyleSheet, Image, TouchableOpacity } from "react-native";
+
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export default function Picture({ selectedImage, isOpen, onClose, onDelete }) {
-  // Vérifier si selectedImage et selectedImage.masonryDimensions existent
-  if (!selectedImage || !selectedImage.masonryDimensions) {
-    return null; // Si les données sont manquantes, ne rien afficher
-  }
-  // Récupérer la largeur et la hauteur de l'image sélectionnée
-  const image = selectedImage.masonryDimensions;
-  // Appliquer une rotation de 90 degrés si l'image est plus large que haute
-  const rotationStyle = image.width > image.height ? { transform: [{ rotate: "90deg" }] } : {};
+  if (!selectedImage || !selectedImage.masonryDimensions) { return null } // Si les données sont manquantes, ne rien afficher
 
-  // Si la modale n'est pas ouverte, on ne retourne rien
-  if (!isOpen) {
-    return null;
-  }
+  const image = selectedImage.masonryDimensions; // Récupérer la largeur et la hauteur de l'image sélectionnée
+  const rotationStyle = image.width > image.height ? { transform: [{ rotate: "90deg" }] } : {}; // Appliquer une rotation de 90 degrés si l'image est plus large que haute
+
+  if (!isOpen) { return null } // Si la modale n'est pas ouverte, on ne retourne rien
 
   const handleDelete = () => {
     try {
@@ -31,11 +25,9 @@ export default function Picture({ selectedImage, isOpen, onClose, onDelete }) {
             onDelete();
           }
         })
-        .catch((err) => {
-          console.log(err);
-        });
+        .catch((err) => console.error("❌ (Picture) Error to delete picture", err));
     } catch (err) {
-      console.error("Error deleting picture:", err);
+      console.error("❌ (Picture) Error in connection database", err);
     }
   };
 

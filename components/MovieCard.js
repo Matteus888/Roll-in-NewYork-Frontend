@@ -2,13 +2,7 @@ import { StyleSheet, Dimensions, View, Text, Image } from "react-native";
 import { useFonts } from "expo-font";
 
 export default function MovieCard(props) {
-  // Chargement font personnalisé
-  const [fontsLoaded] = useFonts({
-    "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
-  });
-  if (!fontsLoaded) {
-    return null;
-  }
+  useFonts({"JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf")});
 
   return (
     <View style={styles.card}>

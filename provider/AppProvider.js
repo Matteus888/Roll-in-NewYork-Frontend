@@ -1,6 +1,17 @@
 import React, { createContext, useContext, useState } from "react";
 
-// Contexte pour gérer les pop-ups
+/*
+Provider explications :
+
+Ce provider permet de gérer les pop-ups et le mode Plan My Day dans toute l'application.
+Il possède deux contextes : PopupContext et PlanDayContext.
+
+Dans le App.js, le provider est appelé et englobe toute l'application.
+
+Ci-dessous, la partie return() indique que le PopupContext.Provider englobe le PlanDayContext.Provider qui englobe lui-même les enfants de AppProvider.
+*/
+
+// Contexte pour gérer les pop-ups et le mode PlanMyDay
 const PopupContext = createContext();
 const PlanDayContext = createContext();
 
@@ -17,5 +28,5 @@ export const AppProvider = ({ children }) => {
   );
 };
 
-export const usePopupContext = () => useContext(PopupContext);
-export const usePlanDayContext = () => useContext(PlanDayContext);
+export const usePopupContext = () => useContext(PopupContext); // Hook pour le contexte des pop-ups
+export const usePlanDayContext = () => useContext(PlanDayContext); // Hook pour le contexte du mode Plan My Day

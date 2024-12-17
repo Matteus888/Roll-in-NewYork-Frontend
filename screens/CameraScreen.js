@@ -1,27 +1,29 @@
-import { StyleSheet, View, TouchableOpacity, Platform, Alert } from "react-native";
 import { useState, useEffect, useRef } from "react";
-import { CameraView, Camera } from "expo-camera";
-import { useIsFocused } from "@react-navigation/native";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
-import { faXmark, faO, faRotate, faBolt } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
+import { StyleSheet, View, TouchableOpacity, Platform, Alert } from "react-native";
+
 import { useDispatch, useSelector } from "react-redux";
 import { addPicture } from "../reducers/pictures";
-import { useNavigation } from "@react-navigation/native";
+
+import { useIsFocused, useNavigation } from "@react-navigation/native";
+import { CameraView, Camera } from "expo-camera";
+
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
+import { faXmark, faO, faRotate, faBolt } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
 
 export default function CameraScreen({ route }) {
   const dispatch = useDispatch();
   const navigation = useNavigation();
-  const user = useSelector((state) => state.user.value);
   const isFocused = useIsFocused();
   const cameraRef = useRef(null);
+
   const selectedPlace = route.params?.selectedPlace;
+  const user = useSelector((state) => state.user.value);
 
-  const [hasPermission, setHasPermission] = useState(false);
-  const [facing, setFacing] = useState("back");
-  const [flash, setFlash] = useState(false);
-  const [isCapturing, setIsCapturing] = useState(false);
+  const [hasPermission, setHasPermission] = useState(false); // État pour gérer la permission de la caméra
+  const [facing, setFacing] = useState("back"); // État pour gérer la caméra frontale ou arrière
+  const [flash, setFlash] = useState(false); // État pour gérer le flash
+  const [isCapturing, setIsCapturing] = useState(false); // État pour gérer la prise de photo
 
-  // Demande de permission
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -35,7 +37,7 @@ export default function CameraScreen({ route }) {
     setFlash(false);
   }, []);
 
-  // Conditions to prevent more than 1 camera component to run in the bg
+  // Si l'utilisateur n'a pas donné la permission ou si l'écran n'est pas focus, on ne rend rien
   if (!hasPermission || !isFocused) {
     return <View />;
   }
@@ -52,11 +54,11 @@ export default function CameraScreen({ route }) {
         skipProcessing: Platform.OS === "android",
       });
   
-      // Redimensionner l'image avant d'envoyer (par exemple, pour la réduire ou l'adapter à une certaine taille)
-      const { width, height } = photo; // Obtenez les dimensions de la photo
-      const aspectRatio = width / height; // Calculer le ratio d'aspect
-      const newWidth = 400; // Par exemple, vous pouvez limiter la largeur de l'image
-      const newHeight = newWidth / aspectRatio; // Calculer la nouvelle hauteur en fonction du ratio
+      // Redimensionner l'image avant d'envoyer
+      const { width, height } = photo; // Récupération des dimensions de la photo
+      const aspectRatio = width / height;
+      const newWidth = 400;
+      const newHeight = newWidth / aspectRatio;
   
       const resizedPhoto = {
         ...photo,
@@ -64,11 +66,8 @@ export default function CameraScreen({ route }) {
         height: newHeight,
       };
   
-      // Rediriger après la prise de photo
-      navigation.reset({
-        index: 0,
-        routes: [{ name: "Memories", params: { selectedPlace } }],
-      });
+      // Rediriger après la prise de photo sur l'écran Memories
+      navigation.reset({ index: 0, routes: [{ name: "Memories", params: { selectedPlace } }] });
   
       // Si la photo est valide
       if (resizedPhoto?.uri) {
@@ -83,18 +82,21 @@ export default function CameraScreen({ route }) {
         formData.append("userToken", user.token);
         formData.append("idPlace", route.params.selectedPlace.id);
   
-        // Envoi de la requête avec le formData
-        const response = await fetch("https://roll-in-new-york-backend.vercel.app/favorites/pictures", {
-          method: "POST",
-          body: formData,
-        });
-  
-        const data = await response.json();
-        dispatch(addPicture(data.url)); // Mise à jour du store avec l'URL de la photo
+        try {
+          const response = await fetch("https://roll-in-new-york-backend.vercel.app/favorites/pictures", {
+            method: "POST",
+            body: formData,
+          });
+          const data = await response.json();
+          dispatch(addPicture(data.url));
+        } catch(err) {
+          console.error("❌ (Camera Screen): Error in post picture in cloudinary", err);
+          Alert.alert("Error !", "An internal error occurred while uploading picture.");
+        }
       }
     } catch (err) {
-      console.error("Error taking photo ", err);
-      Alert.alert("An error occurred while taking photo.");
+      console.error("❌ (Camera Screen): Error in taking picture", err);
+      Alert.alert("Error !", "An internal error occurred while taking picture.");
     } finally {
       setIsCapturing(false);
     }
@@ -109,10 +111,7 @@ export default function CameraScreen({ route }) {
   };
 
   const handleClose = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: "Memories", params: { selectedPlace } }],
-    });
+    navigation.reset({ index: 0, routes: [{ name: "Memories", params: { selectedPlace } }] });
   };
 
   return (
@@ -121,9 +120,7 @@ export default function CameraScreen({ route }) {
         style={styles.camera}
         facing={facing}
         enableTorch={flash}
-        ref={(ref) => {
-          cameraRef.current = ref;
-        }}
+        ref={(ref) => { cameraRef.current = ref }}
         photo={true}
       >
         <View style={styles.cameraContainer}>
@@ -142,7 +139,7 @@ export default function CameraScreen({ route }) {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={styles.cameraFooter}>
+          <View>
             <TouchableOpacity onPress={() => takePicture()}>
               <FontAwesomeIcon icon={faO} size={100} color="white" />
             </TouchableOpacity>

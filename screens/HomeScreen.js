@@ -1,29 +1,31 @@
-// Réalisation des différents imports
-import { View, StyleSheet, Text, Modal, TouchableOpacity, ScrollView, Linking, Platform } from "react-native"; // Import pour react-native
-import { useState, useEffect, useRef } from "react"; // Import pour react
-import { Marker } from "react-native-maps"; // Import pour la carte
-import MapView from "react-native-maps"; // Import pour la map
-import Header from "../components/Header"; // Import du composant Header.js
-import MovieCard from "../components/MovieCard"; // Import du composant MovieCard.js
-import { useSelector } from "react-redux"; // Import pour récupérer les données du store
-import * as Location from "expo-location"; // Import pour récupérer la localisation de l'utilisateur
-// Import des icons depuis cloudinary
+import { useState, useEffect, useRef } from "react";
+import { View, StyleSheet, Text, Modal, TouchableOpacity, ScrollView, Linking, Platform, Alert } from "react-native";
+
+import { useSelector } from "react-redux";
+
+import { Marker } from "react-native-maps";
+import MapView from "react-native-maps";
+import * as Location from "expo-location";
+
+import Header from "../components/Header";
+import MovieCard from "../components/MovieCard";
+
 const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427710/appIcons/l0misyhittkq0v7qabx3.webp";
 const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427585/appIcons/oi2ry9sz9uojhzasypfv.webp";
 
 export default function HomeScreen({ navigation }) {
-  const [places, setPlaces] = useState([]); // Initiation du tableau de lieux à afficher sur la carte
-  const [currentPosition, setCurrentPosition] = useState({ latitude: 40.772087, longitude: -73.973159 }); // Initiation des coordonnées de localisation de l'utilisateur à la position de central park
-  const [modalVisible, setModalVisible] = useState(false); // Initiation de la modale pour afficher les informations du lieu
-  const [placeMovies, setPlaceMovies] = useState([]); // Initiation du tableau de films du lieu
-  const [placeCoords, setPlaceCoords] = useState(); // Initiation des coordonnées du lieu
-  // récupération des infos de tout les films depuis le reducer
   const moviesInfo = useSelector((state) => state.movie.value);
-  const mapRef = useRef(null);
 
-  // Demande de permission pour récupérer la localisation de l'utilisateur
+  const [places, setPlaces] = useState([]); // Initialisation du tableau de lieux à afficher sur la carte
+  const [modalVisible, setModalVisible] = useState(false); // Initialisation de la modale pour afficher les informations du lieu
+  const [currentPosition, setCurrentPosition] = useState({ latitude: 40.772087, longitude: -73.973159 }); // Initialisation des coordonnées de localisation de l'utilisateur à la position de central park
+  const [placeMovies, setPlaceMovies] = useState([]); // Initialisation du tableau de films du lieu
+  const [placeCoords, setPlaceCoords] = useState(); // Initialisation des coordonnées du lieu
+  const mapRef = useRef(null); // Permet de fixer la position de la carte
+
   useEffect(() => {
     (async () => {
+      // Demande de permission pour récupérer la localisation de l'utilisateur
       const result = await Location.requestForegroundPermissionsAsync();
       const status = result?.status;
 
@@ -32,26 +34,30 @@ export default function HomeScreen({ navigation }) {
           setCurrentPosition(location.coords);
         });
       } else {
-        console.log(status);
+        Alert.alert("Permission denied", "Access to location is required to show your position on the map");
       }
     })();
 
-    fetch("https://roll-in-new-york-backend.vercel.app/places")
-      .then((response) => response.json())
-      .then((data) => {
-        setPlaces(data.places);
-      });
-
-    if (placeCoords && mapRef.current) {
-      mapRef.current.animateToRegion(
-        {
-          latitude: placeCoords.lat + (Platform.OS === "ios" ? 0.0058 : 0), // Ajustez le décalage selon vos besoins
-          longitude: placeCoords.lon,
-          latitudeDelta: 0.05,
-          longitudeDelta: 0.05,
-        },
-        500 // Durée de l'animation
-      );
+    try {
+      fetch("https://roll-in-new-york-backend.vercel.app/places")
+        .then((response) => response.json())
+        .then((data) => {
+          setPlaces(data.places);
+        });
+  
+      if (placeCoords && mapRef.current) {
+        mapRef.current.animateToRegion(
+          {
+            latitude: placeCoords.lat + (Platform.OS === "ios" ? 0.0058 : 0), // Ajustez le décalage selon vos besoins
+            longitude: placeCoords.lon,
+            latitudeDelta: 0.05,
+            longitudeDelta: 0.05,
+          },
+          500
+        );
+      }
+    } catch(err) {
+      console.error('❌ (Home Screen): Error in connection to database', err);
     }
   }, [placeCoords]);
 
@@ -60,10 +66,7 @@ export default function HomeScreen({ navigation }) {
     return (
       <Marker
         key={i}
-        coordinate={{
-          latitude: data.coords.lat,
-          longitude: data.coords.lon,
-        }}
+        coordinate={{ latitude: data.coords.lat, longitude: data.coords.lon }}
         title={data.title}
         description={data.address}
         image={moviePlace || null}
@@ -72,7 +75,7 @@ export default function HomeScreen({ navigation }) {
           setPlaceMovies(data.moviesList);
           setPlaceCoords(data.coords);
         }}
-      ></Marker>
+      />
     );
   });
 
@@ -98,7 +101,7 @@ export default function HomeScreen({ navigation }) {
               poster={moviesInfo[j].poster_path}
               overview={moviesInfo[j].overview}
               date={moviesInfo[j].release_date}
-            ></MovieCard>
+            />
           </TouchableOpacity>
         );
       }
@@ -150,9 +153,7 @@ export default function HomeScreen({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <View>
-        <Header title="Roll-In NewYork" showInput={true} navigation={navigation} />
-      </View>
+      <Header title="Roll-In NewYork" showInput={true} navigation={navigation} />
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
         <View style={styles.modalBackground}>
           <View style={styles.modalView}>
@@ -201,7 +202,8 @@ export default function HomeScreen({ navigation }) {
                   longitudeDelta: 0.1,
                 }
               : {
-                  latitude: 40.772087, // Coordonnées par défaut
+                // Coordonnées par défaut si pas à New York
+                  latitude: 40.772087,
                   longitude: -73.973159,
                   latitudeDelta: 0.1,
                   longitudeDelta: 0.1,
@@ -240,61 +242,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#ffffff",
     justifyContent: "flex-start",
   },
-  mapContainer: {
-    width: "100%",
-    height: "75%",
-    marginTop: 200,
-  },
-  map: {
-    flex: 1,
-  },
-  modalBackground: {
-    flex: 1,
-    justifyContent: "flex-end",
-    alignItems: "center",
-    marginBottom: 50,
-  },
-  modalView: {
-    flexDirection: "column",
-    justifyContent: "flex-start",
-    alignItems: "center",
-    backgroundColor: "white",
-    width: "95%",
-    height: "45%",
-    borderTopLeftRadius: 50,
-    borderTopRightRadius: 50,
-    borderColor: "#282C37",
-    borderWidth: 2,
-    padding: 10,
-  },
-  button: {
-    backgroundColor: "#001F3F",
-    width: "30%",
-    height: "10%",
-    borderRadius: 20,
-    justifyContent: "center",
-  },
-  textButton: {
-    color: "#DEB973",
-    textAlign: "center",
-  },
-  placePicture: {
-    height: 50,
-    width: 100,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "#ffffff",
-    justifyContent: "flex-start",
-  },
-  mapContainer: {
-    width: "100%",
-    height: "75%",
-    marginTop: 200,
-  },
-  map: {
-    flex: 1,
-  },
   modalBackground: {
     flex: 1,
     justifyContent: "flex-end",
@@ -328,6 +275,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
   },
+  textButton: {
+    color: "#DEB973",
+    textAlign: "center",
+  },
   closeButton: {
     height: 30,
     width: 30,
@@ -336,9 +287,12 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     justifyContent: "center",
   },
-
-  placePicture: {
-    height: 50,
-    width: 100,
+  mapContainer: {
+    width: "100%",
+    height: "75%",
+    marginTop: 200,
+  },
+  map: {
+    flex: 1,
   },
 });

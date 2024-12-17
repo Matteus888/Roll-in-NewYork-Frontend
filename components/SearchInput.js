@@ -1,18 +1,20 @@
-// Réalisation des différents imports
-import { useState } from "react"; // Import pour react
-import { View, TextInput, StyleSheet, TouchableOpacity, Text, FlatList } from "react-native"; // Import pour react-native
-import { useSelector } from "react-redux"; // Import pour récupérer les données du store
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
+import { useState } from "react";
+import { View, TextInput, StyleSheet, TouchableOpacity, Text, FlatList } from "react-native";
+
+import { useSelector } from "react-redux";
+
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
 
 export default function SearchInput({ navigation }) {
+  const movie = useSelector((state) => state.movie.value);
+
   const [filteredMovie, setFilteredMovie] = useState([]); // État pour stocker les résultats
   const [showPopup, setShowPopup] = useState(false); // État pour contrôler l'affichage de la pop-up
   const [search, setSearch] = useState(""); // État pour stocker la valeur de la recherche
-  const movie = useSelector((state) => state.movie.value); // Récupération des données du store place
-
+  
+  // Fonction pour rechercher les films
   const searchMovies = (searchValue) => {
-    // Fonction pour rechercher les films
     const hashtagPattern = new RegExp(`${searchValue}`, "i"); // Variable qui permet de faire une recherche en equalsIgnoreCase en fonction de la valeur de la recherche
     const results = movie.filter((movie) => movie.title.match(hashtagPattern)); // Récupération des résultats en fonction de la recherche
     setFilteredMovie(results); // Mise à jour des résultats
@@ -22,21 +24,17 @@ export default function SearchInput({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
-        <TextInput
-          placeholder="Search for a movie..."
-          placeholderTextColor="#DEB973"
-          style={styles.input}
+        <TextInput placeholder="Search for a movie..." placeholderTextColor="#DEB973" style={styles.input} value={search}
           onChangeText={(value) => {
             searchMovies(value);
             setSearch(value);
           }}
-          value={search}
         />
         <TouchableOpacity>
           <FontAwesomeIcon icon={faMagnifyingGlass} size={20} color="#DEB973" style={styles.iconeSearch} />
         </TouchableOpacity>
       </View>
-      {showPopup && ( // Affichage de la pop-up si showPopup est à true
+      {showPopup && (
         <View style={styles.popup}>
           <FlatList
             data={filteredMovie}
@@ -52,13 +50,13 @@ export default function SearchInput({ navigation }) {
                     poster_path: item.poster_path,
                     release_date: item.release_date,
                   };
-                  setSearch(""); // Réinitialisation de la recherche
-                  setShowPopup(false); // Fermeture de la pop-up
-                  navigation.navigate("Search", { selectedMovie }); // Navigation vers la page Search avec les données du film sélectionné
+                  setSearch("");
+                  setShowPopup(false);
+                  navigation.navigate("Search", { selectedMovie });
                 }}
               >
                 {item.title}
-              </Text> //console.log(item.id)
+              </Text>
             )}
           />
         </View>
@@ -67,7 +65,6 @@ export default function SearchInput({ navigation }) {
   );
 }
 
-// Définition du style des différents éléments
 const styles = StyleSheet.create({
   container: {
     width: "80%",

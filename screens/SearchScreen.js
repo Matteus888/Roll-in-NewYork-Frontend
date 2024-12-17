@@ -1,26 +1,28 @@
-// Réalisation des différents imports
-import { StyleSheet, View, FlatList, Dimensions, TouchableOpacity, Text, Platform, Linking } from "react-native"; // Import pour react / react-native
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, FlatList, Dimensions, TouchableOpacity, Text, Platform, Linking } from "react-native";
+
+import { useSelector } from "react-redux";
+
+import {useFocusEffect } from "@react-navigation/native";
 import { Marker } from "react-native-maps";
 import MapView from "react-native-maps";
-import { useState, useEffect } from "react"; // Import pour react
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
-import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
-import Header from "../components/Header"; // Import du composant Header
-import PlaceCard from "../components/PlaceCard"; // Import du composant PlaceCard
-import MovieCard from "../components/MovieCard"; // Import du composant MovieCard
-import { useSelector } from "react-redux";
-import {useFocusEffect } from "@react-navigation/native";
-import React from "react";
 
-const { width } = Dimensions.get("window"); // Récupération de la largeur de l'écran du téléphone
-const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png"; //import du maker pour afficher le lieu sur la map
+import Header from "../components/Header";
+import PlaceCard from "../components/PlaceCard";
+import MovieCard from "../components/MovieCard";
+
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+
+const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png";
 
 export default function SearchScreen({ route, navigation }) {
+  const favorite = useSelector((state) => state.favorite.value)
+
   const [currentIndex, setCurrentIndex] = useState(0); // État pour stocker l'index de la card lieux actuelle
   const [allPlaces, setAllPlaces] = useState([]); // Etat pour stocker tout les lieux
   const [placeCoords, setPlaceCoords] = useState({}); // Etat pour stocker les coordonnées du lieux affiché dans le carrousel
-  const favorite = useSelector((state) => state.favorite.value)
-  const [refreshKey, setRefreshKey] = useState(0);
+  const [refreshKey, setRefreshKey] = useState(0); // Etat pour rafrachir la page
 
   //useFocusEffect met à jour la refreshKey à chaque fois qu'on arrive sur SearchScreen
   //la refreshKey est ajoutée à l'id de la placeCard pour forcer le rerender avec la note à jour
@@ -30,14 +32,18 @@ export default function SearchScreen({ route, navigation }) {
     }, [])
   );
 
-
   // useEffect pour fetch tout les lieux
   useEffect(() => {
-    fetch("https://roll-in-new-york-backend.vercel.app/places")
-      .then((response) => response.json())
-      .then((data) => {
-        setAllPlaces(data.places);
-      });
+    try {
+      fetch("https://roll-in-new-york-backend.vercel.app/places")
+        .then((response) => response.json())
+        .then((data) => {
+          setAllPlaces(data.places);
+        })
+        .catch((err) => console.error('❌ (SearchScreen) Error to fetch all places', err));
+    } catch(err) {
+      console.error('❌ (SearchScreen) Error in connection database', err);
+    }
   }, [favorite]);
 
   let movieCard;
@@ -53,14 +59,13 @@ export default function SearchScreen({ route, navigation }) {
         poster={selectedMovie.poster_path}
         overview={selectedMovie.overview}
         date={selectedMovie.release_date}
-      ></MovieCard>
+      />
     );
 
-    // récupération des lieux du film
     moviePlaces = allPlaces.filter((place) => place.moviesList.includes(selectedMovie.id));
   }
 
-  //useEffect pour mettre à jour les coordonnées du marqueur du lieu affiché sur la map
+  // useEffect pour mettre à jour les coordonnées du marqueur du lieu affiché sur la map
   useEffect(() => {
     if (moviePlaces && moviePlaces[currentIndex]) {
       setPlaceCoords(moviePlaces[currentIndex].coords);
@@ -79,7 +84,6 @@ export default function SearchScreen({ route, navigation }) {
     setCurrentIndex(prevIndex);
   };
 
-  // fonction pour redirection googlemap
   function goToMap(placeCoords) {
     const { lat: destLat, lon: destLon } = placeCoords;
 
@@ -139,7 +143,7 @@ export default function SearchScreen({ route, navigation }) {
                   }
                   keyExtractor={(item) => item._id} // Assurez-vous que chaque élément a un id unique
                   showsHorizontalScrollIndicator={false} // Désactivation de la barre de défilement horizontale
-                  snapToInterval={width} // Défilement d'une card à la fois
+                  snapToInterval={Dimensions.get("window").width} // Défilement d'une card à la fois
                   contentContainerStyle={{
                     justifyContent: "center",
                   }} // Centrage des éléments du carrousel
@@ -201,7 +205,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   cardWrapper: {
-    width: width,
+    width: Dimensions.get("window").width,
     justifyContent: "center",
     alignItems: "center",
   },

@@ -20,6 +20,5 @@ export const pictureSlice = createSlice({
   },
 });
 
-export const { addPicture, removePicture, removeAllPictures } =
-  pictureSlice.actions;
+export const { addPicture, removePicture, removeAllPictures } = pictureSlice.actions;
 export default pictureSlice.reducer;

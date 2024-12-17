@@ -1,56 +1,53 @@
-import { StyleSheet, Dimensions, View, TouchableOpacity, Text, TextInput, ActivityIndicator } from "react-native";
-import PlaceCard from "../components/PlaceCard";
-import Header from "../components/Header";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faCamera, faUpload, faStar } from "@fortawesome/free-solid-svg-icons";
-import MasonryList from "react-native-masonry-list";
 import { useEffect, useState } from "react";
+import { StyleSheet, Dimensions, View, TouchableOpacity, Text, TextInput, ActivityIndicator, Alert } from "react-native";
+
 import { useSelector, useDispatch } from "react-redux";
 import { addPicture } from "../reducers/pictures";
+
 import { useFonts } from "expo-font";
-import { Toast } from "toastify-react-native";
-import Picture from "../components/Picture";
+import MasonryList from "react-native-masonry-list";
 import * as ImagePicker from "expo-image-picker";
 
+import PlaceCard from "../components/PlaceCard";
+import Header from "../components/Header";
+import Picture from "../components/Picture";
+
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faCamera, faUpload, faStar } from "@fortawesome/free-solid-svg-icons";
+import { Toast } from "toastify-react-native";
+
 export default function MemoriesScreen({ route, navigation }) {
-  const user = useSelector((state) => state.user.value);
   const { selectedPlace } = route.params;
-  const dispatch = useDispatch();
-
-  const [personalNote, setPersonalNote] = useState(0);
-  const [pictures, setPictures] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [viewPictures, setViewPictures] = useState(false);
-  const [selectedImage, setSelectedImage] = useState("");
-  const [newReviewText, setNewReviewText] = useState("");
-  const [refreshKey, setRefreshKey] = useState(0);
-  const [refreshGallery, setRefreshGallery] = useState(0);
-
-  const [fontsLoaded] = useFonts({
-    "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
-  });
-
-  if (!fontsLoaded) {
-    return null;
-  }
+  const user = useSelector((state) => state.user.value);
+  
+  const [pictures, setPictures] = useState([]); // Ajout des photos dans le masonryList
+  const [personalNote, setPersonalNote] = useState(0); // Récupération de la note au clique sur les étoiles
+  const [newReviewText, setNewReviewText] = useState(""); // Récupération du texte de l'avis
+  const [viewPictures, setViewPictures] = useState(false); // Affichage de la photo au clique
+  const [selectedImage, setSelectedImage] = useState(""); // Récupération de l'image au clique et les envoyer dans le component Picture
+  const [refreshKey, setRefreshKey] = useState(0); // Rafraichissement de la placeCard
+  const [refreshGallery, setRefreshGallery] = useState(0); // Rafraichissement de la galerie
+  const [loading, setLoading] = useState(true); // Affichage du loading
+  
+  useFonts({"JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf")});
+  
+  const fetchPictures = async () => {
+    try {
+      const response = await fetch(`https://roll-in-new-york-backend.vercel.app/favorites/pictures/${user.token}/${selectedPlace.id}`);
+      const data = await response.json();
+      const newPictures = data.urls.map((secure_url) => ({
+        uri: secure_url.secure_url,
+        publicId: secure_url.public_id,
+      }));
+      setPictures(newPictures);
+      setLoading(false);
+    } catch (err) {
+      console.error("❌ (Memories Screen) : Error to fetch all pictures", err);
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchPictures = async () => {
-      try {
-        const response = await fetch(`https://roll-in-new-york-backend.vercel.app/favorites/pictures/${user.token}/${selectedPlace.id}`);
-        const data = await response.json();
-        const newPictures = data.urls.map((secure_url) => ({
-          uri: secure_url.secure_url,
-          publicId: secure_url.public_id,
-        }));
-        setPictures(newPictures);
-        setLoading(false);
-      } catch (err) {
-        console.error("Error fetching memories:", err);
-        setLoading(false);
-      }
-    };
-
     fetchPictures();
 
     return () => {
@@ -58,17 +55,8 @@ export default function MemoriesScreen({ route, navigation }) {
       setLoading(true);
     };
   }, [route.params.selectedPlace.id, user.token, refreshGallery]);
-
-  const handleCamera = () => {
-    const selectedPlace = {
-      id: route.params.selectedPlace.id,
-      title: route.params.selectedPlace.title,
-      image: route.params.selectedPlace.image,
-      description: route.params.selectedPlace.description,
-    };
-    navigation.navigate("Camera", { selectedPlace });
-  };
-
+  
+  // Boucle pour gérer l'affichage des étoiles en fonction des étoiles cliquées
   const personalStars = [];
   for (let i = 0; i < 5; i++) {
     let style = { color: "#EFEFEF" };
@@ -81,7 +69,7 @@ export default function MemoriesScreen({ route, navigation }) {
       </TouchableOpacity>
     );
   }
-
+  
   const handlePostReview = () => {
     const newReviewData = {
       user: user.id,
@@ -90,15 +78,16 @@ export default function MemoriesScreen({ route, navigation }) {
       note: personalNote,
       content: newReviewText,
     };
+
     if (newReviewText === "") {
-      console.log("Please write something");
       return;
     } else {
-      fetch(`https://roll-in-new-york-backend.vercel.app/reviews/${user.token}/${selectedPlace.id}`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newReviewData),
-      })
+      try {
+        fetch(`https://roll-in-new-york-backend.vercel.app/reviews/${user.token}/${selectedPlace.id}`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newReviewData),
+        })
         .then((response) => response.json())
         .then(() => {
           Toast.success("Review posted!", "top", { duration: 2000 });
@@ -106,31 +95,33 @@ export default function MemoriesScreen({ route, navigation }) {
           setPersonalNote(0);
           setRefreshKey((prev) => prev + 1);
         });
+      } catch(err) {
+        console.error("❌ (Memories Screen): Error in connection to database", err);
+      }
     }
-    //mise à jour de la note moyenne et enregitrement dans le reducer
-    console.log("note update");
   };
 
-  const placeCard = (
-    <PlaceCard
-      key={refreshKey}
-      id={selectedPlace.id}
-      title={selectedPlace.title}
-      image={selectedPlace.image}
-      description={selectedPlace.description}
-    ></PlaceCard>
-  );
-
+  // Fonction pour ouvrir la caméra
+  const handleCamera = () => {
+    const selectedPlace = {
+      id: route.params.selectedPlace.id,
+      title: route.params.selectedPlace.title,
+      image: route.params.selectedPlace.image,
+      description: route.params.selectedPlace.description,
+    };
+    navigation.navigate("Camera", { selectedPlace });
+  };
+  
   const handleFilePick = async () => {
     try {
+      // Demande d'autorisation pour accéder à la bibliothèque de photos
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-        Toast.error("Permission denied. We need your permission to access your gallery", "top", {
-          duration: 2000,
-        });
+        Alert.alert("Permission denied", "You must allow access to your photo library to upload a picture.");
         return;
       }
 
+      // Sélection de la ou des photos
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsMultipleSelection: true,
@@ -138,7 +129,7 @@ export default function MemoriesScreen({ route, navigation }) {
       });
 
       if (!result.canceled && result.assets.length > 0) {
-        let uploadSuccess = 0;
+        let uploadSuccess = 0; // Compteur pour savoir si l'upload a fonctionné
 
         for (const asset of result.assets) {
           try {
@@ -161,38 +152,24 @@ export default function MemoriesScreen({ route, navigation }) {
             const data = await response.json();
 
             if (data.url) {
-              dispatch(addPicture(data.url));
-              uploadSuccess++;
+              Toast.success("Photo(s) uploaded !", "top", {
+                duration: 2000,
+              });
+              setPictures((prevPictures) => [...prevPictures]);
+              setLoading(true);
+              setRefreshGallery((prev) => prev + 1);
+            } else {
+              Alert.alert("Photo selection failed", "An error occurred while uploading a picture.");
             }
           } catch (error) {
-            console.error("Problem during upload", error);
+            console.error("❌ (Memories Screen): Error in photo upload", error);
           }
-        }
-
-        if (uploadSuccess > 0) {
-          Toast.success("Photo(s) uploaded !", "top", {
-            duration: 2000,
-          });
-          setPictures((prevPictures) => [...prevPictures]);
-          setLoading(true);
-          setRefreshGallery((prev) => prev + 1);
-        } else {
-          Toast.error("Photo upload failed !. Try again.", "top", {
-            duration: 2000,
-          });
         }
       }
     } catch (error) {
-      console.error("Problem during selection picture(s)", error);
-      Toast.error("Problem during selection of the picture(s). Try again.", "top", {
-        duration: 2000,
-      });
+      console.error("❌ (Memories Screen): Error in picture selection", error);
+      Alert.alert("Photo selection failed", "An error occurred while selecting a picture.");
     }
-  };
-
-  const manualRefresh = async () => {
-    setLoading(true);
-    setRefreshGallery((prev) => prev + 1);
   };
 
   const calculateImageSize = (photo) => {
@@ -200,19 +177,30 @@ export default function MemoriesScreen({ route, navigation }) {
     const aspectRatio = width / height;
     const newWidth = Dimensions.get("window").width / 3 - 4; // Largeur dynamique selon la grille
     const newHeight = newWidth / aspectRatio; // Calculer la hauteur en fonction du ratio
-
+    
     return {
       width: newWidth,
       height: newHeight,
     };
   };
-
+  
+  const manualRefresh = async () => {
+    setLoading(true);
+    setRefreshGallery((prev) => prev + 1);
+  };
+  
   return (
     <>
       <View style={styles.container}>
         <Header title="My Memories" showInput={false} />
         <View style={styles.memoriesContainer}>
-          {placeCard}
+        <PlaceCard
+          key={refreshKey}
+          id={selectedPlace.id}
+          title={selectedPlace.title}
+          image={selectedPlace.image}
+          description={selectedPlace.description}
+        />
           <View style={styles.postReview}>
             <Text style={styles.title}>My review</Text>
             <View style={styles.inputContainer}>
@@ -290,33 +278,6 @@ const styles = StyleSheet.create({
     paddingTop: 2,
     alignItems: "center",
   },
-  buttonPictures: {
-    display: "flex",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginTop: 10,
-    backgroundColor: "#001F3F",
-    width: Dimensions.get("window").width - 80,
-    height: "7%",
-    borderRadius: 50,
-  },
-  buttonPictureSeparator: {
-    height: "100%",
-    width: "1.5%",
-    backgroundColor: "#DEB973",
-  },
-  buttonUpload: {
-    marginLeft: 65,
-  },
-  buttonPicture: {
-    marginRight: 65,
-  },
-  gallery: {
-    marginTop: 5,
-    width: "100%",
-    height: "50%",
-  },
   postReview: {
     width: Dimensions.get("window").width - 50,
     height: 140,
@@ -338,10 +299,6 @@ const styles = StyleSheet.create({
     fontFamily: "JosefinSans-Bold",
     color: "black",
     marginRight: 8,
-  },
-  noPicture: {
-    width: "100%",
-    textAlign: "center",
   },
   inputContainer: {
     width: "100%",
@@ -378,6 +335,37 @@ const styles = StyleSheet.create({
   },
   textButton: {
     color: "#DEB973",
+    textAlign: "center",
+  },
+  buttonPictures: {
+    display: "flex",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginTop: 10,
+    backgroundColor: "#001F3F",
+    width: Dimensions.get("window").width - 80,
+    height: "7%",
+    borderRadius: 50,
+  },
+  buttonUpload: {
+    marginLeft: 65,
+  },
+  buttonPictureSeparator: {
+    height: "100%",
+    width: "1.5%",
+    backgroundColor: "#DEB973",
+  },
+  buttonPicture: {
+    marginRight: 65,
+  },
+  gallery: {
+    marginTop: 5,
+    width: "100%",
+    height: "50%",
+  },
+  noPicture: {
+    width: "100%",
     textAlign: "center",
   },
 });

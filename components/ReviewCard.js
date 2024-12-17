@@ -1,18 +1,11 @@
 import { StyleSheet, View, Text, Dimensions } from "react-native";
+
 import { useFonts } from "expo-font";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faStar } from "@fortawesome/free-solid-svg-icons";
 
 export default function ReviewCard(props) {
-  const [fontsLoaded] = useFonts({
-    // Chargement des fonts personnalisés
-    "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
-  });
-
-  if (!fontsLoaded) {
-    // Si les fonts ne sont pas chargées, on retourne null
-    return null;
-  }
+  useFonts({"JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf")});
 
   //formatage de la date de création de l'avis
   let date = props.date;
