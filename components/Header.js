@@ -1,3 +1,6 @@
+import { View, Image, StyleSheet, Dimensions, Text, ImageBackground } from "react-native";
+import { useFonts } from "expo-font";
+import SearchInput from "./SearchInput";
 import React, { useEffect, useState } from "react";
 import {
   View,
@@ -18,6 +21,7 @@ const towerUri =
   "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427451/appIcons/umtepna0xmfeki5tffxw.webp";
 
 export default function Header({ title, showInput, navigation }) {
+  // Chargement font personnalisé
   const [fontsLoaded] = useFonts({
     "JosefinSans-SemiBold": require("../assets/fonts/JosefinSans-SemiBold.ttf"),
   });

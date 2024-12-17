@@ -1,13 +1,6 @@
 // Réalisation des différents imports
 import { useState } from "react"; // Import pour react
-import {
-  View,
-  TextInput,
-  StyleSheet,
-  TouchableOpacity,
-  Text,
-  FlatList,
-} from "react-native"; // Import pour react-native
+import { View, TextInput, StyleSheet, TouchableOpacity, Text, FlatList } from "react-native"; // Import pour react-native
 import { useSelector } from "react-redux"; // Import pour récupérer les données du store
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
 import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
@@ -40,12 +33,7 @@ export default function SearchInput({ navigation }) {
           value={search}
         />
         <TouchableOpacity>
-          <FontAwesomeIcon
-            icon={faMagnifyingGlass}
-            size={20}
-            color="#DEB973"
-            style={styles.iconeSearch}
-          />
+          <FontAwesomeIcon icon={faMagnifyingGlass} size={20} color="#DEB973" style={styles.iconeSearch} />
         </TouchableOpacity>
       </View>
       {showPopup && ( // Affichage de la pop-up si showPopup est à true

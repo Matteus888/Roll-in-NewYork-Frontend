@@ -44,7 +44,7 @@ export default function Picture({ selectedImage, isOpen, onClose, onDelete }) {
     <TouchableWithoutFeedback onPress={onClose}>
       <View style={styles.modal}>
         <TouchableOpacity onPress={() => handleDelete()} style={styles.deleteButton} activeOpacity={0.8}>
-          <FontAwesomeIcon icon={faTrash} size={40} color="red" />
+          <FontAwesomeIcon icon={faTrash} size={30} color="red" />
         </TouchableOpacity>
         <Image source={{ uri: selectedImage.source.uri }} style={[styles.image, rotationStyle]} />
       </View>

@@ -1,18 +1,10 @@
 // Réalisation des différents imports
-import {
-  StyleSheet,
-  TouchableOpacity,
-  Dimensions,
-  View,
-  Text,
-  Image,
-  TouchableWithoutFeedback,
-  Pressable,
-} from "react-native"; // Import pour react / react-native
+import { StyleSheet, TouchableOpacity, Dimensions, View, Text, Image, TouchableWithoutFeedback, Pressable } from "react-native"; // Import pour react / react-native
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
 import { faHeart, faStar, faImage } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
 import { useFonts } from "expo-font";
 import { useNavigation } from "@react-navigation/native";
+import React from "react";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addPlaceToFavorites, removePlaceToFavorites } from "../reducers/favorites";
@@ -21,7 +13,7 @@ import { usePlanDayContext, usePopupContext } from "../provider/AppProvider";
 // Création de la card représentant les lieux de tournage référencés
 export default function PlaceCard({ id, image, title, description, navigation }) {
   const user = useSelector((state) => state.user.value);
-  const favorite = useSelector((state) => state.favorite.value )
+  const favorite = useSelector((state) => state.favorite.value);
   const nav = useNavigation();
   const { activePopupId, setActivePopupId } = usePopupContext();
   const [likeStyle, setLikeStyle] = useState({ color: "white" });
@@ -56,7 +48,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
         })
         .catch((err) => console.error("Error checking like status:", err));
     })();
-  }, [user.token, id, favorite]); 
+  }, [user.token, id, favorite]);
   //force le rafraichissement de la placeCard en fonction de l'id du lieu, son status like, de la note et en fonction du user
 
   const togglePopup = () => {
@@ -88,7 +80,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
             setLikeStyle({ color: "red" });
             setIsLiked(true);
           } else if (data.status === "Removed") {
-            dispatch(removePlaceToFavorites(id+1));
+            dispatch(removePlaceToFavorites(id + 1));
             setLikeStyle({ color: "white" });
             setIsLiked(false);
           }
@@ -122,7 +114,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
   //récupération des notes des avis du lieux et affichage de la moyenne si il y a des avis sur le lieu
   useEffect(() => {
     if (reviewsTable.length === 0) {
-      setPlaceNote(0)
+      setPlaceNote(0);
       return;
     } else {
       allNotes = reviewsTable.map((review) => {
@@ -135,18 +127,19 @@ export default function PlaceCard({ id, image, title, description, navigation })
         setPlaceNote(getAverage(allNotes).toFixed(1));
       }
     }
+
   }, [reviewsTable]);
+
+
 
   const handleReviews = () => {
     navigation.navigate("Reviews", { placeInfo });
     setActivePopupId(null);
-  }
+  };
 
   return (
     <View style={styles.container}>
-      <Pressable
-        onPress={() => (nav.getState().routes[nav.getState().index].name === "Memories" ? null : togglePopup())}
-      >
+      <Pressable onPress={() => (nav.getState().routes[nav.getState().index].name === "Memories" ? null : togglePopup())}>
         <View style={styles.card}>
           <View style={styles.imageContainer}>
             <Image source={{ uri: image }} style={styles.image} />
@@ -188,11 +181,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
                   <View style={styles.popupSeparator}></View>
                 </>
               )}
-              <TouchableOpacity
-                onPress={() => handleReviews()}
-                style={styles.popupButton}
-                activeOpacity={0.8}
-              >
+              <TouchableOpacity onPress={() => handleReviews()} style={styles.popupButton} activeOpacity={0.8}>
                 <FontAwesomeIcon icon={faStar} size={40} color="#DEB973" />
                 <Text style={styles.popupText}>Reviews</Text>
               </TouchableOpacity>

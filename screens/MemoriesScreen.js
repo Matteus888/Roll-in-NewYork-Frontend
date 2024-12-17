@@ -1,13 +1,4 @@
-import {
-  StyleSheet,
-  Dimensions,
-  View,
-  TouchableOpacity,
-  Text,
-  TextInput,
-  ActivityIndicator,
-  Alert,
-} from "react-native";
+import { StyleSheet, Dimensions, View, TouchableOpacity, Text, TextInput, ActivityIndicator } from "react-native";
 import PlaceCard from "../components/PlaceCard";
 import Header from "../components/Header";
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
@@ -46,9 +37,7 @@ export default function MemoriesScreen({ route, navigation }) {
   useEffect(() => {
     const fetchPictures = async () => {
       try {
-        const response = await fetch(
-          `https://roll-in-new-york-backend.vercel.app/favorites/pictures/${user.token}/${selectedPlace.id}`
-        );
+        const response = await fetch(`https://roll-in-new-york-backend.vercel.app/favorites/pictures/${user.token}/${selectedPlace.id}`);
         const data = await response.json();
         const newPictures = data.urls.map((secure_url) => ({
           uri: secure_url.secure_url,
@@ -118,13 +107,29 @@ export default function MemoriesScreen({ route, navigation }) {
           setRefreshKey((prev) => prev + 1);
         });
     }
+    //mise à jour de la note moyenne et enregitrement dans le reducer
+    console.log("note update");
   };
+
+
+
+  const placeCard = (
+    <PlaceCard
+      key={refreshKey}
+      id={selectedPlace.id}
+      title={selectedPlace.title}
+      image={selectedPlace.image}
+      description={selectedPlace.description}
+    ></PlaceCard>
+  );
 
   const handleFilePick = async () => {
     try {
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert("Permission denied", "We need your permission to access your gallery");
+        Toast.error("Permission denied. We need your permission to access your gallery", "top", {
+          duration: 2000,
+        });
         return;
       }
 
@@ -167,17 +172,23 @@ export default function MemoriesScreen({ route, navigation }) {
         }
 
         if (uploadSuccess > 0) {
-          Alert.alert("Upload finished");
+          Toast.success("Photo(s) uploaded !", "top", {
+            duration: 2000,
+          });
           setPictures((prevPictures) => [...prevPictures]);
           setLoading(true);
           setRefreshGallery((prev) => prev + 1);
         } else {
-          Alert.alert("No photo has been uploaded. Try again.");
+          Toast.error("Photo upload failed !. Try again.", "top", {
+            duration: 2000,
+          });
         }
       }
     } catch (error) {
       console.error("Problem during selection picture(s)", error);
-      Alert.alert("Problem during selection of the picture(s). Try again.");
+      Toast.error("Problem during selection of the picture(s). Try again.", "top", {
+        duration: 2000,
+      });
     }
   };
 
@@ -201,15 +212,9 @@ export default function MemoriesScreen({ route, navigation }) {
   return (
     <>
       <View style={styles.container}>
-        <Header title="Memories" showInput={false} />
+        <Header title="My Memories" showInput={false} />
         <View style={styles.memoriesContainer}>
-          <PlaceCard
-            key={refreshKey}
-            id={selectedPlace.id}
-            title={selectedPlace.title}
-            image={selectedPlace.image}
-            description={selectedPlace.description}
-          />
+          {placeCard}
           <View style={styles.postReview}>
             <Text style={styles.title}>My review</Text>
             <View style={styles.inputContainer}>
@@ -237,11 +242,6 @@ export default function MemoriesScreen({ route, navigation }) {
               <FontAwesomeIcon icon={faCamera} size={30} color="#DEB973" />
             </TouchableOpacity>
           </View>
-
-          <TouchableOpacity onPress={manualRefresh}>
-            <Text style={styles.refreshButton}>Refresh Gallery</Text>
-          </TouchableOpacity>
-
           {loading ? (
             <ActivityIndicator size="large" color="#001F3F" style={{ marginTop: 10 }} />
           ) : pictures.length === 0 ? (
@@ -255,7 +255,9 @@ export default function MemoriesScreen({ route, navigation }) {
                   return { uri: picture.uri, width, height };
                 })}
                 columns={3}
-                spacing={2}
+                spacing={1}
+                refreshing={false}
+                onRefresh={() => manualRefresh()}
                 backgroundColor={"#EFEFEF"}
                 style={{ backgroundColor: "#EFEFEF" }}
                 onPressImage={(image) => {
@@ -283,7 +285,7 @@ const styles = StyleSheet.create({
   memoriesContainer: {
     flex: 1,
     marginTop: 200,
-    paddingTop: 5,
+    paddingTop: 2,
     alignItems: "center",
   },
   buttonPictures: {
@@ -302,14 +304,11 @@ const styles = StyleSheet.create({
     width: "1.5%",
     backgroundColor: "#DEB973",
   },
-  buttonPicture: {
-    marginRight: 60,
-  },
   buttonUpload: {
-    marginLeft: 60,
+    marginLeft: 65,
   },
-  refreshButton: {
-    color: "#001F3F",
+  buttonPicture: {
+    marginRight: 65,
   },
   gallery: {
     marginTop: 5,
