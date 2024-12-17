@@ -1,10 +1,10 @@
-// Import pour react / react-native
-import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Linking, Platform } from "react-native"; // Import pour react / react-native
-import { useEffect, useState } from "react"; // Import pour react
-import { useSelector } from "react-redux"; // Import pour récupérer les données du store
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Linking, Platform } from "react-native";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 import { useNavigation } from "@react-navigation/native";
 
 import { Checkbox } from "react-native-paper";
+import { Toast } from "toastify-react-native";
 
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
@@ -32,8 +32,6 @@ export default function FavouriteScreen() {
   const favorite = useSelector((state) => state.favorite.value);
   const navigation = useNavigation();
 
-
-
   useEffect(() => {
     // Redirection vers la page login si on n'est pas connecté
     (async () => {
@@ -54,7 +52,6 @@ export default function FavouriteScreen() {
       .catch((err) => {
         console.error("Error during fetch places data : ", err);
       });
-      
   }, [user.token, favorite, navigation]);
 
   // Demande de permission pour récupérer la localisation de l'utilisateur
@@ -103,14 +100,10 @@ export default function FavouriteScreen() {
       );
 
       // Point de départ si géolocalisé ou pas
-      const origin = currentPosition
-        ? `${currentPosition.latitude},${currentPosition.longitude}`
-        : `40.772087,-73.973159`;
+      const origin = currentPosition ? `${currentPosition.latitude},${currentPosition.longitude}` : `40.772087,-73.973159`;
 
       // Lieu le plus éloigné
-      const destination = `${sortedPlaces[sortedPlaces.length - 1].coords.lat},${
-        sortedPlaces[sortedPlaces.length - 1].coords.lon
-      }`;
+      const destination = `${sortedPlaces[sortedPlaces.length - 1].coords.lat},${sortedPlaces[sortedPlaces.length - 1].coords.lon}`;
 
       // Etapes
       const waypoints = sortedPlaces
@@ -123,7 +116,9 @@ export default function FavouriteScreen() {
 
       Linking.openURL(url);
     } else {
-      alert("Please select at least one place to generate a route.");
+      Toast.error("Please select at least one place to generate a itinerary.", "top", {
+        duration: 2000,
+      });
     }
   };
 
@@ -151,14 +146,13 @@ export default function FavouriteScreen() {
     content = placesLikedList.map((place, i) => (
       <View style={styles.cardLine} key={`view-${i}`}>
         {checkBtn && (
-          <View style={ Platform.OS === "ios" ? styles.checkboxContainer : null}>
+          <View style={Platform.OS === "ios" ? styles.checkboxContainer : styles.checkbox}>
             <Checkbox
               key={`checkbox-${i}`}
               status={checkedStates[i] ? "checked" : "unchecked"}
               onPress={() => toggleCheckbox(i)}
-              style={styles.checkbox}
               color="#001F3F"
-              uncheckedColor="#7B8794"
+              uncheckedColor="black"
             />
           </View>
         )}
@@ -186,11 +180,7 @@ export default function FavouriteScreen() {
     placesMarker = placesLikedList
       .filter((_, i) => checkedStates[i])
       .map((place, i) => (
-        <Marker
-          key={i}
-          coordinate={{ latitude: place.coords.lat, longitude: place.coords.lon }}
-          image={moviePlace || null}
-        />
+        <Marker key={i} coordinate={{ latitude: place.coords.lat, longitude: place.coords.lon }} image={moviePlace || null} />
       ));
   }
 
@@ -198,7 +188,7 @@ export default function FavouriteScreen() {
   const scrollViewHeight = !modalVisible ? "73.3%" : "31%";
 
   return (
-    <View style={styles.container} >
+    <View style={styles.container}>
       <Header title="My Favorites" showInput={false} />
       <View style={[styles.favouritesScreenContainer, { height: scrollViewHeight }]}>
         {placesLikedList && placesLikedList.length > 0 && planBtnVisible && (
@@ -320,8 +310,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   checkbox: {
-    width: 24,
-    height: 24,
+    marginRight: 10,
   },
   textButton: {
     color: "#DEB973",

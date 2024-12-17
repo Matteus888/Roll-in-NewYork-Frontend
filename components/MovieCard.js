@@ -1,13 +1,11 @@
-// Réalisation des différents imports
-import { StyleSheet, Dimensions, View, Text, Image } from "react-native"; // Import pour react / react-native
-import { useFonts } from "expo-font"; // Import pour expo
+import { StyleSheet, Dimensions, View, Text, Image } from "react-native";
+import { useFonts } from "expo-font";
 
 export default function MovieCard(props) {
+  // Chargement font personnalisé
   const [fontsLoaded] = useFonts({
-    // Chargement des fonts personnalisés
     "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
   });
-
   if (!fontsLoaded) {
     return null;
   }
@@ -29,7 +27,6 @@ export default function MovieCard(props) {
   );
 }
 
-// Définition du style des différents éléments
 const styles = StyleSheet.create({
   card: {
     width: Dimensions.get("window").width - 50,

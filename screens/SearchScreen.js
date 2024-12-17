@@ -17,8 +17,7 @@ export default function SearchScreen({ route, navigation }) {
   const [currentIndex, setCurrentIndex] = useState(0); // État pour stocker l'index de la card lieux actuelle
   const [allPlaces, setAllPlaces] = useState([]); // Etat pour stocker tout les lieux
   const [placeCoords, setPlaceCoords] = useState({}); // Etat pour stocker les coordonnées du lieux affiché dans le carrousel
-  const favorite = useSelector((state) => state.favorite.value)
-
+  const favorite = useSelector((state) => state.favorite.value);
 
   // useEffect pour fetch tout les lieux
   useEffect(() => {
@@ -27,7 +26,7 @@ export default function SearchScreen({ route, navigation }) {
       .then((data) => {
         setAllPlaces(data.places);
       });
-  }, [ favorite]);
+  }, [favorite]);
 
   let movieCard;
   let moviePlaces;
@@ -213,14 +212,14 @@ const styles = StyleSheet.create({
   },
   navigationButtonLeft: {
     position: "absolute",
-    left: 2,
+    left: 8,
     zIndex: 1,
     padding: 1,
     borderRadius: 20,
   },
   navigationButtonRight: {
     position: "absolute",
-    right: 2,
+    right: 8,
     zIndex: 1,
     padding: 1,
     borderRadius: 20,
