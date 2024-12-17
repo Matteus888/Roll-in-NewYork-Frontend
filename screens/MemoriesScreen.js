@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
 import { StyleSheet, Dimensions, View, TouchableOpacity, Text, TextInput, ActivityIndicator, Alert } from "react-native";
 
-import { useSelector, useDispatch } from "react-redux";
-import { addPicture } from "../reducers/pictures";
+import { useSelector } from "react-redux";
 
 import { useFonts } from "expo-font";
 import MasonryList from "react-native-masonry-list";

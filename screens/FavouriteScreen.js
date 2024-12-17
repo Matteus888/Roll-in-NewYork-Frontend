@@ -81,7 +81,7 @@ export default function FavouriteScreen() {
           setCurrentPosition(location.coords);
         });
       } else {
-        Alert.alert("Permission denied", "You must allow the app to access your location to use this feature.");
+        //Alert.alert("Permission denied", "You must allow the app to access your location to use this feature.");
       }
     })();
   }, []);
@@ -198,8 +198,6 @@ export default function FavouriteScreen() {
       // Lien Google Maps
       const webUrl = `https://www.google.com/maps/dir/?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}`;
       const iosUrl = `comgooglemaps://?api=1&origin=${origin}&destination=${destination}&waypoints=${waypoints}`;
-      const androidUrl = `google.navigation:q=${destination}&origin=${origin}&waypoints=${waypoints}`;
-
 
       if (Platform.OS === "ios") {
         Linking.canOpenURL("comgooglemaps://").then((supported) => {
@@ -207,17 +205,11 @@ export default function FavouriteScreen() {
             Linking.openURL(iosUrl);
           } else {
             Linking.openURL(webUrl); // Rediriger vers le lien web
-          }
+          };
         });
       } else if (Platform.OS === "android") {
-        Linking.canOpenURL(androidUrl).then((supported) => {
-          if (supported) {
-            Linking.openURL(androidUrl);
-          } else {
-            Linking.openURL(webUrl); // Rediriger vers le lien web
-          }
-        });
-      }
+        Linking.openURL(webUrl);
+      };
     } else {
       Alert.alert("No place selected", "Please select at least one place to plan your day.");
     }
