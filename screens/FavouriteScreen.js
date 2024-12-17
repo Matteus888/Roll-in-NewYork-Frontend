@@ -80,7 +80,7 @@ export default function FavouriteScreen() {
           setCurrentPosition(location.coords);
         });
       } else {
-        Alert.alert("Permission denied", "You must allow the app to access your location to use this feature.");
+        //Alert.alert("Permission denied", "You must allow the app to access your location to use this feature.");
       }
     })();
   }, []);
@@ -207,7 +207,7 @@ export default function FavouriteScreen() {
           }
         });
       } else if (Platform.OS === "android") {
-        Linking.openURL(webUrl); // Rediriger vers le lien web
+        Linking.openURL(webUrl);
       }
     } else {
       Alert.alert("No place selected", "Please select at least one place to plan your day.");

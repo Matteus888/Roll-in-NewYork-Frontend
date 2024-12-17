@@ -34,7 +34,7 @@ export default function HomeScreen({ navigation }) {
           setCurrentPosition(location.coords);
         });
       } else {
-        Alert.alert("Permission denied", "Access to location is required to show your position on the map");
+        //Alert.alert("Permission denied", "Access to location is required to show your position on the map");
       }
     })();
 
