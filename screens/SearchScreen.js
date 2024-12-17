@@ -10,6 +10,8 @@ import Header from "../components/Header"; // Import du composant Header
 import PlaceCard from "../components/PlaceCard"; // Import du composant PlaceCard
 import MovieCard from "../components/MovieCard"; // Import du composant MovieCard
 import { useSelector } from "react-redux";
+import {useFocusEffect } from "@react-navigation/native";
+import React from "react";
 
 const { width } = Dimensions.get("window"); // Récupération de la largeur de l'écran du téléphone
 
@@ -18,6 +20,15 @@ export default function SearchScreen({ route, navigation }) {
   const [allPlaces, setAllPlaces] = useState([]); // Etat pour stocker tout les lieux
   const [placeCoords, setPlaceCoords] = useState({}); // Etat pour stocker les coordonnées du lieux affiché dans le carrousel
   const favorite = useSelector((state) => state.favorite.value)
+  const [refreshKey, setRefreshKey] = useState(0);
+
+  //useFocusEffect met à jour la refreshKey à chaque fois qu'on arrive sur SearchScreen
+  //la refreshKey est ajoutée à l'id de la placeCard pour forcer le rerender avec la note à jour
+  useFocusEffect(
+    React.useCallback(() => {
+      setRefreshKey((prev) => prev + 1);
+    }, [])
+  );
 
 
   // useEffect pour fetch tout les lieux
@@ -116,7 +127,7 @@ export default function SearchScreen({ route, navigation }) {
                     index === currentIndex ? ( // Si l'index de l'élément est égal à l'index actuel alors on affiche la card
                       <View style={styles.cardWrapper}>
                         <PlaceCard
-                          key={item._id}
+                          key={`${item._id}-${refreshKey}`}
                           id={item._id}
                           image={item.placePicture}
                           title={item.title}

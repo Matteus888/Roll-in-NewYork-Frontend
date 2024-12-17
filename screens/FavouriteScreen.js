@@ -1,8 +1,9 @@
 // Import pour react / react-native
 import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Linking, Platform } from "react-native"; // Import pour react / react-native
-import { useEffect, useState } from "react"; // Import pour react
+import {  useEffect, useState } from "react"; // Import pour react
 import { useSelector } from "react-redux"; // Import pour récupérer les données du store
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import React from "react";
 
 import { Checkbox } from "react-native-paper";
 
@@ -27,12 +28,19 @@ export default function FavouriteScreen() {
   const [currentPosition, setCurrentPosition] = useState(null);
   const { setActivePopupId } = usePopupContext();
   const { isPlanDay, setIsPlanDay } = usePlanDayContext();
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const user = useSelector((state) => state.user.value);
   const favorite = useSelector((state) => state.favorite.value);
   const navigation = useNavigation();
 
-
+  //useFocusEffect met à jour la refreshKey à chaque fois qu'on arrive sur FavoriteScreen
+  //la refreshKey est ajoutée à l'id de la placeCard pour forcer le rerender avec la note à jour
+  useFocusEffect(
+    React.useCallback(() => {
+      setRefreshKey((prev) => prev + 1);
+    }, [])
+  );
 
   useEffect(() => {
     // Redirection vers la page login si on n'est pas connecté
@@ -43,18 +51,21 @@ export default function FavouriteScreen() {
       }
     })();
     // Requête pour récupérer les lieux likés
-    fetch(`https://roll-in-new-york-backend.vercel.app/favorites/places/${user.token}`)
-      .then((response) => response.json())
-      .then((data) => {
-        const favoritePlaces = Array.isArray(data.favoritePlaces) ? data.favoritePlaces : []; // Vérifie si c'est un tableau
-        setPlacesLikedList(data.favoritePlaces || null); // Stockage des lieux likés dans l'état placesLikedList
-        setCheckedStates(Array(favoritePlaces.length).fill(false)); // Initialisation des états pour chaque case à cocher
-        setIsLoading(false);
-      })
-      .catch((err) => {
-        console.error("Error during fetch places data : ", err);
-      });
-      
+
+
+      fetch(`https://roll-in-new-york-backend.vercel.app/favorites/places/${user.token}`)
+        .then((response) => response.json())
+        .then((data) => {
+          const favoritePlaces = Array.isArray(data.favoritePlaces) ? data.favoritePlaces : []; // Vérifie si c'est un tableau
+          setPlacesLikedList(data.favoritePlaces || null); // Stockage des lieux likés dans l'état placesLikedList
+          setCheckedStates(Array(favoritePlaces.length).fill(false)); // Initialisation des états pour chaque case à cocher
+          setIsLoading(false);
+        })
+        .catch((err) => {
+          console.error("Error during fetch places data : ", err);
+        });
+        
+    
   }, [user.token, favorite, navigation]);
 
   // Demande de permission pour récupérer la localisation de l'utilisateur
@@ -143,6 +154,7 @@ export default function FavouriteScreen() {
     setActivePopupId(null);
   };
 
+
   // Affichage de la liste des lieux likés
   let content;
   if (isLoading) {
@@ -164,7 +176,7 @@ export default function FavouriteScreen() {
         )}
 
         <PlaceCard
-          key={i}
+          key={`${place._id}-${refreshKey}`}
           id={place._id}
           title={place.title}
           image={place.placePicture}
