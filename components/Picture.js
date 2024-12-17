@@ -9,7 +9,6 @@ export default function Picture({ selectedImage, isOpen, onClose, onDelete }) {
   }
   // Récupérer la largeur et la hauteur de l'image sélectionnée
   const image = selectedImage.masonryDimensions;
-
   // Appliquer une rotation de 90 degrés si l'image est plus large que haute
   const rotationStyle = image.width > image.height ? { transform: [{ rotate: "90deg" }] } : {};
 

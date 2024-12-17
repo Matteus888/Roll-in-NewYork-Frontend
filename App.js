@@ -3,7 +3,6 @@ import { useEffect } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Provider, useDispatch, useSelector } from "react-redux";
-import { configureStore } from "@reduxjs/toolkit";
 import movie, { addMovie, removeAllMovies } from "./reducers/movies";
 import user from "./reducers/users";
 import favorite from "./reducers/favorites";
@@ -20,21 +19,35 @@ import ReviewsScreen from "./screens/ReviewsScreen";
 import CameraScreen from "./screens/CameraScreen";
 import { AppProvider } from "./provider/AppProvider";
 
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
+import { persistStore, persistReducer } from 'redux-persist';
+import { PersistGate } from 'redux-persist/integration/react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 const Tab = createBottomTabNavigator();
 
+const reducers = combineReducers({ user, movie, favorite, picture });
+const persistConfig = { key: "Roll-In-NewYork", storage: AsyncStorage, blacklist:['movie', 'favorite', 'picture'] };
+
 const store = configureStore({
-  reducer: { user, movie, favorite, picture },
+  reducer: persistReducer(persistConfig, reducers),
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({ serializableCheck: false }),
 });
 
-export default function App() {
+const persistor = persistStore(store);
+
+export default function App() { 
   return (
     <Provider store={store}>
-      <ToastManager />
-      <NavigationContainer>
-        <AppProvider>
-          <TabNavigator />
-        </AppProvider>
-      </NavigationContainer>
+      <PersistGate persistor={persistor}>
+        <ToastManager />
+        <NavigationContainer>
+          <AppProvider>
+            <TabNavigator />
+          </AppProvider>
+        </NavigationContainer>
+      </PersistGate>
     </Provider>
   );
 }

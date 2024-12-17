@@ -244,15 +244,14 @@ export default function MemoriesScreen({ route, navigation }) {
           </View>
           {loading ? (
             <ActivityIndicator size="large" color="#001F3F" style={{ marginTop: 10 }} />
-          ) : pictures.length === 0 ? (
-            <Text style={{ marginTop: 10 }}>No pictures available.</Text>
           ) : (
             <View style={styles.gallery}>
+              {pictures.length === 0 && ( <Text style={styles.noPicture}>No pictures yet</Text> )}
               <MasonryList
                 key={refreshGallery}
                 images={pictures.map(picture => {
                   const { width, height } = calculateImageSize(picture);
-                  return { uri: picture.uri, width, height };
+                  return { uri: picture.uri, width, height, publicId: picture.publicId };
                 })}
                 columns={3}
                 spacing={1}
@@ -336,6 +335,10 @@ const styles = StyleSheet.create({
     fontFamily: "JosefinSans-Bold",
     color: "black",
     marginRight: 8,
+  },
+  noPicture: {
+    width: "100%",
+    textAlign: "center",
   },
   inputContainer: {
     width: "100%",
