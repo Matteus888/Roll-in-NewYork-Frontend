@@ -15,7 +15,7 @@ import { Toast } from "toastify-react-native"; // Import pour les notifications
 
 // Import de l'icone depuis cloudinary
 const tower =
-  "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/eh4j1tvmizqd9dwftj25.png";
+  "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427451/appIcons/umtepna0xmfeki5tffxw.webp";
 
 export default function SignUp({ isOpen, onClose }) {
   // Création du composant SignUp

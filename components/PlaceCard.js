@@ -71,7 +71,10 @@ export default function PlaceCard({ id, image, title, description, navigation })
     setActivePopupId(null);
 
     if (user.token === null) {
-      navigation.navigate("Login", { navigation });
+      navigation.reset({
+        index: 0,
+        routes: [{ name: "Login", params: { navigation } }],
+      });
       return;
     }
     try {

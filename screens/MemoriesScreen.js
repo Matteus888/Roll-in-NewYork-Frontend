@@ -262,7 +262,7 @@ export default function MemoriesScreen({ route, navigation }) {
         </View>
       </View>
 
-      <Picture isOpen={viewPictures} onClose={() => setViewPictures(false)} selectedImage={selectedImage} />
+      <Picture isOpen={viewPictures} onClose={() => setViewPictures(false)} onDelete={() => setRefreshGallery((prev) => prev + 1)} selectedImage={selectedImage} />
     </>
   );
 }

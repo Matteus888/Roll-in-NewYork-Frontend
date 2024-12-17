@@ -1,4 +1,4 @@
-// Réalisation des différents imports
+import React, { useEffect, useState } from "react";
 import {
   View,
   Image,
@@ -6,39 +6,54 @@ import {
   Dimensions,
   Text,
   ImageBackground,
-} from "react-native"; // Import pour react / react-native
-import { useFonts } from "expo-font"; // Import pour expo
-import SearchInput from "./SearchInput"; // Import du composant SearchInput.js
+} from "react-native";
+import { useFonts } from "expo-font";
+import { Asset } from "expo-asset"; // Import pour le préchargement d'assets
+import SearchInput from "./SearchInput";
 
-// Import du logo + background depuis cloudinary
-const background =
-  "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818358/appIcons/vq0xpnmecpqy9a8myr93.jpg";
-const tower =
-  "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/eh4j1tvmizqd9dwftj25.png";
+// Définir les URL Cloudinary des images
+const backgroundUri =
+  "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427300/appIcons/qcfodpqgcxpddjjrzxvm.webp";
+const towerUri =
+  "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427451/appIcons/umtepna0xmfeki5tffxw.webp";
 
 export default function Header({ title, showInput, navigation }) {
   const [fontsLoaded] = useFonts({
-    // Chargement des fonts personnalisés
     "JosefinSans-SemiBold": require("../assets/fonts/JosefinSans-SemiBold.ttf"),
   });
 
-  if (!fontsLoaded) {
-    // Si les fonts ne sont pas chargées, on retourne null
+  const [imagesLoaded, setImagesLoaded] = useState(false); // État pour gérer le chargement des images
+
+  useEffect(() => {
+    // Précharger les images
+    const loadAssets = async () => {
+      await Asset.loadAsync([backgroundUri, towerUri]);
+      setImagesLoaded(true);
+    };
+
+    loadAssets();
+  }, []);
+
+  if (!fontsLoaded || !imagesLoaded) {
+    // Si les fonts ou les images ne sont pas encore chargées
     return null;
   }
 
   return (
-    <ImageBackground style={styles.background} source={{ uri: background }}>
+    <ImageBackground
+      style={styles.background}
+      source={{ uri: backgroundUri }} // L'image a été préchargée
+    >
       <View style={styles.titleContainer}>
         <Image
           style={styles.logo}
           height={50}
           width={40}
-          source={{ uri: tower }}
+          source={{ uri: towerUri }} // L'image a été préchargée
         />
         <Text style={styles.title}>{title}</Text>
       </View>
-      {showInput && ( // Si showInput est vrai alors on affiche le composant SearchInput
+      {showInput && (
         <View style={styles.input}>
           <SearchInput navigation={navigation} />
         </View>
@@ -47,7 +62,6 @@ export default function Header({ title, showInput, navigation }) {
   );
 }
 
-// Définition du style des différents éléments
 const styles = StyleSheet.create({
   background: {
     width: Dimensions.get("window").width,

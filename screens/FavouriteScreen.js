@@ -14,8 +14,8 @@ import PlaceCard from "../components/PlaceCard";
 import { usePlanDayContext, usePopupContext } from "../provider/AppProvider";
 
 // Import des icons depuis cloudinary
-const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/pctlnl7qs4esplvimxui.png";
-const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png";
+const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427710/appIcons/l0misyhittkq0v7qabx3.webp";
+const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427585/appIcons/oi2ry9sz9uojhzasypfv.webp";
 
 export default function FavouriteScreen() {
   const [placesLikedList, setPlacesLikedList] = useState(null); // État pour stocker la liste des lieux likés
