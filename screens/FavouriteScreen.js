@@ -157,7 +157,9 @@ export default function FavouriteScreen() {
     content = (
       <View>
         <Text style={styles.textError}>Loading favorites ...</Text>
-        <FontAwesomeIcon icon={faArrowsRotate} size={20} color="#282C37" spin />
+        <View>
+          <FontAwesomeIcon icon={faArrowsRotate} size={20} color="#282C37" spin />
+        </View>
       </View>
     );
   } else if (placesLikedList && placesLikedList.length > 0) {

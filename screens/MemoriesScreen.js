@@ -1,14 +1,14 @@
 import { StyleSheet, Dimensions, View, TouchableOpacity, Text, TextInput, ActivityIndicator } from "react-native";
 import PlaceCard from "../components/PlaceCard";
 import Header from "../components/Header";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
-import { faCamera, faUpload, faStar } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
+import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
+import { faCamera, faUpload, faStar } from "@fortawesome/free-solid-svg-icons";
 import MasonryList from "react-native-masonry-list";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addPicture } from "../reducers/pictures";
 import { useFonts } from "expo-font";
-import { Toast } from "toastify-react-native"; // Import pour les notifications
+import { Toast } from "toastify-react-native";
 import Picture from "../components/Picture";
 import * as ImagePicker from "expo-image-picker";
 
@@ -111,8 +111,6 @@ export default function MemoriesScreen({ route, navigation }) {
     console.log("note update");
   };
 
-
-
   const placeCard = (
     <PlaceCard
       key={refreshKey}
@@ -200,9 +198,9 @@ export default function MemoriesScreen({ route, navigation }) {
   const calculateImageSize = (photo) => {
     const { width, height } = photo;
     const aspectRatio = width / height;
-    const newWidth = Dimensions.get("window").width / 3 - 4;  // Largeur dynamique selon la grille
-    const newHeight = newWidth / aspectRatio;  // Calculer la hauteur en fonction du ratio
-  
+    const newWidth = Dimensions.get("window").width / 3 - 4; // Largeur dynamique selon la grille
+    const newHeight = newWidth / aspectRatio; // Calculer la hauteur en fonction du ratio
+
     return {
       width: newWidth,
       height: newHeight,
@@ -250,7 +248,7 @@ export default function MemoriesScreen({ route, navigation }) {
             <View style={styles.gallery}>
               <MasonryList
                 key={refreshGallery}
-                images={pictures.map(picture => {
+                images={pictures.map((picture) => {
                   const { width, height } = calculateImageSize(picture);
                   return { uri: picture.uri, width, height };
                 })}
@@ -271,7 +269,12 @@ export default function MemoriesScreen({ route, navigation }) {
         </View>
       </View>
 
-      <Picture isOpen={viewPictures} onClose={() => setViewPictures(false)} onDelete={() => setRefreshGallery((prev) => prev + 1)} selectedImage={selectedImage} />
+      <Picture
+        isOpen={viewPictures}
+        onClose={() => setViewPictures(false)}
+        onDelete={() => setRefreshGallery((prev) => prev + 1)}
+        selectedImage={selectedImage}
+      />
     </>
   );
 }
