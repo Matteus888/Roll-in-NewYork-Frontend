@@ -210,13 +210,7 @@ export default function FavouriteScreen() {
           }
         });
       } else if (Platform.OS === "android") {
-        Linking.canOpenURL(androidUrl).then((supported) => {
-          if (supported) {
-            Linking.openURL(androidUrl);
-          } else {
-            Linking.openURL(webUrl); // Rediriger vers le lien web
-          }
-        });
+        Linking.openURL(webUrl); // Rediriger vers le lien web
       }
     } else {
       Alert.alert("No place selected", "Please select at least one place to plan your day.");
