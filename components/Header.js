@@ -2,17 +2,8 @@ import { View, Image, StyleSheet, Dimensions, Text, ImageBackground } from "reac
 import { useFonts } from "expo-font";
 import SearchInput from "./SearchInput";
 import React, { useEffect, useState } from "react";
-import {
-  View,
-  Image,
-  StyleSheet,
-  Dimensions,
-  Text,
-  ImageBackground,
-} from "react-native";
-import { useFonts } from "expo-font";
 import { Asset } from "expo-asset"; // Import pour le préchargement d'assets
-import SearchInput from "./SearchInput";
+
 
 // Définir les URL Cloudinary des images
 const backgroundUri =
