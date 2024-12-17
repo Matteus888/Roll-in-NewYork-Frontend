@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Impo
 import { faHeart, faStar, faImage } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
 import { useFonts } from "expo-font";
 import { useNavigation } from "@react-navigation/native";
+import React from "react";
 import { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { addPlaceToFavorites, removePlaceToFavorites } from "../reducers/favorites";
@@ -123,7 +124,10 @@ export default function PlaceCard({ id, image, title, description, navigation })
         setPlaceNote(getAverage(allNotes).toFixed(1));
       }
     }
+
   }, [reviewsTable]);
+
+
 
   const handleReviews = () => {
     navigation.navigate("Reviews", { placeInfo });

@@ -114,6 +114,8 @@ export default function MemoriesScreen({ route, navigation }) {
     console.log("note update");
   };
 
+
+
   const placeCard = (
     <PlaceCard
       key={refreshKey}

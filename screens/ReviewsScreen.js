@@ -4,6 +4,7 @@ import ReviewCard from "../components/ReviewCard";
 import PlaceCard from "../components/PlaceCard";
 import { useEffect, useState } from "react";
 
+
 export default function ReviewsScreen({ route, navigation }) {
   //récupération des info du lieu cliqué
   const { placeInfo } = route.params;
@@ -22,6 +23,8 @@ export default function ReviewsScreen({ route, navigation }) {
       setReviewsTable([]);
     };
   }, [placeInfo]);
+
+
 
   const reviews = reviewsTable.map((data, i) => {
     return (
@@ -42,7 +45,7 @@ export default function ReviewsScreen({ route, navigation }) {
       </View>
       <View style={styles.reviewsContainer}>
         <PlaceCard
-          id={placeInfo.id}
+          id={`${placeInfo.id}`}
           image={placeInfo.image}
           title={placeInfo.title}
           description={placeInfo.description}

@@ -1,7 +1,9 @@
-import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Linking, Platform } from "react-native";
-import { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
-import { useNavigation } from "@react-navigation/native";
+
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Linking, Platform } from "react-native"; 
+import {  useEffect, useState } from "react"; 
+import { useSelector } from "react-redux"; 
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
+import React from "react";
 
 import { Checkbox } from "react-native-paper";
 import { Toast } from "toastify-react-native";
@@ -27,10 +29,19 @@ export default function FavouriteScreen() {
   const [currentPosition, setCurrentPosition] = useState(null);
   const { setActivePopupId } = usePopupContext();
   const { isPlanDay, setIsPlanDay } = usePlanDayContext();
+  const [refreshKey, setRefreshKey] = useState(0);
 
   const user = useSelector((state) => state.user.value);
   const favorite = useSelector((state) => state.favorite.value);
   const navigation = useNavigation();
+
+  //useFocusEffect met à jour la refreshKey à chaque fois qu'on arrive sur FavoriteScreen
+  //la refreshKey est ajoutée à l'id de la placeCard pour forcer le rerender avec la note à jour
+  useFocusEffect(
+    React.useCallback(() => {
+      setRefreshKey((prev) => prev + 1);
+    }, [])
+  );
 
   useEffect(() => {
     // Redirection vers la page login si on n'est pas connecté
@@ -138,6 +149,7 @@ export default function FavouriteScreen() {
     setActivePopupId(null);
   };
 
+
   // Affichage de la liste des lieux likés
   let content;
   if (isLoading) {
@@ -158,7 +170,7 @@ export default function FavouriteScreen() {
         )}
 
         <PlaceCard
-          key={i}
+          key={`${place._id}-${refreshKey}`}
           id={place._id}
           title={place.title}
           image={place.placePicture}
