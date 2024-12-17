@@ -2,7 +2,7 @@ import { View, TouchableWithoutFeedback, StyleSheet, Image, Text, TouchableOpaci
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
-export default function Picture({ selectedImage, isOpen, onClose }) {
+export default function Picture({ selectedImage, isOpen, onClose, onDelete }) {
   // Vérifier si selectedImage et selectedImage.masonryDimensions existent
   if (!selectedImage || !selectedImage.masonryDimensions) {
     return null; // Si les données sont manquantes, ne rien afficher
@@ -29,6 +29,7 @@ export default function Picture({ selectedImage, isOpen, onClose }) {
         .then((data) => {
           if (data.result) {
             onClose();
+            onDelete();
           }
         })
         .catch((err) => {
@@ -59,18 +60,17 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: "rgba(0, 0, 0, 0.5)",
-    justifyContent: "center",
+    justifyContent: "flex-end",
     alignItems: "center",
   },
   deleteButton: {
     backgroundColor: "#001F3F",
     padding: 10,
     borderRadius: 50,
-    marginBottom: 10,
   },
   image: {
-    width: 600,
-    height: 600,
+    width: 665,
+    height: 670,
     resizeMode: "contain",
   },
 });

@@ -8,8 +8,8 @@ import MovieCard from "../components/MovieCard"; // Import du composant MovieCar
 import { useSelector } from "react-redux"; // Import pour récupérer les données du store
 import * as Location from "expo-location"; // Import pour récupérer la localisation de l'utilisateur
 // Import des icons depuis cloudinary
-const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/pctlnl7qs4esplvimxui.png";
-const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png";
+const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427710/appIcons/l0misyhittkq0v7qabx3.webp";
+const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427585/appIcons/oi2ry9sz9uojhzasypfv.webp";
 
 export default function HomeScreen({ navigation }) {
   const [places, setPlaces] = useState([]); // Initiation du tableau de lieux à afficher sur la carte
