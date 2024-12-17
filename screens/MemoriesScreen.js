@@ -26,18 +26,16 @@ export default function MemoriesScreen({ route, navigation }) {
   const { selectedPlace } = route.params;
   const dispatch = useDispatch();
 
-  //mise en place des états pour poster un nouvel avis
   const [personalNote, setPersonalNote] = useState(0);
   const [pictures, setPictures] = useState([]);
   const [loading, setLoading] = useState(true);
   const [viewPictures, setViewPictures] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(""); // État pour l'URL de l'image sélectionnée
+  const [selectedImage, setSelectedImage] = useState("");
   const [newReviewText, setNewReviewText] = useState("");
   const [refreshKey, setRefreshKey] = useState(0);
   const [refreshGallery, setRefreshGallery] = useState(0);
 
   const [fontsLoaded] = useFonts({
-    // Chargement des fonts personnalisés
     "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf"),
   });
 
@@ -46,7 +44,7 @@ export default function MemoriesScreen({ route, navigation }) {
   }
 
   useEffect(() => {
-    (async () => {
+    const fetchPictures = async () => {
       try {
         const response = await fetch(
           `https://roll-in-new-york-backend.vercel.app/favorites/pictures/${user.token}/${selectedPlace.id}`
@@ -57,12 +55,14 @@ export default function MemoriesScreen({ route, navigation }) {
           publicId: secure_url.public_id,
         }));
         setPictures(newPictures);
-        setLoading(false); // Les images ont été chargées
+        setLoading(false);
       } catch (err) {
         console.error("Error fetching memories:", err);
         setLoading(false);
       }
-    })();
+    };
+
+    fetchPictures();
 
     return () => {
       setPictures([]);
@@ -77,10 +77,9 @@ export default function MemoriesScreen({ route, navigation }) {
       image: route.params.selectedPlace.image,
       description: route.params.selectedPlace.description,
     };
-    navigation.navigate("Camera", { selectedPlace }); // Ne passez pas `navigation`
+    navigation.navigate("Camera", { selectedPlace });
   };
 
-  //mise en place des étoile pour noter le lieu
   const personalStars = [];
   for (let i = 0; i < 5; i++) {
     let style = { color: "#EFEFEF" };
@@ -112,46 +111,29 @@ export default function MemoriesScreen({ route, navigation }) {
         body: JSON.stringify(newReviewData),
       })
         .then((response) => response.json())
-        .then((data) => {
-          Toast.success("Review posted !", "top", {
-            duration: 2000,
-          });
+        .then(() => {
+          Toast.success("Review posted!", "top", { duration: 2000 });
           setNewReviewText("");
           setPersonalNote(0);
-          setRefreshKey(refreshKey + 1);
+          setRefreshKey((prev) => prev + 1);
         });
     }
-    //mise à jour de la note moyenne et enregitrement dans le reducer
-    console.log("note update");
   };
-
-  const placeCard = (
-    <PlaceCard
-      key={refreshKey}
-      id={selectedPlace.id}
-      title={selectedPlace.title}
-      image={selectedPlace.image}
-      description={selectedPlace.description}
-    ></PlaceCard>
-  );
 
   const handleFilePick = async () => {
     try {
-      // Demande autorisation d'accès à la galerie
       const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
       if (status !== "granted") {
         Alert.alert("Permission denied", "We need your permission to access your gallery");
         return;
       }
 
-      // Sélection d'une ou prlusieurs images de la mémoire du téléphone
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsMultipleSelection: true,
         quality: 0.5,
       });
 
-      // Boucle d'envoie de chaque images séléctionnées
       if (!result.canceled && result.assets.length > 0) {
         let uploadSuccess = 0;
 
@@ -166,7 +148,7 @@ export default function MemoriesScreen({ route, navigation }) {
             });
 
             formData.append("userToken", user.token);
-            formData.append("idPlace", route.params.selectedPlace.id);
+            formData.append("idPlace", selectedPlace.id);
 
             const response = await fetch("https://roll-in-new-york-backend.vercel.app/favorites/pictures", {
               method: "POST",
@@ -183,11 +165,11 @@ export default function MemoriesScreen({ route, navigation }) {
             console.error("Problem during upload", error);
           }
         }
+
         if (uploadSuccess > 0) {
           Alert.alert("Upload finished");
           setPictures((prevPictures) => [...prevPictures]);
           setLoading(true);
-
           setRefreshGallery((prev) => prev + 1);
         } else {
           Alert.alert("No photo has been uploaded. Try again.");
@@ -204,12 +186,30 @@ export default function MemoriesScreen({ route, navigation }) {
     setRefreshGallery((prev) => prev + 1);
   };
 
+  const calculateImageSize = (photo) => {
+    const { width, height } = photo;
+    const aspectRatio = width / height;
+    const newWidth = Dimensions.get("window").width / 3 - 4;  // Largeur dynamique selon la grille
+    const newHeight = newWidth / aspectRatio;  // Calculer la hauteur en fonction du ratio
+  
+    return {
+      width: newWidth,
+      height: newHeight,
+    };
+  };
+
   return (
     <>
       <View style={styles.container}>
         <Header title="Memories" showInput={false} />
         <View style={styles.memoriesContainer}>
-          {placeCard}
+          <PlaceCard
+            key={refreshKey}
+            id={selectedPlace.id}
+            title={selectedPlace.title}
+            image={selectedPlace.image}
+            description={selectedPlace.description}
+          />
           <View style={styles.postReview}>
             <Text style={styles.title}>My review</Text>
             <View style={styles.inputContainer}>
@@ -218,27 +218,30 @@ export default function MemoriesScreen({ route, navigation }) {
                 placeholder="Write your review"
                 onChangeText={(value) => setNewReviewText(value)}
                 value={newReviewText}
-              ></TextInput>
+              />
               <View style={styles.starContainer}>{personalStars}</View>
               <View style={styles.buttonContainer}>
-                <TouchableOpacity style={styles.postButton} onPress={() => handlePostReview()}>
+                <TouchableOpacity style={styles.postButton} onPress={handlePostReview}>
                   <Text style={styles.textButton}>Post review</Text>
                 </TouchableOpacity>
               </View>
             </View>
           </View>
+
           <View style={styles.buttonPictures}>
-            <TouchableOpacity style={styles.buttonUpload} onPress={() => handleFilePick()}>
+            <TouchableOpacity style={styles.buttonUpload} onPress={handleFilePick}>
               <FontAwesomeIcon icon={faUpload} size={30} color="#DEB973" />
             </TouchableOpacity>
             <View style={styles.buttonPictureSeparator}></View>
-            <TouchableOpacity style={styles.buttonPicture} onPress={() => handleCamera()}>
+            <TouchableOpacity style={styles.buttonPicture} onPress={handleCamera}>
               <FontAwesomeIcon icon={faCamera} size={30} color="#DEB973" />
             </TouchableOpacity>
           </View>
+
           <TouchableOpacity onPress={manualRefresh}>
             <Text style={styles.refreshButton}>Refresh Gallery</Text>
           </TouchableOpacity>
+
           {loading ? (
             <ActivityIndicator size="large" color="#001F3F" style={{ marginTop: 10 }} />
           ) : pictures.length === 0 ? (
@@ -247,7 +250,10 @@ export default function MemoriesScreen({ route, navigation }) {
             <View style={styles.gallery}>
               <MasonryList
                 key={refreshGallery}
-                images={pictures}
+                images={pictures.map(picture => {
+                  const { width, height } = calculateImageSize(picture);
+                  return { uri: picture.uri, width, height };
+                })}
                 columns={3}
                 spacing={2}
                 backgroundColor={"#EFEFEF"}
@@ -256,6 +262,7 @@ export default function MemoriesScreen({ route, navigation }) {
                   setSelectedImage(image);
                   setViewPictures(true);
                 }}
+                resizeMode="contain"
               />
             </View>
           )}
@@ -267,7 +274,6 @@ export default function MemoriesScreen({ route, navigation }) {
   );
 }
 
-// Définition du style des différents éléments
 const styles = StyleSheet.create({
   container: {
     height: Dimensions.get("window").height,

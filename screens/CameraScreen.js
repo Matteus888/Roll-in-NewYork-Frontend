@@ -42,44 +42,53 @@ export default function CameraScreen({ route }) {
 
   const takePicture = async () => {
     if (isCapturing || !cameraRef.current) return;
-
+  
     try {
       setIsCapturing(true);
-
+  
       const photo = await cameraRef.current.takePictureAsync({
         quality: Platform.OS === "android" ? 0.5 : 0.3,
         exif: false,
         skipProcessing: Platform.OS === "android",
       });
-
+  
+      // Redimensionner l'image avant d'envoyer (par exemple, pour la réduire ou l'adapter à une certaine taille)
+      const { width, height } = photo; // Obtenez les dimensions de la photo
+      const aspectRatio = width / height; // Calculer le ratio d'aspect
+      const newWidth = 400; // Par exemple, vous pouvez limiter la largeur de l'image
+      const newHeight = newWidth / aspectRatio; // Calculer la nouvelle hauteur en fonction du ratio
+  
+      const resizedPhoto = {
+        ...photo,
+        width: newWidth,
+        height: newHeight,
+      };
+  
+      // Rediriger après la prise de photo
       navigation.reset({
         index: 0,
         routes: [{ name: "Memories", params: { selectedPlace } }],
       });
+  
       // Si la photo est valide
-      if (photo?.uri) {
+      if (resizedPhoto?.uri) {
         const formData = new FormData();
-
-        // Effacer les anciennes valeurs de userToken et idPlace
-        formData.delete("userToken");
-        formData.delete("idPlace");
-
-        // Ajouter la photo au FormData
+  
         formData.append("photoFromFront", {
-          uri: photo.uri,
-          name: photo.uri.split("/").pop(),
+          uri: resizedPhoto.uri,
+          name: resizedPhoto.uri.split("/").pop(),
           type: "image/jpeg",
         });
-
+  
         formData.append("userToken", user.token);
         formData.append("idPlace", route.params.selectedPlace.id);
-
+  
         // Envoi de la requête avec le formData
         const response = await fetch("https://roll-in-new-york-backend.vercel.app/favorites/pictures", {
           method: "POST",
           body: formData,
         });
-
+  
         const data = await response.json();
         dispatch(addPicture(data.url)); // Mise à jour du store avec l'URL de la photo
       }
@@ -90,7 +99,7 @@ export default function CameraScreen({ route }) {
       setIsCapturing(false);
     }
   };
-
+  
   const toggleCameraFacing = () => {
     setFacing((current) => (current === "back" ? "front" : "back"));
   };
