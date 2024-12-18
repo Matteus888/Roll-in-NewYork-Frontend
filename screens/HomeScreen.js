@@ -18,7 +18,7 @@ export default function HomeScreen({ navigation }) {
 
   const [places, setPlaces] = useState([]); // Initialisation du tableau de lieux à afficher sur la carte
   const [modalVisible, setModalVisible] = useState(false); // Initialisation de la modale pour afficher les informations du lieu
-  const [currentPosition, setCurrentPosition] = useState({ latitude: 40.772087, longitude: -73.973159 }); // Initialisation des coordonnées de localisation de l'utilisateur à la position de central park
+  const [currentPosition, setCurrentPosition] = useState({ latitude: 40.7649861, longitude: -73.9680353 }); // Initialisation des coordonnées de localisation de l'utilisateur à la position de central park
   const [placeMovies, setPlaceMovies] = useState([]); // Initialisation du tableau de films du lieu
   const [placeCoords, setPlaceCoords] = useState(); // Initialisation des coordonnées du lieu
   const mapRef = useRef(null); // Permet de fixer la position de la carte
@@ -44,7 +44,7 @@ export default function HomeScreen({ navigation }) {
         .then((data) => {
           setPlaces(data.places);
         });
-  
+
       if (placeCoords && mapRef.current) {
         mapRef.current.animateToRegion(
           {
@@ -56,8 +56,8 @@ export default function HomeScreen({ navigation }) {
           500
         );
       }
-    } catch(err) {
-      console.error('❌ (Home Screen): Error in connection to database', err);
+    } catch (err) {
+      console.error("❌ (Home Screen): Error in connection to database", err);
     }
   }, [placeCoords]);
 
@@ -202,7 +202,7 @@ export default function HomeScreen({ navigation }) {
                   longitudeDelta: 0.1,
                 }
               : {
-                // Coordonnées par défaut si pas à New York
+                  // Coordonnées par défaut si pas à New York
                   latitude: 40.772087,
                   longitude: -73.973159,
                   latitudeDelta: 0.1,
@@ -225,7 +225,7 @@ export default function HomeScreen({ navigation }) {
                     latitude: currentPosition.latitude,
                     longitude: currentPosition.longitude,
                   }
-                : { latitude: 40.772087, longitude: -73.973159 }
+                : { latitude: 40.7649861, longitude: -73.9680353 }
             }
             image={manWalking || null}
           />
