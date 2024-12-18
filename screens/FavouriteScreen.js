@@ -11,8 +11,6 @@ import { usePlanDayContext, usePopupContext } from "../provider/AppProvider";
 import Header from "../components/Header";
 import PlaceCard from "../components/PlaceCard";
 
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
 import { Checkbox } from "react-native-paper";
 
 const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427710/appIcons/l0misyhittkq0v7qabx3.webp";
@@ -88,14 +86,7 @@ export default function FavouriteScreen() {
   // Affichage de la liste des lieux likés
   let content;
   if (isLoading) {
-    content = (
-      <View>
-        <Text style={styles.textError}>Loading favorites ...</Text>
-        <View>
-          <FontAwesomeIcon icon={faArrowsRotate} size={20} color="#282C37" spin />
-        </View>
-      </View>
-    );
+    content = <Text style={styles.textError}>Loading favorites ...</Text>;
   } else if (placesLikedList && placesLikedList.length > 0) {
     content = placesLikedList.map((place, i) => (
       <View style={styles.cardLine} key={`view-${i}`}>
@@ -135,6 +126,7 @@ export default function FavouriteScreen() {
     setPlanBtnVisible(!planBtnVisible);
     isPlanDay ? setIsPlanDay(false) : setIsPlanDay(true);
     setActivePopupId(null);
+    setCheckedStates([]);
   };
 
   // Check ou uncheck les boxs

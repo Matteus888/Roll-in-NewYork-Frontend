@@ -5,29 +5,31 @@ import { Asset } from "expo-asset"; // Import pour le préchargement d'assets
 import { useFonts } from "expo-font";
 import SearchInput from "./SearchInput";
 
-
 const backgroundUri = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427300/appIcons/qcfodpqgcxpddjjrzxvm.webp";
 const towerUri = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427451/appIcons/umtepna0xmfeki5tffxw.webp";
 
 export default function Header({ title, showInput, navigation }) {
   const [imagesLoaded, setImagesLoaded] = useState(false); // État pour gérer le chargement des images
-  useFonts({"JosefinSans-SemiBold": require("../assets/fonts/JosefinSans-SemiBold.ttf"),});
-  
+  useFonts({ "JosefinSans-SemiBold": require("../assets/fonts/JosefinSans-SemiBold.ttf") });
+
   useEffect(() => {
-    const loadAssets = async () => { // Précharger les images
+    const loadAssets = async () => {
+      // Précharger les images
       await Asset.loadAsync([backgroundUri, towerUri]);
       setImagesLoaded(true);
     };
-    
+
     loadAssets();
   }, []);
-  
-  if (!imagesLoaded) { return null }
+
+  if (!imagesLoaded) {
+    return null;
+  }
 
   return (
     <ImageBackground style={styles.background} source={{ uri: backgroundUri }}>
       <View style={styles.titleContainer}>
-        <Image style={styles.logo} height={50} width={40} source={{ uri: towerUri }}/>
+        <Image style={styles.logo} height={50} width={40} source={{ uri: towerUri }} />
         <Text style={styles.title}>{title}</Text>
       </View>
       {showInput && (
@@ -50,7 +52,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: Dimensions.get("window").width,
     justifyContent: "center",
-    alignItems: "flex-end",
+    alignItems: "center",
     paddingTop: 30,
     paddingRight: 40,
   },
@@ -59,7 +61,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontFamily: "JosefinSans-SemiBold",
-    fontSize: 36,
+    fontSize: 37,
     color: "#282C37",
   },
   input: {
