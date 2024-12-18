@@ -1,3 +1,4 @@
+import { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, Text, Modal, TouchableOpacity, ScrollView, Linking, Platform, TouchableWithoutFeedback } from "react-native";
 
 import { useSelector } from "react-redux";
