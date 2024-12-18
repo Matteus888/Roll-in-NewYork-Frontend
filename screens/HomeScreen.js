@@ -1,10 +1,9 @@
-import { useState, useEffect, useRef } from "react";
 import { View, StyleSheet, Text, Modal, TouchableOpacity, ScrollView, Linking, Platform, TouchableWithoutFeedback } from "react-native";
 
 import { useSelector } from "react-redux";
 
 import { Marker } from "react-native-maps";
-import MapView from 'react-native-map-clustering';
+import MapView from "react-native-maps";
 import * as Location from "expo-location";
 
 import Header from "../components/Header";
@@ -22,7 +21,6 @@ export default function HomeScreen({ navigation }) {
   const [placeMovies, setPlaceMovies] = useState([]); // Initialisation du tableau de films du lieu
   const [placeCoords, setPlaceCoords] = useState(); // Initialisation des coordonnées du lieu
   const mapRef = useRef(null); // Permet de fixer la position de la carte
-  
 
   useEffect(() => {
     (async () => {
@@ -182,10 +180,6 @@ export default function HomeScreen({ navigation }) {
       </Modal>
       <View style={styles.mapContainer}>
         <MapView
-          clusteringEnabled={true}
-          clusterColor="#001F3F"
-          clusterTextColor="#DEB973"
-          radius={15}
           ref={mapRef}
           // force la map à se recharger si changement dans le fetch, évite la disparition des marker
           // la key est une string avec un identifiant "map" pour le différencier des key "i" dans le place.map
@@ -223,28 +217,9 @@ export default function HomeScreen({ navigation }) {
             bottom: Platform.OS === "ios" ? 200 : 0, // Padding pour éviter la superposition de la modal
           }}
           style={styles.map}
-          renderCluster={(cluster) => {
-            const { id, geometry, onPress, properties } = cluster;
-            const points = properties.point_count; // Nombre de points dans le cluster
-            const { coordinates } = geometry;
-        
-            return (
-              <Marker
-                key={`cluster-${id}`}
-                coordinate={{
-                  latitude: coordinates[1],
-                  longitude: coordinates[0],
-                }}
-                onPress={onPress}
-              >
-                <View style={[styles.clusterContainer, { width: 30 + points, height: 30 + points }]}>
-                  <Text style={styles.clusterText}>{points}</Text>
-                </View>
-              </Marker>
-            );
-          }}
         >
           <Marker
+            // marker "en dur" pour localisation de l'utilisateur dans central park si pas à new york
             coordinate={
               currentPosition
                 ? {
@@ -254,7 +229,6 @@ export default function HomeScreen({ navigation }) {
                 : { latitude: 40.7649861, longitude: -73.9680353 }
             }
             image={manWalking || null}
-            cluster={false} // Exclut le marker du clustering
           />
           {placesMarker}
         </MapView>
@@ -264,18 +238,6 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  clusterContainer: {
-    backgroundColor: "#001F3F",
-    borderRadius: 50,
-    justifyContent: "center",
-    alignItems: "center",
-    borderWidth: 2,
-    borderColor: "rgba(222, 185, 115, 0.9)",
-  },
-  clusterText: {
-    color: "#DEB973",
-    fontWeight: "bold",
-  },
   container: {
     flex: 1,
     backgroundColor: "#ffffff",
