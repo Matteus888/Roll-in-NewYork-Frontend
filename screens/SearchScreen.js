@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, View, FlatList, Dimensions, TouchableOpacity, Text, Platform, Linking } from "react-native";
+import { StyleSheet, View, FlatList, Dimensions, TouchableOpacity, Text, Platform, Linking, Image } from "react-native";
 
 import { useSelector } from "react-redux";
 
@@ -13,10 +13,14 @@ import MovieCard from "../components/MovieCard";
 
 import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { useFonts } from "expo-font";
 
 const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png";
+const errorImage = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734516235/teflem0cocn53iqsvier.webp"
 
 export default function SearchScreen({ route, navigation }) {
+  useFonts({"JosefinSans-SemiBold": require("../assets/fonts/JosefinSans-SemiBold.ttf"),});
+  
   const favorite = useSelector((state) => state.favorite.value)
 
   const [currentIndex, setCurrentIndex] = useState(0); // État pour stocker l'index de la card lieux actuelle
@@ -49,7 +53,15 @@ export default function SearchScreen({ route, navigation }) {
   let movieCard;
   let moviePlaces;
   if (route.params === undefined) {
-    movieCard = <Text style={styles.searchMovie}>Search a movie!</Text>;
+    movieCard = (
+          <View style={styles.errorBox}>
+            <Image
+              style={styles.image}
+              source={{ uri: errorImage }}
+            />
+            <Text style={styles.textError}>Search a movie!</Text>
+          </View>
+        )
   } else {
     // récupération des info du film cliqué en page d'accueil
     const { selectedMovie } = route.params;
@@ -266,5 +278,25 @@ const styles = StyleSheet.create({
   },
   map: {
     flex: 1,
+  },
+  errorBox: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  textError: {
+    top: 50,
+    position: "absolute",
+    textAlign: "center",
+    width: Dimensions.get("window").width - 120,
+    fontSize: 24,
+    fontWeight: 600,
+    color: "#282C37",
+    fontFamily: "JosefinSans-SemiBold"
+  },
+  image: {
+    position: "relative",
+    width: Dimensions.get("window").width - 50,
+    height: Dimensions.get("window").height - 250,
+    resizeMode: "contain",
   },
 });

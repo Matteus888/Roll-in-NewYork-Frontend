@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Linking, Platform, Alert } from "react-native";
+import { View, StyleSheet, ScrollView, TouchableOpacity, Text, Linking, Platform, Alert, Image, Dimensions } from "react-native";
 
 import { useSelector } from "react-redux";
 
@@ -11,14 +11,16 @@ import { usePlanDayContext, usePopupContext } from "../provider/AppProvider";
 import Header from "../components/Header";
 import PlaceCard from "../components/PlaceCard";
 
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faArrowsRotate } from "@fortawesome/free-solid-svg-icons";
+import { useFonts } from "expo-font";
 import { Checkbox } from "react-native-paper";
 
 const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427710/appIcons/l0misyhittkq0v7qabx3.webp";
 const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427585/appIcons/oi2ry9sz9uojhzasypfv.webp";
+const errorImage = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734516235/teflem0cocn53iqsvier.webp"
 
 export default function FavouriteScreen() {
+  useFonts({"JosefinSans-SemiBold": require("../assets/fonts/JosefinSans-SemiBold.ttf"),});
+
   const navigation = useNavigation();
   const user = useSelector((state) => state.user.value);
   const favorite = useSelector((state) => state.favorite.value);
@@ -89,14 +91,7 @@ export default function FavouriteScreen() {
   // Affichage de la liste des lieux likés
   let content;
   if (isLoading) {
-    content = (
-      <View>
-        <Text style={styles.textError}>Loading favorites ...</Text>
-        <View>
-          <FontAwesomeIcon icon={faArrowsRotate} size={20} color="#282C37" spin />
-        </View>
-      </View>
-    );
+    content = <Text style={styles.textError}>Loading favorites ...</Text>
   } else if (placesLikedList && placesLikedList.length > 0) {
     content = placesLikedList.map((place, i) => (
       <View style={styles.cardLine} key={`view-${i}`}>
@@ -124,9 +119,25 @@ export default function FavouriteScreen() {
       </View>
     ));
   } else if (user.token) {
-    content = <Text style={styles.textError}>No favorite places at the moment</Text>;
+    content = (
+      <View style={styles.errorBox}>
+        <Image
+          style={styles.image}
+          source={{ uri: errorImage }}
+        />
+        <Text style={styles.textError}>No favorite places at the moment</Text>
+      </View>
+    )
   } else {
-    content = <Text style={styles.textError}>Connection required</Text>;
+    content = (
+      <View style={styles.errorBox}>
+        <Image
+          style={styles.image}
+          source={{ uri: errorImage }}
+        />
+        <Text style={styles.textError}>Connection required</Text>
+      </View>
+    )
   }
 
   // Affiche/Masque checkbox
@@ -136,6 +147,7 @@ export default function FavouriteScreen() {
     setPlanBtnVisible(!planBtnVisible);
     isPlanDay ? setIsPlanDay(false) : setIsPlanDay(true);
     setActivePopupId(null);
+    setCheckedStates([])
   };
 
   // Check ou uncheck les boxs
@@ -342,10 +354,24 @@ const styles = StyleSheet.create({
   checkbox: {
     marginRight: 10,
   },
+  errorBox: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
   textError: {
-    marginTop: 50,
+    top: 50,
+    position: "absolute",
+    textAlign: "center",
+    width: Dimensions.get("window").width - 120,
     fontSize: 24,
     fontWeight: 600,
     color: "#282C37",
-  }
+    fontFamily: "JosefinSans-SemiBold"
+  },
+  image: {
+    position: "relative",
+    width: Dimensions.get("window").width - 50,
+    height: Dimensions.get("window").height - 250,
+    resizeMode: "contain",
+  },
 });

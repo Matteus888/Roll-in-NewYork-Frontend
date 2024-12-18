@@ -50,17 +50,19 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     width: Dimensions.get("window").width,
     justifyContent: "center",
-    alignItems: "flex-end",
+    alignItems: "center",
     paddingTop: 30,
     paddingRight: 40,
+
   },
   logo: {
     resizeMode: "contain",
   },
   title: {
     fontFamily: "JosefinSans-SemiBold",
-    fontSize: 36,
+    fontSize: 37,
     color: "#282C37",
+
   },
   input: {
     alignItems: "center",
