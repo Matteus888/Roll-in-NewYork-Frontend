@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { View, StyleSheet, Text, Modal, TouchableOpacity, ScrollView, Linking, Platform, Alert } from "react-native";
+import { View, StyleSheet, Text, Modal, TouchableOpacity, ScrollView, Linking, Platform, TouchableWithoutFeedback } from "react-native";
 
 import { useSelector } from "react-redux";
 
@@ -154,7 +154,8 @@ export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Header title="Roll-In NewYork" showInput={true} navigation={navigation} />
-      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+      <Modal  visible={modalVisible} animationType="slide" transparent={true} >
+      <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
         <View style={styles.modalBackground}>
           <View style={styles.modalView}>
             <View style={styles.buttonContainer}>
@@ -176,6 +177,7 @@ export default function HomeScreen({ navigation }) {
             </View>
           </View>
         </View>
+        </TouchableWithoutFeedback>
       </Modal>
       <View style={styles.mapContainer}>
         <MapView
