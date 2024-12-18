@@ -55,6 +55,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingTop: 30,
     paddingRight: 40,
+
   },
   logo: {
     resizeMode: "contain",
@@ -63,6 +64,7 @@ const styles = StyleSheet.create({
     fontFamily: "JosefinSans-SemiBold",
     fontSize: 37,
     color: "#282C37",
+
   },
   input: {
     alignItems: "center",
