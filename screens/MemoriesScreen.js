@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Dimensions, View, TouchableOpacity, Text, TextInput, ActivityIndicator, Alert } from "react-native";
+import { StyleSheet, Dimensions, View, TouchableOpacity, Text, TextInput, ActivityIndicator, Alert, Keyboard } from "react-native";
 
 import { useSelector } from "react-redux";
 
@@ -93,11 +93,12 @@ export default function MemoriesScreen({ route, navigation }) {
             setNewReviewText("");
             setPersonalNote(0);
             setRefreshKey((prev) => prev + 1);
+            Keyboard.dismiss();
           });
-      } catch (err) {
-        console.error("❌ (Memories Screen): Error in connection to database", err);
+        } catch (err) {
+          console.error("❌ (Memories Screen): Error in connection to database", err);
+        }
       }
-    }
   };
 
   // Fonction pour ouvrir la caméra
@@ -128,7 +129,6 @@ export default function MemoriesScreen({ route, navigation }) {
       });
 
       if (!result.canceled && result.assets.length > 0) {
-        let uploadSuccess = 0; // Compteur pour savoir si l'upload a fonctionné
 
         for (const asset of result.assets) {
           try {

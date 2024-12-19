@@ -74,22 +74,30 @@ function TabNavigator() {
             }
           });
         });
-        allMoviesId.map((dataId) => {
-          fetch(`https://api.themoviedb.org/3/movie/${dataId}?api_key=a98f87059c37903cc153947a91b8dd1c`)
-            .then((response) => response.json())
-            .then((data) => {
-              if (data.original_title && data.poster_path) {
+        allMoviesId.map((movieId) => {
+          try {
+            fetch('https://roll-in-new-york-backend.vercel.app/movies/', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({movieId: movieId}),
+            })
+            .then((res) => res.json())
+            .then(data => {
+              if (data.movie.original_title && data.movie.poster_path) {
                 dispatch(
                   addMovie({
-                    id: dataId,
-                    title: data.original_title,
-                    poster_path: data.poster_path,
-                    overview: data.overview,
-                    release_date: data.release_date,
+                    id: movieId,
+                    title: data.movie.original_title,
+                    poster_path: data.movie.poster_path,
+                    overview: data.movie.overview,
+                    release_date: data.movie.release_date,
                   })
                 );
               }
-            });
+            })
+          } catch(err) {
+            console.error("❌ (App): Error in connection to database", err);
+          }
         });
       });
   }, []);
