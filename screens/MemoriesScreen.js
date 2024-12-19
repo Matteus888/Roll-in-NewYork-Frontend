@@ -32,7 +32,9 @@ export default function MemoriesScreen({ route, navigation }) {
 
   const fetchPictures = async () => {
     try {
-      const response = await fetch(`https://roll-in-new-york-backend.vercel.app/favorites/pictures/${user.token}/${selectedPlace.id}`);
+      const response = await fetch(
+        `https://roll-in-new-york-backend-liard.vercel.app/favorites/pictures/${user.token}/${selectedPlace.id}`
+      );
       const data = await response.json();
       const newPictures = data.urls.map((secure_url) => ({
         uri: secure_url.secure_url,
@@ -82,7 +84,7 @@ export default function MemoriesScreen({ route, navigation }) {
       return;
     } else {
       try {
-        fetch(`https://roll-in-new-york-backend.vercel.app/reviews/${user.token}/${selectedPlace.id}`, {
+        fetch(`https://roll-in-new-york-backend-liard.vercel.app/reviews/${user.token}/${selectedPlace.id}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify(newReviewData),
@@ -95,10 +97,10 @@ export default function MemoriesScreen({ route, navigation }) {
             setRefreshKey((prev) => prev + 1);
             Keyboard.dismiss();
           });
-        } catch (err) {
-          console.error("❌ (Memories Screen): Error in connection to database", err);
-        }
+      } catch (err) {
+        console.error("❌ (Memories Screen): Error in connection to database", err);
       }
+    }
   };
 
   // Fonction pour ouvrir la caméra
@@ -129,7 +131,6 @@ export default function MemoriesScreen({ route, navigation }) {
       });
 
       if (!result.canceled && result.assets.length > 0) {
-
         for (const asset of result.assets) {
           try {
             const formData = new FormData();
@@ -143,7 +144,7 @@ export default function MemoriesScreen({ route, navigation }) {
             formData.append("userToken", user.token);
             formData.append("idPlace", selectedPlace.id);
 
-            const response = await fetch("https://roll-in-new-york-backend.vercel.app/favorites/pictures", {
+            const response = await fetch("https://roll-in-new-york-backend-liard.vercel.app/favorites/pictures", {
               method: "POST",
               body: formData,
             });

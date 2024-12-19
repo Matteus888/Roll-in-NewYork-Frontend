@@ -25,7 +25,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
   const [placeNote, setPlaceNote] = useState(0); // Etat pour stocker la note du lieu
   const [reviewsTable, setReviewsTable] = useState([]); // Etat pour stocker les avis du lieu
 
-  useFonts({"JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf")});
+  useFonts({ "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf") });
 
   const popupVisible = activePopupId === id; // = popupVisible ? activePopupId (En rapport au provider) === id (En rapport à la placeCard) : null
   const placeInfo = { id, image, title, description };
@@ -34,7 +34,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
   useEffect(() => {
     (async () => {
       try {
-        fetch(`https://roll-in-new-york-backend.vercel.app/users/isLiked/${user.token}/${id}`)
+        fetch(`https://roll-in-new-york-backend-liard.vercel.app/users/isLiked/${user.token}/${id}`)
           .then((response) => response.json())
           .then((data) => {
             if (data.result) {
@@ -46,31 +46,30 @@ export default function PlaceCard({ id, image, title, description, navigation })
             }
           })
           .catch((err) => console.error("❌ (PlaceCard) Error in set like status", err));
-      } catch(err) {
-        console.error('❌ (PlaceCard) Error in connection database', err)
+      } catch (err) {
+        console.error("❌ (PlaceCard) Error in connection database", err);
       }
-      
     })();
   }, [user.token, id, favorite]);
-  
+
   useEffect(() => {
     try {
-      fetch(`https://roll-in-new-york-backend.vercel.app/reviews/${placeInfo.id}`)
+      fetch(`https://roll-in-new-york-backend-liard.vercel.app/reviews/${placeInfo.id}`)
         .then((response) => response.json())
         .then((data) => {
           setReviewsTable(data.reviews);
         })
-        .catch(err => console.error('❌ (PlaceCard) Error in fetch reviews', err));
-    } catch(err) {
-      console.error('❌ (PlaceCard) Error in connection database', err) 
+        .catch((err) => console.error("❌ (PlaceCard) Error in fetch reviews", err));
+    } catch (err) {
+      console.error("❌ (PlaceCard) Error in connection database", err);
     }
   }, [placeInfo.id]);
-  
+
   // Récupération des notes des avis du lieux et affichage de la moyenne si il y a des avis sur le lieu
   let allNotes;
   let averageNote;
   let getAverage = (table) => table.reduce((a, b) => a + b) / allNotes.length; // Fonction pour récupérer la moyenne des notes
-  
+
   useEffect(() => {
     if (reviewsTable.length === 0) {
       setPlaceNote(0);
@@ -90,7 +89,11 @@ export default function PlaceCard({ id, image, title, description, navigation })
 
   const togglePopup = () => {
     // Si on est sur la page planDay, on ne peut pas ouvrir le popup
-    !isPlanDay ? setActivePopupId(popupVisible ? null : id) : () => { return } 
+    !isPlanDay
+      ? setActivePopupId(popupVisible ? null : id)
+      : () => {
+          return;
+        };
   };
 
   const handleLike = () => {
@@ -102,7 +105,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
     }
 
     try {
-      fetch(`https://roll-in-new-york-backend.vercel.app/users/likePlace/${user.token}/${id}`, {
+      fetch(`https://roll-in-new-york-backend-liard.vercel.app/users/likePlace/${user.token}/${id}`, {
         method: "PUT",
       })
         .then((response) => response.json())
@@ -189,7 +192,6 @@ export default function PlaceCard({ id, image, title, description, navigation })
     </View>
   );
 }
-
 
 const styles = StyleSheet.create({
   container: {

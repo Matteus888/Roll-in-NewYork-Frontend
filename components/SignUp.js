@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, TextInput, Image, Alert,} from "react-native";
+import { StyleSheet, View, Text, TouchableWithoutFeedback, TouchableOpacity, TextInput, Image, Alert } from "react-native";
 
 import { useDispatch } from "react-redux";
 import { login } from "../reducers/users";
@@ -24,15 +24,18 @@ export default function SignUp({ isOpen, onClose }) {
 
   const handleSubmit = async () => {
     const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regex pour vérifier que l'email est valide
-    if (username === "" || email === "" || password === "") { // Condition pour dire que si les champs sont vides
+    if (username === "" || email === "" || password === "") {
+      // Condition pour dire que si les champs sont vides
       setError(true);
       setErrorMessage("Please complete all fields");
       return;
-    } else if (!regex.test(email)) { // Condition pour dire que si l'email n'est pas valide
+    } else if (!regex.test(email)) {
+      // Condition pour dire que si l'email n'est pas valide
       setError(true);
       setErrorMessage("Invalid email address");
       return;
-    } else if (password !== confirmPassword) { // Condition pour dire que si les mots de passe ne correspondent pas
+    } else if (password !== confirmPassword) {
+      // Condition pour dire que si les mots de passe ne correspondent pas
       setError(true);
       setErrorMessage("Passwords don't match");
     } else {
@@ -41,16 +44,15 @@ export default function SignUp({ isOpen, onClose }) {
     }
 
     try {
-      let response = await fetch("https://roll-in-new-york-backend.vercel.app/users/signup/classic",{
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            username: username,
-            email: email,
-            password: confirmPassword,
-          }),
-        }
-      );
+      let response = await fetch("https://roll-in-new-york-backend-liard.vercel.app/users/signup/classic", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          username: username,
+          email: email,
+          password: confirmPassword,
+        }),
+      });
 
       if (response.ok) {
         let data = await response.json();
@@ -83,15 +85,27 @@ export default function SignUp({ isOpen, onClose }) {
           <View style={styles.modalContent}>
             <View style={styles.container}>
               <View style={styles.titleContainer}>
-                <Image source={{ uri: tower }} height={70} width={40} style={styles.logo}/>
+                <Image source={{ uri: tower }} height={70} width={40} style={styles.logo} />
                 <Text style={styles.title}>Connexion</Text>
               </View>
               {error && <Text style={styles.error}>{errorMessage}</Text>}
               <View style={styles.inputContainer}>
-                <TextInput style={styles.inputText} placeholder="Name" onChangeText={(value) => setUsername(value)} value={username}/>
-                <TextInput style={styles.inputText} placeholder="Email" onChangeText={(value) => setEmail(value)} value={email}/>
-                <TextInput style={styles.inputText} placeholder="Password" secureTextEntry={true} onChangeText={(value) => setPassword(value)} value={password}/>
-                <TextInput style={styles.inputText} placeholder="Confirm password" secureTextEntry={true} onChangeText={(value) => setConfirmPassword(value)} value={confirmPassword}/>
+                <TextInput style={styles.inputText} placeholder="Name" onChangeText={(value) => setUsername(value)} value={username} />
+                <TextInput style={styles.inputText} placeholder="Email" onChangeText={(value) => setEmail(value)} value={email} />
+                <TextInput
+                  style={styles.inputText}
+                  placeholder="Password"
+                  secureTextEntry={true}
+                  onChangeText={(value) => setPassword(value)}
+                  value={password}
+                />
+                <TextInput
+                  style={styles.inputText}
+                  placeholder="Confirm password"
+                  secureTextEntry={true}
+                  onChangeText={(value) => setConfirmPassword(value)}
+                  value={confirmPassword}
+                />
               </View>
             </View>
             <TouchableOpacity onPress={() => handleSubmit()} style={styles.button} activeOpacity={0.8}>

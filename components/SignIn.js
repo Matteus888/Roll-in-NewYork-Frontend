@@ -22,26 +22,28 @@ export default function SignIn({ isOpen, onClose }) {
 
   const handleSubmit = async () => {
     const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,6}$/; // Regex pour vérifier que l'email est valide
-    if (email === "" || password === "") { // Condition pour dire que si les champs sont vides
+    if (email === "" || password === "") {
+      // Condition pour dire que si les champs sont vides
       setError(true);
       setErrorMessage("Please complete all fields");
       return;
-    } else if (!regex.test(email)) {// Condition pour dire que si l'email n'est pas valide
+    } else if (!regex.test(email)) {
+      // Condition pour dire que si l'email n'est pas valide
       setError(true);
       setErrorMessage("Invalid email address");
       return;
-    } else { // Sinon, si les champs sont remplis
+    } else {
+      // Sinon, si les champs sont remplis
       setError(false);
       setErrorMessage("");
     }
 
     try {
-      let response = await fetch("https://roll-in-new-york-backend.vercel.app/users/signin/classic", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ email, password }),
-        }
-      );
+      let response = await fetch("https://roll-in-new-york-backend-liard.vercel.app/users/signin/classic", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+      });
 
       if (response.ok) {
         let data = await response.json();
@@ -70,13 +72,19 @@ export default function SignIn({ isOpen, onClose }) {
           <View style={styles.modalContent}>
             <View style={styles.container}>
               <View style={styles.titleContainer}>
-                <Image source={{ uri: tower }} height={70} width={40} style={styles.logo}/>
+                <Image source={{ uri: tower }} height={70} width={40} style={styles.logo} />
                 <Text style={styles.title}>Connexion</Text>
               </View>
               {error && <Text style={styles.error}>{errorMessage}</Text>}
               <View style={styles.inputContainer}>
-                <TextInput style={styles.inputText} placeholder="Email" onChangeText={(value) => setEmail(value)} value={email}/>
-                <TextInput style={styles.inputText} placeholder="Password" secureTextEntry={true} onChangeText={(value) => setPassword(value)} value={password}/>
+                <TextInput style={styles.inputText} placeholder="Email" onChangeText={(value) => setEmail(value)} value={email} />
+                <TextInput
+                  style={styles.inputText}
+                  placeholder="Password"
+                  secureTextEntry={true}
+                  onChangeText={(value) => setPassword(value)}
+                  value={password}
+                />
               </View>
             </View>
             <TouchableOpacity onPress={() => handleSubmit()} style={styles.button} activeOpacity={0.8}>

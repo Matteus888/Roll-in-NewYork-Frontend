@@ -3,7 +3,7 @@ import { StyleSheet, View, FlatList, Dimensions, TouchableOpacity, Text, Platfor
 
 import { useSelector } from "react-redux";
 
-import {useFocusEffect } from "@react-navigation/native";
+import { useFocusEffect } from "@react-navigation/native";
 import { Marker } from "react-native-maps";
 import MapView from "react-native-maps";
 
@@ -16,12 +16,12 @@ import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons
 import { useFonts } from "expo-font";
 
 const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png";
-const errorImage = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734516235/teflem0cocn53iqsvier.webp"
+const errorImage = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734516235/teflem0cocn53iqsvier.webp";
 
 export default function SearchScreen({ route, navigation }) {
-  useFonts({"JosefinSans-SemiBold": require("../assets/fonts/JosefinSans-SemiBold.ttf"),});
-  
-  const favorite = useSelector((state) => state.favorite.value)
+  useFonts({ "JosefinSans-SemiBold": require("../assets/fonts/JosefinSans-SemiBold.ttf") });
+
+  const favorite = useSelector((state) => state.favorite.value);
 
   const [currentIndex, setCurrentIndex] = useState(0); // État pour stocker l'index de la card lieux actuelle
   const [allPlaces, setAllPlaces] = useState([]); // Etat pour stocker tout les lieux
@@ -39,14 +39,14 @@ export default function SearchScreen({ route, navigation }) {
   // useEffect pour fetch tout les lieux
   useEffect(() => {
     try {
-      fetch("https://roll-in-new-york-backend.vercel.app/places")
+      fetch("https://roll-in-new-york-backend-liard.vercel.app/places")
         .then((response) => response.json())
         .then((data) => {
           setAllPlaces(data.places);
         })
-        .catch((err) => console.error('❌ (SearchScreen) Error to fetch all places', err));
-    } catch(err) {
-      console.error('❌ (SearchScreen) Error in connection database', err);
+        .catch((err) => console.error("❌ (SearchScreen) Error to fetch all places", err));
+    } catch (err) {
+      console.error("❌ (SearchScreen) Error in connection database", err);
     }
   }, [favorite]);
 
@@ -54,14 +54,11 @@ export default function SearchScreen({ route, navigation }) {
   let moviePlaces;
   if (route.params === undefined) {
     movieCard = (
-          <View style={styles.errorBox}>
-            <Image
-              style={styles.image}
-              source={{ uri: errorImage }}
-            />
-            <Text style={styles.textError}>Search a movie!</Text>
-          </View>
-        )
+      <View style={styles.errorBox}>
+        <Image style={styles.image} source={{ uri: errorImage }} />
+        <Text style={styles.textError}>Search a movie!</Text>
+      </View>
+    );
   } else {
     // récupération des info du film cliqué en page d'accueil
     const { selectedMovie } = route.params;
@@ -291,7 +288,7 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 600,
     color: "#282C37",
-    fontFamily: "JosefinSans-SemiBold"
+    fontFamily: "JosefinSans-SemiBold",
   },
   image: {
     position: "relative",

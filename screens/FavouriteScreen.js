@@ -55,7 +55,7 @@ export default function FavouriteScreen() {
     })();
     // Requête pour récupérer les lieux likés
     try {
-      fetch(`https://roll-in-new-york-backend.vercel.app/favorites/places/${user.token}`)
+      fetch(`https://roll-in-new-york-backend-liard.vercel.app/favorites/places/${user.token}`)
         .then((response) => response.json())
         .then((data) => {
           const favoritePlaces = Array.isArray(data.favoritePlaces) ? data.favoritePlaces : []; // Vérifie si c'est un tableau

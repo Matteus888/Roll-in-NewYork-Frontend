@@ -44,52 +44,52 @@ export default function CameraScreen({ route }) {
 
   const takePicture = async () => {
     if (isCapturing || !cameraRef.current) return;
-  
+
     try {
       setIsCapturing(true);
-  
+
       const photo = await cameraRef.current.takePictureAsync({
         quality: Platform.OS === "android" ? 0.5 : 0.3,
         exif: false,
         skipProcessing: Platform.OS === "android",
       });
-  
+
       // Redimensionner l'image avant d'envoyer
       const { width, height } = photo; // Récupération des dimensions de la photo
       const aspectRatio = width / height;
       const newWidth = 400;
       const newHeight = newWidth / aspectRatio;
-  
+
       const resizedPhoto = {
         ...photo,
         width: newWidth,
         height: newHeight,
       };
-  
+
       // Rediriger après la prise de photo sur l'écran Memories
       navigation.reset({ index: 0, routes: [{ name: "Memories", params: { selectedPlace } }] });
-  
+
       // Si la photo est valide
       if (resizedPhoto?.uri) {
         const formData = new FormData();
-  
+
         formData.append("photoFromFront", {
           uri: resizedPhoto.uri,
           name: resizedPhoto.uri.split("/").pop(),
           type: "image/jpeg",
         });
-  
+
         formData.append("userToken", user.token);
         formData.append("idPlace", route.params.selectedPlace.id);
-  
+
         try {
-          const response = await fetch("https://roll-in-new-york-backend.vercel.app/favorites/pictures", {
+          const response = await fetch("https://roll-in-new-york-backend-liard.vercel.app/favorites/pictures", {
             method: "POST",
             body: formData,
           });
           const data = await response.json();
           dispatch(addPicture(data.url));
-        } catch(err) {
+        } catch (err) {
           console.error("❌ (Camera Screen): Error in post picture in cloudinary", err);
           Alert.alert("Error !", "An internal error occurred while uploading picture.");
         }
@@ -101,7 +101,7 @@ export default function CameraScreen({ route }) {
       setIsCapturing(false);
     }
   };
-  
+
   const toggleCameraFacing = () => {
     setFacing((current) => (current === "back" ? "front" : "back"));
   };
@@ -120,7 +120,9 @@ export default function CameraScreen({ route }) {
         style={styles.camera}
         facing={facing}
         enableTorch={flash}
-        ref={(ref) => { cameraRef.current = ref }}
+        ref={(ref) => {
+          cameraRef.current = ref;
+        }}
         photo={true}
       >
         <View style={styles.cameraContainer}>

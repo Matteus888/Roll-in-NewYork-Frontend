@@ -39,7 +39,7 @@ export default function HomeScreen({ navigation }) {
     })();
 
     try {
-      fetch("https://roll-in-new-york-backend.vercel.app/places")
+      fetch("https://roll-in-new-york-backend-liard.vercel.app/places")
         .then((response) => response.json())
         .then((data) => {
           setPlaces(data.places);
@@ -154,29 +154,29 @@ export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Header title="Roll-In NewYork" showInput={true} navigation={navigation} />
-      <Modal  visible={modalVisible} animationType="slide" transparent={true} >
-      <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
-        <View style={styles.modalBackground}>
-          <View style={styles.modalView}>
-            <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={styles.button}
-                onPress={() => {
-                  setModalVisible(false);
-                  goToMap(currentPosition, placeCoords);
-                }}
-              >
-                <Text style={styles.textButton}>Go to maps!</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
-                <Text style={styles.textButton}>X</Text>
-              </TouchableOpacity>
-            </View>
-            <View style={{ flex: 1 }}>
-              <ScrollView>{movieCards}</ScrollView>
+      <Modal visible={modalVisible} animationType="slide" transparent={true}>
+        <TouchableWithoutFeedback onPress={() => setModalVisible(false)}>
+          <View style={styles.modalBackground}>
+            <View style={styles.modalView}>
+              <View style={styles.buttonContainer}>
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={() => {
+                    setModalVisible(false);
+                    goToMap(currentPosition, placeCoords);
+                  }}
+                >
+                  <Text style={styles.textButton}>Go to maps!</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.closeButton} onPress={() => setModalVisible(false)}>
+                  <Text style={styles.textButton}>X</Text>
+                </TouchableOpacity>
+              </View>
+              <View style={{ flex: 1 }}>
+                <ScrollView>{movieCards}</ScrollView>
+              </View>
             </View>
           </View>
-        </View>
         </TouchableWithoutFeedback>
       </Modal>
       <View style={styles.mapContainer}>

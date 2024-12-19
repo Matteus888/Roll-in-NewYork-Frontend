@@ -13,12 +13,12 @@ export default function ReviewsScreen({ route, navigation }) {
   // fetch des avis du lieu
   useEffect(() => {
     try {
-      fetch(`https://roll-in-new-york-backend.vercel.app/reviews/${placeInfo.id}`)
+      fetch(`https://roll-in-new-york-backend-liard.vercel.app/reviews/${placeInfo.id}`)
         .then((response) => response.json())
         .then((data) => {
           setReviewsTable(data.reviews);
         });
-    } catch(err) {
+    } catch (err) {
       console.error("❌ (Reviews Screen): Error in connection to database", err);
     }
 
@@ -30,13 +30,7 @@ export default function ReviewsScreen({ route, navigation }) {
 
   const reviews = reviewsTable.map((data, i) => {
     return (
-      <ReviewCard
-        key={`reviewCardId: ${i}`}
-        userName={data.user.username}
-        date={data.createdAt}
-        note={data.note}
-        content={data.content}
-      />
+      <ReviewCard key={`reviewCardId: ${i}`} userName={data.user.username} date={data.createdAt} note={data.note} content={data.content} />
     );
   });
 

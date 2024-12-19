@@ -4,10 +4,10 @@ import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
-import { combineReducers, configureStore } from '@reduxjs/toolkit';
-import { persistStore, persistReducer } from 'redux-persist';
-import { PersistGate } from 'redux-persist/integration/react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { persistStore, persistReducer } from "redux-persist";
+import { PersistGate } from "redux-persist/integration/react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import { Provider, useDispatch, useSelector } from "react-redux";
 import movie, { addMovie, removeAllMovies } from "./reducers/movies";
@@ -31,17 +31,16 @@ import ToastManager from "toastify-react-native"; // Import pour les notificatio
 const Tab = createBottomTabNavigator();
 
 const reducers = combineReducers({ user, movie, favorite, picture });
-const persistConfig = { key: "Roll-In-NewYork", storage: AsyncStorage, blacklist:['movie', 'favorite', 'picture'] };
+const persistConfig = { key: "Roll-In-NewYork", storage: AsyncStorage, blacklist: ["movie", "favorite", "picture"] };
 
 const store = configureStore({
   reducer: persistReducer(persistConfig, reducers),
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ serializableCheck: false }),
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware({ serializableCheck: false }),
 });
 
 const persistor = persistStore(store);
 
-export default function App() { 
+export default function App() {
   return (
     <Provider store={store}>
       <PersistGate persistor={persistor}>
@@ -64,7 +63,7 @@ function TabNavigator() {
   useEffect(() => {
     dispatch(removeAllMovies()); // Vidage du store au lancement de l'application avant le re remplissage pour des raisons de permformances
     let allMoviesId = [];
-    fetch("https://roll-in-new-york-backend.vercel.app/places/")
+    fetch("https://roll-in-new-york-backend-liard.vercel.app/places/")
       .then((response) => response.json())
       .then((data) => {
         data.places.forEach((place) => {
@@ -76,26 +75,26 @@ function TabNavigator() {
         });
         allMoviesId.map((movieId) => {
           try {
-            fetch('https://roll-in-new-york-backend.vercel.app/movies/', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({movieId: movieId}),
+            fetch("https://roll-in-new-york-backend-liard.vercel.app/movies/", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ movieId: movieId }),
             })
-            .then((res) => res.json())
-            .then(data => {
-              if (data.movie.original_title && data.movie.poster_path) {
-                dispatch(
-                  addMovie({
-                    id: movieId,
-                    title: data.movie.original_title,
-                    poster_path: data.movie.poster_path,
-                    overview: data.movie.overview,
-                    release_date: data.movie.release_date,
-                  })
-                );
-              }
-            })
-          } catch(err) {
+              .then((res) => res.json())
+              .then((data) => {
+                if (data.movie.original_title && data.movie.poster_path) {
+                  dispatch(
+                    addMovie({
+                      id: movieId,
+                      title: data.movie.original_title,
+                      poster_path: data.movie.poster_path,
+                      overview: data.movie.overview,
+                      release_date: data.movie.release_date,
+                    })
+                  );
+                }
+              });
+          } catch (err) {
             console.error("❌ (App): Error in connection to database", err);
           }
         });
@@ -103,40 +102,41 @@ function TabNavigator() {
   }, []);
 
   return (
-    <Tab.Navigator screenOptions={({ route }) => ({
-      tabBarIcon: ({ color, size }) => {
-        let iconName = "";
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ color, size }) => {
+          let iconName = "";
 
-        switch (route.name) {
-          case "Home":
-            iconName = faHouse;
-            break;
-          case "Favourite":
-            iconName = faHeart;
-            break;
-          case "Search":
-            iconName = faMagnifyingGlass;
-            break;
-          case user.username === null ? "Login" : user.username:
-            iconName = faUser;
-            break;
-        }
+          switch (route.name) {
+            case "Home":
+              iconName = faHouse;
+              break;
+            case "Favourite":
+              iconName = faHeart;
+              break;
+            case "Search":
+              iconName = faMagnifyingGlass;
+              break;
+            case user.username === null ? "Login" : user.username:
+              iconName = faUser;
+              break;
+          }
 
-        return <FontAwesomeIcon style={styles.navIcon} icon={iconName} size={size} color={color} />;
-      },
-      tabBarStyle: styles.navbar,
-      tabBarActiveTintColor: "#DEB973",
-      tabBarInactiveTintColor: "#a39374",
-      headerShown: false,
-    })}
+          return <FontAwesomeIcon style={styles.navIcon} icon={iconName} size={size} color={color} />;
+        },
+        tabBarStyle: styles.navbar,
+        tabBarActiveTintColor: "#DEB973",
+        tabBarInactiveTintColor: "#a39374",
+        headerShown: false,
+      })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
       <Tab.Screen name="Favourite" component={FavouriteScreen} />
       <Tab.Screen name={user.username === null ? "Login" : user.username} component={LoginScreen} />
-      <Tab.Screen name="Memories" component={MemoriesScreen} options={{tabBarButton: () => null}} />
-      <Tab.Screen name="Reviews" component={ReviewsScreen} options={{tabBarButton: () => null}} />
-      <Tab.Screen name="Camera" component={CameraScreen} options={{tabBarButton: () => null, tabBarStyle: { display: 'none' }}} />
+      <Tab.Screen name="Memories" component={MemoriesScreen} options={{ tabBarButton: () => null }} />
+      <Tab.Screen name="Reviews" component={ReviewsScreen} options={{ tabBarButton: () => null }} />
+      <Tab.Screen name="Camera" component={CameraScreen} options={{ tabBarButton: () => null, tabBarStyle: { display: "none" } }} />
     </Tab.Navigator>
   );
   // tabBarButton: () => null => Permet de cacher le bouton de navigation

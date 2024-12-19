@@ -4,16 +4,20 @@ import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
 
 export default function Picture({ selectedImage, isOpen, onClose, onDelete }) {
-  if (!selectedImage || !selectedImage.masonryDimensions) { return null } // Si les données sont manquantes, ne rien afficher
+  if (!selectedImage || !selectedImage.masonryDimensions) {
+    return null;
+  } // Si les données sont manquantes, ne rien afficher
 
   const image = selectedImage.masonryDimensions; // Récupérer la largeur et la hauteur de l'image sélectionnée
   const rotationStyle = image.width > image.height ? { transform: [{ rotate: "90deg" }] } : {}; // Appliquer une rotation de 90 degrés si l'image est plus large que haute
 
-  if (!isOpen) { return null } // Si la modale n'est pas ouverte, on ne retourne rien
+  if (!isOpen) {
+    return null;
+  } // Si la modale n'est pas ouverte, on ne retourne rien
 
   const handleDelete = () => {
     try {
-      fetch(`https://roll-in-new-york-backend.vercel.app/favorites/pictures`, {
+      fetch(`https://roll-in-new-york-backend-liard.vercel.app/favorites/pictures`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ publicId: selectedImage.publicId }),
