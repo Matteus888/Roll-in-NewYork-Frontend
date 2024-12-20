@@ -18,7 +18,7 @@ const manWalking = "https://res.cloudinary.com/dtkac5fah/image/upload/v173442771
 const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427585/appIcons/oi2ry9sz9uojhzasypfv.webp";
 const errorImage = "https://res.cloudinary.com/dtkac5fah/image/upload/v1734516235/teflem0cocn53iqsvier.webp";
 
-export default function FavouriteScreen() {
+export default function FavoriteScreen() {
   useFonts({ "JosefinSans-SemiBold": require("../assets/fonts/JosefinSans-SemiBold.ttf") });
 
   const navigation = useNavigation();
@@ -223,7 +223,7 @@ export default function FavouriteScreen() {
   return (
     <View style={styles.container}>
       <Header title="My Favorites" showInput={false} />
-      <View style={[styles.favouritesScreenContainer, { height: scrollViewHeight }]}>
+      <View style={[styles.favoritesScreenContainer, { height: scrollViewHeight }]}>
         {placesLikedList && placesLikedList.length > 0 && planBtnVisible && (
           <TouchableOpacity style={styles.button} onPress={() => handlePlanMyDay()}>
             <Text style={styles.txtButton}>Plan my day !</Text>
@@ -277,7 +277,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  favouritesScreenContainer: {
+  favoritesScreenContainer: {
     marginTop: 200,
     paddingTop: 5,
     alignItems: "center",

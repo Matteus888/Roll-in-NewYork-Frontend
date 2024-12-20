@@ -17,7 +17,7 @@ import picture from "./reducers/pictures";
 
 import { AppProvider } from "./provider/AppProvider";
 import HomeScreen from "./screens/HomeScreen";
-import FavouriteScreen from "./screens/FavouriteScreen";
+import FavoriteScreen from "./screens/FavoriteScreen";
 import SearchScreen from "./screens/SearchScreen";
 import LoginScreen from "./screens/LoginScreen";
 import MemoriesScreen from "./screens/MemoriesScreen";
@@ -111,7 +111,7 @@ function TabNavigator() {
             case "Home":
               iconName = faHouse;
               break;
-            case "Favourite":
+            case "Favorite":
               iconName = faHeart;
               break;
             case "Search":
@@ -132,7 +132,7 @@ function TabNavigator() {
     >
       <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Search" component={SearchScreen} />
-      <Tab.Screen name="Favourite" component={FavouriteScreen} />
+      <Tab.Screen name="Favorite" component={FavoriteScreen} />
       <Tab.Screen name={user.username === null ? "Login" : user.username} component={LoginScreen} />
       <Tab.Screen name="Memories" component={MemoriesScreen} options={{ tabBarButton: () => null }} />
       <Tab.Screen name="Reviews" component={ReviewsScreen} options={{ tabBarButton: () => null }} />

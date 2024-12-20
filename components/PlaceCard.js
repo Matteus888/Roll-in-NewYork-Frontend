@@ -169,7 +169,7 @@ export default function PlaceCard({ id, image, title, description, navigation })
             <View style={styles.popupContent}>
               <TouchableOpacity onPress={handleLike} style={styles.popupButton} activeOpacity={0.8}>
                 <FontAwesomeIcon icon={faHeart} size={40} style={likeStyle} />
-                <Text style={styles.popupText}>Favourites</Text>
+                <Text style={styles.popupText}>Favorites</Text>
               </TouchableOpacity>
               <View style={styles.popupSeparator}></View>
               {user.token !== null && isLiked == true && (
