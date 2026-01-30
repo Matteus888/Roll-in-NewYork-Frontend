@@ -1,5 +1,15 @@
 import { useEffect, useState } from "react";
-import { StyleSheet, Dimensions, View, TouchableOpacity, Text, TextInput, ActivityIndicator, Alert, Keyboard } from "react-native";
+import {
+  StyleSheet,
+  Dimensions,
+  View,
+  TouchableOpacity,
+  Text,
+  TextInput,
+  ActivityIndicator,
+  Alert,
+  Keyboard,
+} from "react-native";
 
 import { useSelector } from "react-redux";
 
@@ -11,8 +21,8 @@ import PlaceCard from "../components/PlaceCard";
 import Header from "../components/Header";
 import Picture from "../components/Picture";
 
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faCamera, faUpload, faStar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesome } from "@expo/vector-icons";
+
 import { Toast } from "toastify-react-native";
 
 export default function MemoriesScreen({ route, navigation }) {
@@ -33,7 +43,7 @@ export default function MemoriesScreen({ route, navigation }) {
   const fetchPictures = async () => {
     try {
       const response = await fetch(
-        `https://roll-in-new-york-backend-liard.vercel.app/favorites/pictures/${user.token}/${selectedPlace.id}`
+        `https://roll-in-new-york-backend-liard.vercel.app/favorites/pictures/${user.token}/${selectedPlace.id}`,
       );
       const data = await response.json();
       const newPictures = data.urls.map((secure_url) => ({
@@ -66,8 +76,8 @@ export default function MemoriesScreen({ route, navigation }) {
     }
     personalStars.push(
       <TouchableOpacity key={`starIndex: ${i}`} onPress={() => setPersonalNote(i + 1)}>
-        <FontAwesomeIcon icon={faStar} style={style} size={30} />
-      </TouchableOpacity>
+        <FontAwesome name="star" style={style} size={30} />
+      </TouchableOpacity>,
     );
   }
 
@@ -221,11 +231,11 @@ export default function MemoriesScreen({ route, navigation }) {
 
           <View style={styles.buttonPictures}>
             <TouchableOpacity style={styles.buttonUpload} onPress={handleFilePick}>
-              <FontAwesomeIcon icon={faUpload} size={30} color="#DEB973" />
+              <FontAwesome name="upload" size={30} color="#DEB973" />
             </TouchableOpacity>
             <View style={styles.buttonPictureSeparator}></View>
             <TouchableOpacity style={styles.buttonPicture} onPress={handleCamera}>
-              <FontAwesomeIcon icon={faCamera} size={30} color="#DEB973" />
+              <FontAwesome name="camera" size={30} color="#DEB973" />
             </TouchableOpacity>
           </View>
           {loading ? (

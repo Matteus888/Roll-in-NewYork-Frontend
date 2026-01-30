@@ -24,8 +24,7 @@ import MemoriesScreen from "./screens/MemoriesScreen";
 import ReviewsScreen from "./screens/ReviewsScreen";
 import CameraScreen from "./screens/CameraScreen";
 
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faHouse, faHeart, faMagnifyingGlass, faUser } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import ToastManager from "toastify-react-native"; // Import pour les notifications
 
 const Tab = createBottomTabNavigator();
@@ -90,7 +89,7 @@ function TabNavigator() {
                       poster_path: data.movie.poster_path,
                       overview: data.movie.overview,
                       release_date: data.movie.release_date,
-                    })
+                    }),
                   );
                 }
               });
@@ -109,20 +108,20 @@ function TabNavigator() {
 
           switch (route.name) {
             case "Home":
-              iconName = faHouse;
+              iconName = home;
               break;
             case "Favorite":
-              iconName = faHeart;
+              iconName = heart;
               break;
             case "Search":
-              iconName = faMagnifyingGlass;
+              iconName = search;
               break;
             case user.username === null ? "Login" : user.username:
-              iconName = faUser;
+              iconName = user;
               break;
           }
 
-          return <FontAwesomeIcon style={styles.navIcon} icon={iconName} size={size} color={color} />;
+          return <FontAwesome style={styles.navIcon} name={iconName} size={size} color={color} />;
         },
         tabBarStyle: styles.navbar,
         tabBarActiveTintColor: "#DEB973",
@@ -136,7 +135,11 @@ function TabNavigator() {
       <Tab.Screen name={user.username === null ? "Login" : user.username} component={LoginScreen} />
       <Tab.Screen name="Memories" component={MemoriesScreen} options={{ tabBarButton: () => null }} />
       <Tab.Screen name="Reviews" component={ReviewsScreen} options={{ tabBarButton: () => null }} />
-      <Tab.Screen name="Camera" component={CameraScreen} options={{ tabBarButton: () => null, tabBarStyle: { display: "none" } }} />
+      <Tab.Screen
+        name="Camera"
+        component={CameraScreen}
+        options={{ tabBarButton: () => null, tabBarStyle: { display: "none" } }}
+      />
     </Tab.Navigator>
   );
   // tabBarButton: () => null => Permet de cacher le bouton de navigation

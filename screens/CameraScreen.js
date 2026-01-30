@@ -7,8 +7,7 @@ import { addPicture } from "../reducers/pictures";
 import { useIsFocused, useNavigation } from "@react-navigation/native";
 import { CameraView, Camera } from "expo-camera";
 
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
-import { faXmark, faO, faRotate, faBolt } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
+import { FontAwesome } from "@expo/vector-icons";
 
 export default function CameraScreen({ route }) {
   const dispatch = useDispatch();
@@ -129,21 +128,21 @@ export default function CameraScreen({ route }) {
           <View style={styles.cameraHeader}>
             <View style={styles.cameraHeaderLeft}>
               <TouchableOpacity onPress={() => toggleCameraFacing()}>
-                <FontAwesomeIcon icon={faRotate} size={40} color="white" />
+                <FontAwesome name="rotate" size={40} color="white" />
               </TouchableOpacity>
               <TouchableOpacity onPress={() => toggleFlash()}>
-                <FontAwesomeIcon icon={faBolt} size={40} color="white" />
+                <FontAwesome name="bolt" size={40} color="white" />
               </TouchableOpacity>
             </View>
             <View>
               <TouchableOpacity onPress={() => handleClose()}>
-                <FontAwesomeIcon icon={faXmark} size={40} color="white" />
+                <FontAwesome name="xmark" size={40} color="white" />
               </TouchableOpacity>
             </View>
           </View>
           <View>
             <TouchableOpacity onPress={() => takePicture()}>
-              <FontAwesomeIcon icon={faO} size={100} color="white" />
+              <FontAwesome name="circle" size={100} color="white" />
             </TouchableOpacity>
           </View>
         </View>

@@ -11,8 +11,7 @@ import Header from "../components/Header";
 import PlaceCard from "../components/PlaceCard";
 import MovieCard from "../components/MovieCard";
 
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faChevronLeft, faChevronRight } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesome } from "@expo/vector-icons";
 import { useFonts } from "expo-font";
 
 const moviePlace = "https://res.cloudinary.com/dtkac5fah/image/upload/v1733818367/appIcons/csasdedxqkqyj29vzk36.png";
@@ -33,7 +32,7 @@ export default function SearchScreen({ route, navigation }) {
   useFocusEffect(
     React.useCallback(() => {
       setRefreshKey((prev) => prev + 1);
-    }, [])
+    }, []),
   );
 
   // useEffect pour fetch tout les lieux
@@ -129,13 +128,13 @@ export default function SearchScreen({ route, navigation }) {
             <>
               <View style={styles.carouselWrapper}>
                 <TouchableOpacity onPress={goToPrevious} style={styles.navigationButtonLeft}>
-                  <FontAwesomeIcon icon={faChevronLeft} size={20} color="black" />
+                  <FontAwesome name="chevron-left" size={20} color="black" />
                 </TouchableOpacity>
                 <FlatList // Affichage du carrousel
                   data={moviePlaces}
                   horizontal // Indication de l'affichage horizontal
                   renderItem={(
-                    { item, index } // Affichage des éléments du carrousel
+                    { item, index }, // Affichage des éléments du carrousel
                   ) =>
                     index === currentIndex ? ( // Si l'index de l'élément est égal à l'index actuel alors on affiche la card
                       <View style={styles.cardWrapper}>
@@ -158,7 +157,7 @@ export default function SearchScreen({ route, navigation }) {
                   }} // Centrage des éléments du carrousel
                 />
                 <TouchableOpacity onPress={goToNext} style={styles.navigationButtonRight}>
-                  <FontAwesomeIcon icon={faChevronRight} size={20} color="black" />
+                  <FontAwesome name="chevron-right" size={20} color="black" />
                 </TouchableOpacity>
               </View>
               <View style={styles.pagination}>

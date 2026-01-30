@@ -3,8 +3,7 @@ import { View, TextInput, StyleSheet, TouchableOpacity, Text, FlatList } from "r
 
 import { useSelector } from "react-redux";
 
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faMagnifyingGlass } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesome } from "@expo/vector-icons";
 
 export default function SearchInput({ navigation }) {
   const movie = useSelector((state) => state.movie.value);
@@ -12,7 +11,7 @@ export default function SearchInput({ navigation }) {
   const [filteredMovie, setFilteredMovie] = useState([]); // État pour stocker les résultats
   const [showPopup, setShowPopup] = useState(false); // État pour contrôler l'affichage de la pop-up
   const [search, setSearch] = useState(""); // État pour stocker la valeur de la recherche
-  
+
   // Fonction pour rechercher les films
   const searchMovies = (searchValue) => {
     const hashtagPattern = new RegExp(`${searchValue}`, "i"); // Variable qui permet de faire une recherche en equalsIgnoreCase en fonction de la valeur de la recherche
@@ -24,14 +23,18 @@ export default function SearchInput({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.inputContainer}>
-        <TextInput placeholder="Search for a movie..." placeholderTextColor="#DEB973" style={styles.input} value={search}
+        <TextInput
+          placeholder="Search for a movie..."
+          placeholderTextColor="#DEB973"
+          style={styles.input}
+          value={search}
           onChangeText={(value) => {
             searchMovies(value);
             setSearch(value);
           }}
         />
         <TouchableOpacity>
-          <FontAwesomeIcon icon={faMagnifyingGlass} size={20} color="#DEB973" style={styles.iconeSearch} />
+          <FontAwesome name="search" size={20} color="#DEB973" style={styles.iconeSearch} />
         </TouchableOpacity>
       </View>
       {showPopup && (

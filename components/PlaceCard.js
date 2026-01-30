@@ -1,5 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, Dimensions, View, Text, Image, TouchableWithoutFeedback, Pressable } from "react-native";
+import {
+  StyleSheet,
+  TouchableOpacity,
+  Dimensions,
+  View,
+  Text,
+  Image,
+  TouchableWithoutFeedback,
+  Pressable,
+} from "react-native";
 
 import { useSelector, useDispatch } from "react-redux";
 import { addPlaceToFavorites, removePlaceToFavorites } from "../reducers/favorites";
@@ -8,8 +17,7 @@ import { useNavigation } from "@react-navigation/native";
 import { usePlanDayContext, usePopupContext } from "../provider/AppProvider";
 
 import { useFonts } from "expo-font";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome"; // Import pour les icons
-import { faHeart, faStar, faImage } from "@fortawesome/free-solid-svg-icons"; // Import pour les icons
+import { FontAwesome } from "@expo/vector-icons";
 
 // Création de la card représentant les lieux de tournage référencés
 export default function PlaceCard({ id, image, title, description, navigation }) {
@@ -139,7 +147,9 @@ export default function PlaceCard({ id, image, title, description, navigation })
 
   return (
     <View style={styles.container}>
-      <Pressable onPress={() => (nav.getState().routes[nav.getState().index].name === "Memories" ? null : togglePopup())}>
+      <Pressable
+        onPress={() => (nav.getState().routes[nav.getState().index].name === "Memories" ? null : togglePopup())}
+      >
         <View style={styles.card}>
           <View style={styles.imageContainer}>
             <Image source={{ uri: image }} style={styles.image} />
@@ -151,8 +161,8 @@ export default function PlaceCard({ id, image, title, description, navigation })
                 {title}
               </Text>
               <TouchableOpacity style={styles.iconTouchBox}>
-                <FontAwesomeIcon icon={faHeart} size={10} style={isLiked ? { color: "red" } : likeStyle} />
-                <FontAwesomeIcon icon={faStar} size={12} color="#DEB973" />
+                <FontAwesome name="heart" size={10} style={isLiked ? { color: "red" } : likeStyle} />
+                <FontAwesome name="star" size={12} color="#DEB973" />
                 <Text>{placeNote}/5</Text>
               </TouchableOpacity>
             </View>
@@ -168,21 +178,21 @@ export default function PlaceCard({ id, image, title, description, navigation })
           <TouchableWithoutFeedback onPress={() => setActivePopupId(null)}>
             <View style={styles.popupContent}>
               <TouchableOpacity onPress={handleLike} style={styles.popupButton} activeOpacity={0.8}>
-                <FontAwesomeIcon icon={faHeart} size={40} style={likeStyle} />
+                <FontAwesome name="heart" size={40} style={likeStyle} />
                 <Text style={styles.popupText}>Favorites</Text>
               </TouchableOpacity>
               <View style={styles.popupSeparator}></View>
               {user.token !== null && isLiked == true && (
                 <>
                   <TouchableOpacity onPress={goToMemories} style={styles.popupButton} activeOpacity={0.8}>
-                    <FontAwesomeIcon icon={faImage} size={40} color="#4198f0" />
+                    <FontAwesome name="image" size={40} color="#4198f0" />
                     <Text style={styles.popupText}>Memories</Text>
                   </TouchableOpacity>
                   <View style={styles.popupSeparator}></View>
                 </>
               )}
               <TouchableOpacity onPress={() => handleReviews()} style={styles.popupButton} activeOpacity={0.8}>
-                <FontAwesomeIcon icon={faStar} size={40} color="#DEB973" />
+                <FontAwesome name="star" size={40} color="#DEB973" />
                 <Text style={styles.popupText}>Reviews</Text>
               </TouchableOpacity>
             </View>

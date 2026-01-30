@@ -1,11 +1,10 @@
 import { StyleSheet, View, Text, Dimensions } from "react-native";
 
 import { useFonts } from "expo-font";
-import { FontAwesomeIcon } from "@fortawesome/react-native-fontawesome";
-import { faStar } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesome } from "@expo/vector-icons";
 
 export default function ReviewCard(props) {
-  useFonts({"JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf")});
+  useFonts({ "JosefinSans-Bold": require("../assets/fonts/JosefinSans-Bold.ttf") });
 
   //formatage de la date de création de l'avis
   let date = props.date;
@@ -19,7 +18,7 @@ export default function ReviewCard(props) {
           <Text style={styles.user} numberOfLines={2}>
             {props.userName}
           </Text>
-          <FontAwesomeIcon icon={faStar} size={12} color="#DEB973" />
+          <FontAwesome name="star" size={12} color="#DEB973" />
           <Text>{props.note}/5</Text>
         </View>
         <Text>{formatedDate}</Text>
