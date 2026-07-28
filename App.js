@@ -108,16 +108,16 @@ function TabNavigator() {
 
           switch (route.name) {
             case "Home":
-              iconName = home;
+              iconName = "home";
               break;
             case "Favorite":
-              iconName = heart;
+              iconName = "heart";
               break;
             case "Search":
-              iconName = search;
+              iconName = "search";
               break;
             case user.username === null ? "Login" : user.username:
-              iconName = user;
+              iconName = "user";
               break;
           }
 

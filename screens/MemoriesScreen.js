@@ -9,12 +9,13 @@ import {
   ActivityIndicator,
   Alert,
   Keyboard,
+  Image,
 } from "react-native";
 
 import { useSelector } from "react-redux";
 
 import { useFonts } from "expo-font";
-import MasonryList from "react-native-masonry-list";
+import { FlashList } from "@shopify/flash-list";
 import * as ImagePicker from "expo-image-picker";
 
 import PlaceCard from "../components/PlaceCard";
@@ -243,23 +244,29 @@ export default function MemoriesScreen({ route, navigation }) {
           ) : (
             <View style={styles.gallery}>
               {pictures.length === 0 && <Text style={styles.noPicture}>No pictures yet</Text>}
-              <MasonryList
+              <FlashList
                 key={refreshGallery}
-                images={pictures.map((picture) => {
-                  const { width, height } = calculateImageSize(picture);
-                  return { uri: picture.uri, width, height, publicId: picture.publicId };
-                })}
-                columns={3}
-                spacing={1}
+                data={pictures}
+                keyExtractor={(item) => item.publicId}
+                masonry
+                numColumns={3}
                 refreshing={false}
                 onRefresh={() => manualRefresh()}
-                backgroundColor={"#EFEFEF"}
-                style={{ backgroundColor: "#EFEFEF" }}
-                onPressImage={(image) => {
-                  setSelectedImage(image);
-                  setViewPictures(true);
+                contentContainerStyle={{ backgroundColor: "#EFEFEF" }}
+                renderItem={({ item }) => {
+                  const { width, height } = calculateImageSize(item);
+                  return (
+                    <TouchableOpacity
+                      style={{ margin: 0.5 }}
+                      onPress={() => {
+                        setSelectedImage({ ...item, width, height });
+                        setViewPictures(true);
+                      }}
+                    >
+                      <Image source={{ uri: item.uri }} style={{ width, height }} resizeMode="contain" />
+                    </TouchableOpacity>
+                  );
                 }}
-                resizeMode="contain"
               />
             </View>
           )}
