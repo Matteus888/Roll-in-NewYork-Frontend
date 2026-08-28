@@ -47,10 +47,37 @@ export default function MemoriesScreen({ route, navigation }) {
         `https://roll-in-new-york-backend-liard.vercel.app/favorites/pictures/${user.token}/${selectedPlace.id}`,
       );
       const data = await response.json();
-      const newPictures = data.urls.map((secure_url) => ({
-        uri: secure_url.secure_url,
-        publicId: secure_url.public_id,
-      }));
+
+      // Récupération des dimensions réelles de chaque image (nécessaire pour le calcul du ratio dans la grille masonry)
+      const newPictures = await Promise.all(
+        data.urls.map(
+          (secure_url) =>
+            new Promise((resolve) => {
+              Image.getSize(
+                secure_url.secure_url,
+                (width, height) => {
+                  resolve({
+                    uri: secure_url.secure_url,
+                    publicId: secure_url.public_id,
+                    width,
+                    height,
+                  });
+                },
+                (err) => {
+                  console.error("❌ (Memories Screen): Error getting image size", err);
+                  // Valeur de secours (carré) pour ne pas casser la grille si la récupération échoue
+                  resolve({
+                    uri: secure_url.secure_url,
+                    publicId: secure_url.public_id,
+                    width: 1,
+                    height: 1,
+                  });
+                },
+              );
+            }),
+        ),
+      );
+
       setPictures(newPictures);
       setLoading(false);
     } catch (err) {
