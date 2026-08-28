@@ -4,14 +4,8 @@
     "slug": "roll-in-newyork",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427451/appIcons/umtepna0xmfeki5tffxw.webp",
+    "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
-    "newArchEnabled": true,
-    "splash": {
-      "image": "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427451/appIcons/umtepna0xmfeki5tffxw.webp",
-      "resizeMode": "contain",
-      "backgroundColor": "#001F3F"
-    },
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
@@ -20,7 +14,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "https://res.cloudinary.com/dtkac5fah/image/upload/v1734427451/appIcons/umtepna0xmfeki5tffxw.webp",
+        "foregroundImage": "./assets/icon.png",
         "backgroundColor": "#001F3F"
       },
       "permissions": [
@@ -51,6 +45,14 @@
           "cameraPermission": "Allow FaceUp to access your camera",
           "microphonePermission": "Allow FaceUp to access your microphone",
           "recordAudioAndroid": true
+        }
+      ],
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/icon.png",
+          "resizeMode": "contain",
+          "backgroundColor": "#001F3F"
         }
       ],
       "expo-status-bar"
